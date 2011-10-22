@@ -56,13 +56,13 @@ Targeted platforms
 * Node.js
 
 [QUnit](http://docs.jquery.com/Qunit) is used for unit testing. 
-Just open the [test page](http://benjamine.github.com/jsondiffpatch/test/qunit.htm) on your preferred browser. 
+Just open the [test page](http://benjamine.github.com/JsonDiffPatch/test/qunit.htm) on your preferred browser. 
 
 
 Including JsonDiffPatch in your application
 ---------------
 
-Download the latest release from the web site (http://github.com/benjamine/jsondiffpatch) and copy 
+Download the latest release from the web site (http://github.com/benjamine/JsonDiffPatch) and copy 
 `src/jsondiffpatch.js` to a suitable location. To support text diffs include Google's diff_match_patch,
 a version fixed to work in browsers as wall as in node.js is provided.
 
