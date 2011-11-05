@@ -58,13 +58,11 @@ Targeted platforms
 [QUnit](http://docs.jquery.com/Qunit) is used for unit testing. 
 Just open the [test page](http://benjamine.github.com/JsonDiffPatch/test/qunit.htm) on your preferred browser. 
 
-
 Including JsonDiffPatch in your application
 ---------------
 
 Download the latest release from the web site (http://github.com/benjamine/JsonDiffPatch) and copy 
-`src/jsondiffpatch.js` to a suitable location. To support text diffs include Google's diff_match_patch,
-a version fixed to work in browsers as wall as in node.js is provided.
+`src/jsondiffpatch.js` to a suitable location. To support text diffs include Google's diff_match_patch.
 
 Then include it in your HTML
 like so:
@@ -73,4 +71,27 @@ like so:
     <script type="text/javascript" src="/path/to/diff_match_patch_uncompressed.js"></script>
 	
 Note: you can use JsonDiffPatch on browserless JavaScript environments too (as [Node.js](http://nodejs.org/), or [Mozilla Rhino](http://www.mozilla.org/rhino/)). 
+
+On Node.js you have to connect your text diff/patch library explicitly. eg:
+
+	var jsondiffpatch = require('./jsondiffpatch.js');
+	
+	// load google diff_match_patch library for text diff/patch 
+	jsondiffpatch.config.diff_match_patch = require('./diff_match_patch_uncompressed.js');
+	
+	// use text diff for strings longer than 5 chars 
+	jsondiffpatch.config.textDiffMinLength = 5;
+	
+	var d = jsondiffpatch.diff({ age: 5, name: 'Arturo' }, {age: 7, name: 'Armando' });
+	// d = { 
+	//   age: [ 5, 7 ],
+	//   name: [ '@@ -1,6 +1,7 @@\n Ar\n-tur\n+mand\n o\n', 0, 2 ] }
+	
+	console.log(d.name[0])
+	// prints: 
+	// @@ -1,6 +1,7 @@
+	// Ar
+	// -tur
+	// +mand
+	//  o
 

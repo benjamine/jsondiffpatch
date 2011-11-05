@@ -19,8 +19,12 @@
     }
     
     var diff_match_patch_autoconfig = function(){
-        if (diff_match_patch) {
-            var dmp;
+        var dmp;
+        
+        if (jdp.config.diff_match_patch) {
+            dmp = new jdp.config.diff_match_patch.diff_match_patch();
+        }
+        if (typeof diff_match_patch != 'undefined') {
             if (typeof diff_match_patch == 'function') {
                 dmp = new diff_match_patch();
             }
@@ -29,21 +33,22 @@
                 typeof diff_match_patch.diff_match_patch == 'function') {
                     dmp = new diff_match_patch.diff_match_patch();
                 }
-            if (dmp) {
-                jdp.config.textDiff = function(txt1, txt2){
-                    return dmp.patch_toText(dmp.patch_make(txt1, txt2));
-                }
-                jdp.config.textPatch = function(txt1, patch){
-                    var results = dmp.patch_apply(dmp.patch_fromText(patch), txt1);
-                    for (var i = 0; i < results[1].length; i++) {
-                        if (!results[1][i]) {
-                            throw new Error('text patch failed');
-                        }
-                    }
-                    return results[0];
-                };
-                return true;
+        }
+        
+        if (dmp) {
+            jdp.config.textDiff = function(txt1, txt2){
+                return dmp.patch_toText(dmp.patch_make(txt1, txt2));
             }
+            jdp.config.textPatch = function(txt1, patch){
+                var results = dmp.patch_apply(dmp.patch_fromText(patch), txt1);
+                for (var i = 0; i < results[1].length; i++) {
+                    if (!results[1][i]) {
+                        throw new Error('text patch failed');
+                    }
+                }
+                return results[0];
+            };
+            return true;
         }
     }
     
