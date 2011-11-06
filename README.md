@@ -5,6 +5,11 @@ JsonDiffPatch
 
 JsonDiffPatch is a small library that allows to diff to Javascript object trees, create a patch and apply it to update the original version.
 
+-----
+**[DEMO](http://benjamine.github.com/JsonDiffPatch/demo/index.htm)**
+-----
+-----
+
 - Could be used for logging, audit, remote (client-server) synchronization of changes, etc.
 - Works in browsers and server (Node.js), use test/qunit.htm to test it in any browser/environment.
 - Automatically uses [google-diff_match_patch](http://code.google.com/p/google-diff-match-patch/) library for long texts when available (finds diff_match_patch global, other text diff libs can be plugged in)

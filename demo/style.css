@@ -17,8 +17,8 @@ body {
 }
 
 .buttons input {
-    margin:  15px 1px 0 1px;
-	padding: 5px 10px;
+    margin: 15px 1px 0 1px;
+    padding: 5px 10px;
 }
 
 .unchanged {
@@ -40,6 +40,24 @@ body {
 
 .deleted p:hover {
     text-decoration: none;
+}
+
+.textdiff .added {
+    background: #bbffbb;
+}
+
+.textdiff .deleted {
+    background: #ffbbbb;
+    text-decoration: line-through;
+}
+
+.textdiff .deleted:hover {
+    text-decoration: none;
+}
+
+.textdiff .header {
+    color: gray;
+    display: block;
 }
 
 .modified-original {
@@ -95,10 +113,19 @@ p:hover {
     text-decoration: none;
 }
 
-
 .json-error {
     background: #ffdfdf;
-	-webkit-transition: all 1s;
+    -webkit-transition: all 1s;
+}
+
+.jsontext {
+    text-align: center;
+}
+
+.jsonerrormessage {
+    font-weight: bold;
+    color: red;
+    font-size: smaller;
 }
 
 .visualdiff {

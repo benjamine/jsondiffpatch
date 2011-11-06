@@ -375,11 +375,11 @@
         return o;
     }
     
-    if (module && module.exports) {
+    if (typeof module != 'undefined' && module.exports) {
         module.exports = jdp;
     }
     else 
-        if (window) {
+        if (typeof window != 'undefined') {
             window.jsondiffpatch = jdp;
         }
     
