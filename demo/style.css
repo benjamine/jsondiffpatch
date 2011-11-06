@@ -2,6 +2,16 @@ body {
     font-family: Georgia, serif;
 }
 
+h1 {
+    margin: 30px;
+}
+
+a#fork_me {
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+
 .jsontext > div {
     float: left;
     width: 50%;
