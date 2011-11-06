@@ -100,3 +100,20 @@ On Node.js you have to connect your text diff/patch library explicitly. eg:
 	// +mand
 	//  o
 
+
+Visual Diff
+----------------
+
+To visualize diffs you can include JsonDiffPatch.Html script + css on your page:
+
+    <script type="text/javascript" src="/path/to/jsondiffpatch.html.js"></script>
+    <link rel="stylesheet" href="../src/jsondiffpatch.html.css" type="text/css" />
+Now you can use the jsondiffpatch.html.diffToHtml() function to visualize diffs as html:
+
+    var json1 = JSON.parse($('#json1').val());
+    var json2 = JSON.parse($('#json2').val());
+    var d = jsondiffpatch.diff(json1, json2);
+    $('#myvisualdiffcontainer').empty().append(jsondiffpatch.html.diffToHtml(json1, json2, d));
+
+
+To see this in action check the [DEMO](http://benjamine.github.com/JsonDiffPatch/demo/index.htm) page.

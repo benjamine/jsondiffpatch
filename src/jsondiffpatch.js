@@ -134,6 +134,16 @@
         var odiff, pdiff, prop, addPropDiff;
         
         addPropDiff = function(name){
+        
+            if (typeof(n[prop]) == 'object' && n[prop] instanceof Array &&
+            (n[prop + '_key'] || n['_' + prop + '_key'])) {
+                n[prop]._key = n[prop + '_key'] || n['_' + prop + '_key'];
+            }
+            if (typeof(o[prop]) == 'object' && o[prop] instanceof Array &&
+            (o[prop + '_key'] || o['_' + prop + '_key'])) {
+                o[prop]._key = o[prop + '_key'] || o['_' + prop + '_key'];
+            }
+            
             pdiff = diff(o[prop], n[prop]);
             if (typeof pdiff != 'undefined') {
                 if (typeof odiff == 'undefined') {
@@ -237,6 +247,8 @@
         }
         return obj[key];
     };
+    
+    jdp.getByKey = objectGet;
     
     var objectSet = function(obj, key, value){
         if (obj instanceof Array && obj._key) {

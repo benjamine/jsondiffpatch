@@ -2,6 +2,20 @@ body {
     font-family: Georgia, serif;
 }
 
+h1 {
+    margin: 30px;
+}
+
+a#fork_me {
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+
+.jsontext {
+    text-align: center;
+}
+
 .jsontext > div {
     float: left;
     width: 50%;
@@ -9,7 +23,7 @@ body {
 
 .jsontext textarea {
     width: 95%;
-    height: 300px;
+    height: 200px;
 }
 
 .buttons {
@@ -21,105 +35,9 @@ body {
     padding: 5px 10px;
 }
 
-.unchanged {
-    color: gray;
-}
-
-.added span, .added p {
-    background: #bbffbb;
-}
-
-.deleted span, .deleted p {
-    background: #ffbbbb;
-    text-decoration: line-through;
-}
-
-.deleted span:hover {
-    text-decoration: none;
-}
-
-.deleted p:hover {
-    text-decoration: none;
-}
-
-.textdiff .added {
-    background: #bbffbb;
-}
-
-.textdiff .deleted {
-    background: #ffbbbb;
-    text-decoration: line-through;
-}
-
-.textdiff .deleted:hover {
-    text-decoration: none;
-}
-
-.textdiff .header {
-    color: gray;
-    display: block;
-}
-
-.modified-original {
-    background: #ffbbbb;
-}
-
-.modified-original > div > p {
-    text-decoration: line-through;
-}
-
-.modified-original > div > p:hover {
-    text-decoration: none;
-}
-
-.modified-new {
-    margin-left: 5px;
-    background: #bbffbb;
-}
-
-.visualdiff p {
-    margin: 0;
-    padding: 0;
-    display: inline-block;
-    vertical-align: top;
-    min-height: 17px;
-}
-
-.property-name {
-    margin: 0;
-    padding: 0 10px 0 0;
-    display: inline-block;
-    min-height: 17px;
-}
-
-.visualdiff ul {
-    padding-left: 20px;
-    border-left: 1px dotted gray;
-}
-
-.visualdiff .property-name {
-    font-style: italic;
-}
-
-.modified-original, .modified-new {
-    float: left;
-}
-
-span:hover {
-    text-decoration: none;
-}
-
-p:hover {
-    text-decoration: none;
-}
-
 .json-error {
     background: #ffdfdf;
     -webkit-transition: all 1s;
-}
-
-.jsontext {
-    text-align: center;
 }
 
 .jsonerrormessage {
@@ -128,13 +46,36 @@ p:hover {
     font-size: smaller;
 }
 
-.visualdiff {
-    font-size: smaller;
-    margin: 20px;
-    font-family: 'Bitstream Vera Sans Mono', 'DejaVu Sans Mono', Monaco, Courier, monospace;
+h2 {
+    display: inline-block;
+    margin: 5px 0;
+}
+
+.header-options {
+    margin-left: 30px;
+    display: inline-block;
 }
 
 #jsondiff {
     width: 95%;
-    height: 400px;
+    height: 200px;
+}
+
+footer {
+    font-size: small;
+    text-align: center;
+    margin: 40px;
+}
+
+.credits {
+    font-size: smaller;
+}
+
+.credits a {
+    text-decoration: none;
+    color: black;
+}
+
+.credits a:hover {
+    text-decoration: underline;
 }
