@@ -22,7 +22,7 @@
  * Applies the patch onto another text, allowing for errors.
  * @author fraser@google.com (Neil Fraser)
  */
-(function(){
+
 /**
  * Class containing the diff, match and patch methods.
  * @constructor
@@ -2159,4 +2159,3 @@ this['DIFF_DELETE'] = DIFF_DELETE;
 this['DIFF_INSERT'] = DIFF_INSERT;
 this['DIFF_EQUAL'] = DIFF_EQUAL;
 
-}).apply(typeof exports != "undefined" ? exports : window);
