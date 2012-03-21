@@ -276,7 +276,11 @@
             return;
         }
         if (typeof value == 'undefined') {
-            delete obj[key];
+            if (obj instanceof Array) {
+                obj.splice(key, 1);
+            } else { 
+                delete obj[key];
+            }
         }
         else {
             obj[key] = value;
