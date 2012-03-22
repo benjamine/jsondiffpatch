@@ -160,7 +160,7 @@ test("change from/to null", 1, function(){
     equal(typeof this.delta2, "undefined", 'original equals new');
 });
 
-test("change simple list", 1, function(){
+test("change simple list", 2, function(){
 
     this.makeCopy();
     
@@ -171,6 +171,7 @@ test("change simple list", 1, function(){
     
     this.diffPatch();
     
+    deepEqual(this.sa.languages, this.sa2.languages);
     equal(typeof this.delta2, "undefined", 'original equals new');
 });
 
