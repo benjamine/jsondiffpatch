@@ -1,4 +1,3 @@
-
 (function(){
 
     var jdp = jsondiffpatch;
@@ -11,7 +10,7 @@
         var container = document.createElement('div');
         if (desc) {
             var descspan = document.createElement('span');
-            descspan.innerText = desc + (o instanceof Array ? ' (array' + (o._key ? ', key=' + o._key : '') + ')' : '');
+            descspan.appendChild(document.createTextNode(desc + (o instanceof Array ? ' (array' + (o._key ? ', key=' + o._key : '') + ')' : '')));
             descspan.setAttribute('class', 'jsondiffpatch-property-name');
             container.appendChild(descspan);
         }
@@ -34,7 +33,7 @@
         else {
             var elem = document.createElement('p');
             // unchanged
-            elem.innerText = JSON.stringify(o);
+            elem.appendChild(document.createTextNode(JSON.stringify(o)));
             container.appendChild(elem);
         }
         return container;
@@ -44,7 +43,7 @@
     
         var container = document.createElement('div');
         var descspan = document.createElement('span');
-        descspan.innerText = desc + (n instanceof Array ? ' (array' + (n._key ? ', key=' + n._key : '') + ')' : '');
+        descspan.appendChild(document.createTextNode(desc + (n instanceof Array ? ' (array' + (n._key ? ', key=' + n._key : '') + ')' : '')));
         descspan.setAttribute('class', 'jsondiffpatch-property-name');
         container.appendChild(descspan);
         if (d instanceof Array) {
@@ -94,7 +93,7 @@
                                             lelem.setAttribute('class', 'jsondiffpatch-header');
                                         }
                                 
-                                lelem.innerText = lines[i].substring(lines[i][0] !== '@' ? 1 : 0);
+                                lelem.appendChild(document.createTextNode(lines[i].substring(lines[i][0] !== '@' ? 1 : 0)));
                                 elem.appendChild(lelem);
                             }
                         }
