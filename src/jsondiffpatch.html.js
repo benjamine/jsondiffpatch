@@ -122,7 +122,7 @@
                         if (o instanceof Array && o._key) {
                             k = o[prop][o._key];
                         }
-                        if (!d.hasOwnProperty(k)) {
+                        if (!d || !d.hasOwnProperty(k)) {
                             var li = document.createElement('li');
                             li.setAttribute('class', 'jsondiffpatch-unchanged');
                             li.appendChild(jdp.html.objectToHtml(k, o[prop]));
