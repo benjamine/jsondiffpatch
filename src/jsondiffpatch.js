@@ -1,4 +1,9 @@
-
+/*
+*   Json Diff Patch
+*   ---------------
+*   https://github.com/benjamine/JsonDiffPatch
+*   by Benjamin Eidelman - beneidel@gmail.com
+*/
 (function(){
 
     var jdp = {};
@@ -7,6 +12,7 @@
         textDiffMinLength: 60,
     };
     
+
     jdp.dateReviver = function(key, value){
         var a;
         if (typeof value === 'string') {
@@ -51,7 +57,19 @@
             return true;
         }
     }
-    
+
+    var isArray = (typeof Array.isArray == 'function') ?
+        // use native function
+        Array.isArray :
+        // use instanceof operator
+        function(a) {
+            return typeof a == 'object' && a instanceof Array;
+        };
+
+    var isDate = function(d){
+        return d instanceof Date || Object.prototype.toString.call(d) === '[object Date]';
+    };
+
     var arrayDiff = function(o, n){
         var adiff, i, idiff, nl = n.length, ol = o.length, addItemDiff;
         
@@ -135,12 +153,10 @@
         
         addPropDiff = function(name){
         
-            if (typeof(n[prop]) == 'object' && n[prop] instanceof Array &&
-            (n[prop + '_key'] || n['_' + prop + '_key'])) {
+            if (isArray(n[prop]) && (n[prop + '_key'] || n['_' + prop + '_key'])) {
                 n[prop]._key = n[prop + '_key'] || n['_' + prop + '_key'];
             }
-            if (typeof(o[prop]) == 'object' && o[prop] instanceof Array &&
-            (o[prop + '_key'] || o['_' + prop + '_key'])) {
+            if (isArray(o[prop]) && (o[prop + '_key'] || o['_' + prop + '_key'])) {
                 o[prop]._key = o[prop + '_key'] || o['_' + prop + '_key'];
             }
             
@@ -178,6 +194,20 @@
         otype = typeof o;
         nnull = n === null;
         onull = o === null;
+
+        // handle Date objects
+        if (otype == 'object' && isDate(o)){
+            otype = 'date';
+        }
+        if (ntype == 'object' && isDate(n)){
+            ntype = 'date';
+            if (otype == 'date'){
+                // check if equal dates
+                if (o.getTime() === n.getTime()){
+                    return;
+                }
+            }
+        }
         
         if (nnull || onull || ntype == 'undefined' || ntype != otype ||
         ntype == 'number' ||
@@ -186,7 +216,9 @@
         otype == 'boolean' ||
         ntype == 'string' ||
         otype == 'string' ||
-        ((ntype === 'object') && (n instanceof Array != o instanceof Array))) {
+        ntype == 'date' ||
+        otype == 'date' ||
+        ((ntype === 'object') && (isArray(n) != isArray(o)))) {
             // value changed
             d = [];
             if (typeof o != 'undefined') {
@@ -196,25 +228,29 @@
                         diff_match_patch_autoconfig();
                     }
                     if (longText && jdp.config.textDiff) {
+                        // get changes form old value to new value as a text diff
                         d.push(jdp.config.textDiff(o, n), 0, 2);
                     }
                     else {
+                        // old value changed to new value
                         d.push(o);
                         d.push(n);
                     }
                 }
                 else {
+                    // old value has been removed
                     d.push(o);
                     d.push(0, 0);
                 }
             }
             else {
+                // new value is added
                 d.push(n);
             }
             return d;
         }
         else {
-            if (n instanceof Array) {
+            if (isArray(n)) {
                 // diff 2 arrays	
                 if (n._key || o._key) {
                     return arrayDiffByKey(o, n, n._key || o._key);
@@ -231,7 +267,7 @@
     };
     
     var objectGet = function(obj, key){
-        if (obj instanceof Array && obj._key) {
+        if (isArray(obj) && obj._key) {
             var getKey = obj._key;
             if (typeof obj._key != 'function') {
                 getKey = function(item){
@@ -251,7 +287,7 @@
     jdp.getByKey = objectGet;
     
     var objectSet = function(obj, key, value){
-        if (obj instanceof Array && obj._key) {
+        if (isArray(obj) && obj._key) {
             var getKey = obj._key;
             if (typeof obj._key != 'function') {
                 getKey = function(item){
@@ -276,7 +312,7 @@
             return;
         }
         if (typeof value == 'undefined') {
-            if (obj instanceof Array) {
+            if (isArray(obj)) {
                 obj.splice(key, 1);
             } else { 
                 delete obj[key];
@@ -286,8 +322,55 @@
             obj[key] = value;
         }
     }
+
+    var reverse = jdp.reverse = function(d){
+
+        var prop, rd;
+
+        if (typeof d == 'undefined')
+        {
+            return;
+        } else if (d === null){
+            return null;
+        } else if (typeof d == 'object' && !isDate(d)) {
+            if (isArray(d)){
+                if (d.length < 3) {
+                    if (d.length == 1) {
+                        // add => delete
+                        return [d[0], 0, 0];
+                    } else {
+                        // modify => reverse modify
+                        return [d[1], d[0]];
+                    }
+                }
+                else {
+                    if (d[2] == 0) {
+                        // undefined, delete value => add value
+                        return [d[0]];
+                    }
+                    else
+                        if (d[2] == 2) {
+                            // text diff
+                            throw new Error("text diffs reverse is not implemented yet");
+                        }
+                        else {
+                            throw new Error("invalid diff type");
+                        }
+                }
+            }else {
+                rd = {};
+                for (prop in d) {
+                    if (d.hasOwnProperty(prop)) {
+                        rd[prop] = reverse(d[prop]);
+                    }
+                }
+                return rd;
+            }
+        }
+        return d;
+    }
     
-    var patch = jdp.patch = function(o, pname, d, path){
+    var patch = jdp.patch = function(o, pname, d, path) {
     
         var p, nvalue, subpath = '', target;
         
@@ -307,12 +390,12 @@
         }
         subpath += '/';
         if (pname !== null) {
-            subpath += path + pname;
+            subpath += pname;
         }
         
         
         if (typeof d == 'object') {
-            if (d instanceof Array) {
+            if (isArray(d)) {
                 // changed value
                 if (d.length < 3) {
                     nvalue = d[d.length - 1];
@@ -360,7 +443,7 @@
                 if (d._t == 'a') {
                     // array diff
                     target = pname === null ? o : objectGet(o, pname);
-                    if (typeof target != 'object' || !(target instanceof Array)) {
+                    if (typeof target != 'object' || !isArray(target)) {
                         throw new Error('cannot apply patch at "' + subpath + '": array expected');
                     }
                     else {
@@ -374,7 +457,7 @@
                 else {
                     // object diff
                     target = pname === null ? o : objectGet(o, pname);
-                    if (typeof target != 'object' || (target instanceof Array)) {
+                    if (typeof target != 'object' || isArray(target)) {
                         throw new Error('cannot apply patch at "' + subpath + '": object expected');
                     }
                     else {
@@ -389,6 +472,10 @@
         }
         
         return o;
+    }
+
+    var unpatch = jdp.unpatch = function(o, pname, d, path){
+        return patch(o, pname, reverse(d), path);
     }
     
     if (typeof module != 'undefined' && module.exports) {

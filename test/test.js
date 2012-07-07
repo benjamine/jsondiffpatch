@@ -226,3 +226,68 @@ test("change list with key", 2, function(){
     ok(deltaSize < totalSize, 'diff is smaller than whole list (' + Math.round(deltaSize / totalSize * 100) + '%)');
     equal(typeof this.delta2, "undefined", 'original equals new');
 });
+
+test("reverse diff", 1, function(){
+
+    this.makeCopy();
+    
+    // change simple values    
+    this.sa2.name = "Sudamérica";
+    this.sa2.surface += 9832;
+    this.sa2.countries[0].independence = new Date(1716, 6, 19);
+    delete this.sa2.countries[0].unasur;
+
+    this.diffPatch();
+    
+    var deltaR = jsondiffpatch.reverse(this.delta);
+
+    var expectedDeltaR = { 
+        name: ["Sudamérica","South America"],
+        surface: [17849832,17840000],
+        countries:{
+            _t: "a",
+            Argentina: {
+                independence: [new Date(1716, 6, 19), new Date(1816, 6, 9)],
+                unasur: [true]
+            }
+        }
+    };
+
+    deepEqual(deltaR, expectedDeltaR, 'reversed diff is correct');
+});
+
+test("unpatch", 1, function(){
+
+    this.makeCopy();
+    
+    // change simple values    
+    this.sa2.name = "Sudamérica";
+    this.sa2.surface += 9832;
+    this.sa2.countries[0].independence = new Date(1816, 6, 19);
+    delete this.sa2.countries[0].unasur;
+
+    // change subobject
+    this.sa2.demographics.population += 93113;
+    this.sa2.demographics.largestCities.shift();
+    this.sa2.demographics.largestCities.push("Santiago");
+
+    // change list with key
+    this.sa.countries[2].capital = "Rio de Janeiro";
+    this.sa.countries[5].mercosur = true;
+    this.sa.countries.pop();
+    this.sa2.countries.push({
+        name: "French Guiana",
+        capital: "Cayenne",
+        independence: new Date(2012, 11, 23),
+        unasur: true
+    });
+
+    this.diffPatch();
+    
+    this.sa2.countries._key = 'name';
+
+    this.saR = jsondiffpatch.unpatch(this.sa2, this.delta);
+    var deltaR = jsondiffpatch.diff(this.sa, this.saR);
+
+    equal(typeof deltaR, "undefined", 'reversed new equals original');
+});
