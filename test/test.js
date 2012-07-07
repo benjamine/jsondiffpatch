@@ -1,5 +1,16 @@
 
-module('main', {
+if (typeof exports !== "undefined") {
+    if (typeof QUnit == 'undefined' && typeof require == 'function') {
+        // dirty fix for missing QUnit object on CommonJS env
+        var QUnit = require('../node_modules/qunit/support/qunit/qunit.js');
+    }
+    var jsondiffpatch = require('../src/jsondiffpatch');
+
+    // load google diff_match_patch library for text diff/patch 
+    jsondiffpatch.config.diff_match_patch = require('../lib/diff_match_patch_uncompressed.js');
+}
+
+QUnit.module('main', {
 
     setup: function(){
     

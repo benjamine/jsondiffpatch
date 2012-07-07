@@ -1,0 +1,34 @@
+{
+  "name": "jsondiffpatch",
+  "version": "0.0.1",
+  "author": "Benjamin Eidelman <beneidel@gmail.com>",
+  "description": "Diff & Patch for JSON object graphs",
+  "contributors": [
+    {
+      "name": "Benjamin Eidelman",
+      "email": "beneidel@gmail.com"
+    } 
+  ],
+  "scripts": {
+    "test": "qunit -c ./src/jsondiffpatch.js -d jsondiffpatch:./src/jsondiffpatch -t ./test/test.js"
+  },
+  "main": "./src/jsondiffpatch",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/benjamine/JsonDiffPatch.git"
+  },
+  "keywords": [
+    "json",
+    "diff",
+    "patch"
+  ],
+  "devDependencies": {
+    "qunit": "0.5.x"
+  },
+  "bundleDependencies": [
+  ],
+  "license": "MIT",
+  "engine": {
+    "node": ">=0.4"
+  }
+}
