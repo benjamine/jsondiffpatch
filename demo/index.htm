@@ -190,7 +190,7 @@
                 $('#json' + id + 'errormessage').text('');
                 try {
                     var txt = $.trim($('#json' + id).val());
-                    if (txt[0] !== '{' && txt[0] !== '[') {
+                    if (txt.slice(0,1) !== '{' && txt.slice(0,1) !== '[') {
                         return txt;
                     }
                     else {
