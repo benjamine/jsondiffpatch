@@ -14,6 +14,7 @@ JsonDiffPatch is a small library that allows to diff to Javascript object trees,
 - Works in browsers and server (Node.js), use test/qunit.htm to test it in any browser/environment.
 - Automatically uses [google-diff_match_patch](http://code.google.com/p/google-diff-match-patch/) library for long texts when available (finds diff_match_patch global, other text diff libs can be plugged in)
 - Array can be diffed matching items by key, just provide add a "_key" property the array (in any of both versions). item position will be ignored.
+- Support for reverse a diff and unpatching (reverse patching)
 
 eg:
 
@@ -45,6 +46,10 @@ eg:
   
 	// patch original 
 	jsondiffpatch.patch(country, delta);
+
+	// reverse diff
+	var reverseDelta = jsondiffpatch.reverse(delta);
+	// also country2 can be return to original value with: jsondiffpatch.unpatch(country2, delta);
 
 	var delta2 = jsondiffpatch.diff(country,country2);
 	

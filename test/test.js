@@ -113,6 +113,12 @@ unknown to Europeans."            ,
             ctx.delta2 = jsondiffpatch.diff(this.sa, this.sa2);
         };
         
+        this.diffUnpatch = function(){
+            ctx.delta = jsondiffpatch.diff(this.sa, this.sa2);
+            jsondiffpatch.unpatch(this.sa2, ctx.delta);
+            ctx.delta2 = jsondiffpatch.diff(this.sa, this.sa2);
+        };
+          
     }
     
 });
@@ -271,6 +277,10 @@ test("unpatch", 1, function(){
     this.sa2.demographics.largestCities.shift();
     this.sa2.demographics.largestCities.push("Santiago");
 
+    // change long text
+    this.sa2.summary = this.sa2.summary.replace("Amerigo Vespucci", "Américo Vespucio").replace(/[[0-9]+]/g, '') +
+    "\n\nsource: http://en.wikipedia.org/wiki/South_america\n";
+    
     // change list with key
     this.sa.countries[2].capital = "Rio de Janeiro";
     this.sa.countries[5].mercosur = true;
@@ -282,12 +292,9 @@ test("unpatch", 1, function(){
         unasur: true
     });
 
-    this.diffPatch();
-    
     this.sa2.countries._key = 'name';
 
-    this.saR = jsondiffpatch.unpatch(this.sa2, this.delta);
-    var deltaR = jsondiffpatch.diff(this.sa, this.saR);
+    this.diffUnpatch();    
 
-    equal(typeof deltaR, "undefined", 'reversed new equals original');
+    equal(typeof this.delta2, "undefined", 'reversed new equals original');
 });

@@ -323,6 +323,68 @@
         }
     }
 
+    var textDiffReverse = function(td){
+
+        if (!jdp.config.textDiffReverse){
+            jdp.config.textDiffReverse = function(d){
+
+                var i, l, lines, line, lineTmp, header = null, headerRegex = /^@@ +\-(\d+),(\d+) +\+(\d+),(\d+) +@@$/, lineHeader, lineAdd, lineRemove;
+
+                var diffSwap = function() {
+                    // swap
+                    if (lineAdd !== null) {
+                        lines[lineAdd] = '-' + lines[lineAdd].slice(1);
+                    }
+                    if (lineRemove !== null) {
+                        lines[lineRemove] = '+' + lines[lineRemove].slice(1);
+                        if (lineAdd !== null) {
+                            lineTmp = lines[lineAdd];
+                            lines[lineAdd] = lines[lineRemove];
+                            lines[lineRemove] = lineTmp;
+                        }
+                    }
+
+                    // fix header
+                    lines[lineHeader] = '@@ -' + header[3] + ',' + header[4] + ' +' + header[1] + ',' + header[2] + ' @@';
+
+                    header = null;
+                    lineHeader = null;
+                    lineAdd = null;
+                    lineRemove = null;
+                }
+
+                lines = d.split('\n');
+                for (i = 0, l = lines.length; i<l; i++) {
+                    line = lines[i];
+                    var lineStart = line.slice(0,1);
+                    if (lineStart==='@'){
+                        if (header !== null) {
+                            //diffSwap();
+                        }
+                        header = headerRegex.exec(line);
+                        lineHeader = i;
+                        lineAdd = null;
+                        lineRemove = null;
+
+                        // fix header
+                        lines[lineHeader] = '@@ -' + header[3] + ',' + header[4] + ' +' + header[1] + ',' + header[2] + ' @@';
+                    } else if (lineStart == '+'){
+                        lineAdd = i;
+                        lines[i] = '-' + lines[i].slice(1);
+                    } else if (lineStart == '-'){
+                        lineRemove = i;
+                        lines[i] = '+' + lines[i].slice(1);
+                    }
+                }
+                if (header !== null) {
+                    //diffSwap();
+                }
+                return lines.join('\n');
+            };
+        }
+        return jdp.config.textDiffReverse(td);
+    }
+
     var reverse = jdp.reverse = function(d){
 
         var prop, rd;
@@ -350,8 +412,7 @@
                     }
                     else
                         if (d[2] == 2) {
-                            // text diff
-                            throw new Error("text diffs reverse is not implemented yet");
+                            return [textDiffReverse(d[0]), 0, 2];
                         }
                         else {
                             throw new Error("invalid diff type");
@@ -366,6 +427,8 @@
                 }
                 return rd;
             }
+        } else if (typeof d === 'string' && d.slice(0,2) === '@@'){
+            return textDiffReverse(d);
         }
         return d;
     }
@@ -475,6 +538,11 @@
     }
 
     var unpatch = jdp.unpatch = function(o, pname, d, path){
+        
+        if (typeof pname != 'string') {
+            return patch(o, reverse(pname), d);
+        }
+
         return patch(o, pname, reverse(d), path);
     }
     
