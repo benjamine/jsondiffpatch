@@ -7,6 +7,9 @@
 (function(){
 
     var jdp = {};
+    if (typeof jsondiffpatch != 'undefined'){
+        jdp = jsondiffpatch;
+    }
     
     jdp.config = {
         textDiffMinLength: 60,
