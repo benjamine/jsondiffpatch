@@ -3,7 +3,7 @@ JsonDiffPatch
 
 *Diff & Patch for JavaScript objects and arrays (ie. any JSON serializable structure)*
 
-JsonDiffPatch is a small library that allows to diff to Javascript object trees, create a patch and apply it to update the original version.
+JsonDiffPatch is a small library that allows to diff object graphs, create a patch (in pure JSON), and apply it to update an original version.
 
 -----
 **[DEMO](http://benjamine.github.com/JsonDiffPatch/demo/index.htm)**
@@ -11,10 +11,13 @@ JsonDiffPatch is a small library that allows to diff to Javascript object trees,
 -----
 
 - Could be used for logging, audit, remote (client-server) synchronization of changes, etc.
-- Works in browsers and server (Node.js), use test/qunit.htm to test it in any browser/environment. JsonDiffPatch will automatically detect environment support and load as CommonJS module (eg: node.js), anonymous AMD module (eg: using RequireJS on the browser), or as browser global.
-- Automatically uses [google-diff_match_patch](http://code.google.com/p/google-diff-match-patch/) library for long texts when available (finds diff_match_patch global, other text diff libs can be plugged in)
-- Array can be diffed matching items by key, just provide add a "_key" property the array (in any of both versions). item position will be ignored.
-- Support for reverse a diff and unpatching (reverse patching)
+- Minified version is < 6KB
+- Works in browsers and server (Node.j or any CommonJS env), open [test page](http://benjamine.github.com/JsonDiffPatch/test/qunit.htm) to check other browsers.
+- Automatically detect environment support and load as CommonJS module (eg: node.js), anonymous AMD module (eg: using RequireJS on the browser, no globals), or as browser global.
+- For long text diffs uses [google-diff_match_patch](http://code.google.com/p/google-diff-match-patch/) library if loaded (other text diff libs can be plugged in)
+- Arrays can be diffed matching items by key, just provide a "_key" property (in either original or new array object). In this case item position will be ignored.
+- Reverse a diff and unpatch (ie. revert object to its original state based on diff)
+- Optional lib included for visualizing diffs as html
 
 eg:
 
@@ -83,21 +86,31 @@ Targeted platforms
 [QUnit](http://docs.jquery.com/Qunit) is used for unit testing. 
 Just open the [test page](http://benjamine.github.com/JsonDiffPatch/test/qunit.htm) on your preferred browser. 
 
-To run tests on Node.js
+To run tests on Node.js on jsondiffpatch root folder:
 
+	npm i
 	npm test
+
+Minification
+----------------
+
+A minified version is provided as jsondiffpatch.min.js
+To regenerate that file run (npm i is required as uglifyjs is used):
+
+	npm i
+	npm run-script minify
 
 
 Including JsonDiffPatch in your application
 ---------------
 
 Download the latest release from the web site (http://github.com/benjamine/JsonDiffPatch) and copy 
-`src/jsondiffpatch.js` to a suitable location. To support text diffs include Google's diff_match_patch.
+`jsondiffpatch.min.js` to a suitable location. To support text diffs include Google's diff_match_patch.
 
 Then include it in your HTML
 like so:
 
-    <script type="text/javascript" src="/path/to/jsondiffpatch.js"></script>
+    <script type="text/javascript" src="/path/to/jsondiffpatch.min.js"></script>
     <script type="text/javascript" src="/path/to/diff_match_patch_uncompressed.js"></script>
 	
 Note: you can use JsonDiffPatch on browserless JavaScript environments too (as [Node.js](http://nodejs.org/), or [Mozilla Rhino](http://www.mozilla.org/rhino/)). 

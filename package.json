@@ -10,7 +10,8 @@
     } 
   ],
   "scripts": {
-    "test": "qunit -c ./src/jsondiffpatch.js -d jsondiffpatch:./src/jsondiffpatch -t ./test/test.js"
+    "test": "qunit -c ./src/jsondiffpatch.js -d jsondiffpatch:./src/jsondiffpatch -t ./test/test.js",
+    "minify": "uglifyjs ./src/jsondiffpatch.js > ./jsondiffpatch.min.js"
   },
   "main": "./src/jsondiffpatch",
   "repository": {
@@ -23,7 +24,8 @@
     "patch"
   ],
   "devDependencies": {
-    "qunit": "0.5.x"
+    "qunit": "0.5.x",
+    "uglify-js": "1.3.x"
   },
   "bundleDependencies": [
   ],
