@@ -11,7 +11,7 @@ JsonDiffPatch is a small library that allows to diff to Javascript object trees,
 -----
 
 - Could be used for logging, audit, remote (client-server) synchronization of changes, etc.
-- Works in browsers and server (Node.js), use test/qunit.htm to test it in any browser/environment.
+- Works in browsers and server (Node.js), use test/qunit.htm to test it in any browser/environment. JsonDiffPatch will automatically detect environment support and load as CommonJS module (eg: node.js), anonymous AMD module (eg: using RequireJS on the browser), or as browser global.
 - Automatically uses [google-diff_match_patch](http://code.google.com/p/google-diff-match-patch/) library for long texts when available (finds diff_match_patch global, other text diff libs can be plugged in)
 - Array can be diffed matching items by key, just provide add a "_key" property the array (in any of both versions). item position will be ignored.
 - Support for reverse a diff and unpatching (reverse patching)
@@ -56,6 +56,21 @@ eg:
 	// delta2 is undefined, no difference
 
 For more complex cases (nested objects, arrays, long text diffs) check unit tests in /test/test.js
+
+To use as AMD module (eg: using RequireJS on the browser):
+
+	require('jsondiffpatch', function(jsondiffpatch){
+
+		// code using jsondiffpatch
+
+	});
+
+	// a module that depends on jsondiffpatch
+	define('mytexteditor.visualcomparer', ['jsondiffpatch'], function(jsondiffpatch){
+
+		// module implementation using jsondiffpatch
+
+	});
 
 
 

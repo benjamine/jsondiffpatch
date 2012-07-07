@@ -546,12 +546,15 @@
         return patch(o, pname, reverse(d), path);
     }
     
-    if (typeof module != 'undefined' && module.exports) {
+    if (typeof require === 'function' && typeof exports === 'object' && typeof module === 'object') {
+        // CommonJS, eg: node.js
         module.exports = jdp;
+    } else if (typeof define === 'function' && define['amd']) {
+        // AMD
+        define(jdp);
+    } else {
+        // browser global
+        window.jsondiffpatch = jdp;
     }
-    else 
-        if (typeof window != 'undefined') {
-            window.jsondiffpatch = jdp;
-        }
-    
+
 })();
