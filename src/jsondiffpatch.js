@@ -12,7 +12,7 @@
     }
     
     jdp.config = {
-        textDiffMinLength: 60,
+        textDiffMinLength: 60
     };
     
 
