@@ -193,6 +193,9 @@
         if (o === n) {
             return;
         }
+        if ((o !== o) && (n !== n)) {
+            return; // o and n are both NaN
+        }
         ntype = typeof n;
         otype = typeof o;
         nnull = n === null;
