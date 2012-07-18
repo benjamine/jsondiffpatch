@@ -61,7 +61,7 @@
         }
     }
 
-    var isArray = (typeof Array.isArray == 'function') ?
+    var isArray = jdp.isArray = (typeof Array.isArray == 'function') ?
         // use native function
         Array.isArray :
         // use instanceof operator
@@ -69,7 +69,7 @@
             return typeof a == 'object' && a instanceof Array;
         };
 
-    var isDate = function(d){
+    var isDate = jdp.isDate = function(d){
         return d instanceof Date || Object.prototype.toString.call(d) === '[object Date]';
     };
 

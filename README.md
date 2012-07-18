@@ -5,6 +5,10 @@ JsonDiffPatch
 
 JsonDiffPatch is a small library that allows to diff object graphs, create a patch (in pure JSON), and apply it to update an original version.
 
+Now available on npm:
+```
+npm install jsondiffpatch
+```
 -----
 **[DEMO](http://benjamine.github.com/JsonDiffPatch/demo/index.htm)**
 -----
@@ -88,8 +92,10 @@ Just open the [test page](http://benjamine.github.com/JsonDiffPatch/test/qunit.h
 
 To run tests on Node.js on jsondiffpatch root folder:
 
+```
 	npm i
 	npm test
+```
 
 Minification
 ----------------
@@ -97,14 +103,21 @@ Minification
 A minified version is provided as jsondiffpatch.min.js
 To regenerate that file run (npm i is required as uglifyjs is used):
 
+```
 	npm i
 	npm run-script minify
-
+```
 
 Including JsonDiffPatch in your application
 ---------------
 
-Download the latest release from the web site (http://github.com/benjamine/JsonDiffPatch) and copy 
+Install using npm:
+
+```
+npm install jsondiffpatch
+```
+
+or, Download the latest release from the web site (http://github.com/benjamine/JsonDiffPatch) and copy 
 `jsondiffpatch.min.js` to a suitable location. To support text diffs include Google's diff_match_patch.
 
 Then include it in your HTML
