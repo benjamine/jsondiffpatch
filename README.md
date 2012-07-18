@@ -161,10 +161,17 @@ To visualize diffs you can include JsonDiffPatch.Html script + css on your page:
     <link rel="stylesheet" href="../src/jsondiffpatch.html.css" type="text/css" />
 Now you can use the jsondiffpatch.html.diffToHtml() function to visualize diffs as html:
 
+```
     var json1 = JSON.parse($('#json1').val());
     var json2 = JSON.parse($('#json2').val());
     var d = jsondiffpatch.diff(json1, json2);
     $('#myvisualdiffcontainer').empty().append(jsondiffpatch.html.diffToHtml(json1, json2, d));
-
+```
 
 To see this in action check the [DEMO](http://benjamine.github.com/JsonDiffPatch/demo/index.htm) page.
+
+Also you can generate diffs with jsondiffpatch on your console:
+
+```
+jsondiffpatch .\test\testdata.json .\test\testdata2.json
+```
