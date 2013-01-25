@@ -1,3 +1,6 @@
+var RemoveFromDiff = function() { };
+
+
 /*
 *   Json Diff Patch
 *   ---------------
@@ -319,8 +322,8 @@
         }
         if (typeof value == 'undefined') {
             if (isArray(obj)) {
-                obj.splice(key, 1);
-            } else { 
+                obj[key] = RemoveFromDiff;
+            } else {
                 delete obj[key];
             }
         }
@@ -517,8 +520,19 @@
                     }
                     else {
                         for (p in d) {
-                            if (p !== '_t' && d.hasOwnProperty(p)) {
-                                patch(target, p, d[p], subpath);
+                             if (p !== '_t' && d.hasOwnProperty(p)) {
+                                 patch(target, p, d[p], subpath);
+                             }
+                        }
+                        // clean out the empties
+                        var found = true;
+                        while (found) {
+                            found = false;
+                            for (p in d) {
+                                if (target[p] == RemoveFromDiff) {
+                                    target.splice(p, 1);
+                                    found = true;
+                                }
                             }
                         }
                     }

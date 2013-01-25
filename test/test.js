@@ -310,77 +310,11 @@ test("unpatch", 1, function(){
     equal(typeof this.delta2, "undefined", 'reversed new equals original');
 });
 
-test("nested error", 2, function(){
+test("nested error", 1, function(){
     var original, diff, expected_output, actual_output
-    original = [
-                    {
-                        "contents": []
-                    },
-                    {
-                        "contents": [
-                            {
-                                "id": "abc"
-                            },
-                            {
-                                "id": "def"
-                            }
-                        ]
-                    }
-                ];
-
-    diff = {
-              "0": {
-                "contents": {
-                  "0": [
-                    {
-                      "id": "abc"
-                    }
-                  ],
-                  "1": [
-                    {
-                      "id": "def"
-                    }
-                  ],
-                  "_t": "a"
-                }
-              },
-              "1": {
-                "contents": {
-                  "0": [
-                    {
-                      "id": "abc"
-                    },
-                    0,
-                    0
-                  ],
-                  "1": [
-                    {
-                      "id": "def"
-                    },
-                    0,
-                    0
-                  ],
-                  "_t": "a"
-                }
-              },
-              "_t": "a"
-            };
-
-    expected_output = [
-                        {
-                            "contents": [
-                                {
-                                    "id": "abc"
-                                },
-                                {
-                                    "id": "def"
-                                }
-                            ]
-                        },
-                        {
-                            "contents": []
-                        }
-                    ];
+    original = [{"contents":[]},{"contents":[{"id":"abc"},{"id":"def"}]}];
+    diff = {"0":{"contents":{"0":[{"id":"abc"}],"1":[{"id":"def"}],"_t":"a"}},"1":{"contents":{"0":[{"id":"abc"},0,0],"1":[{"id":"def"},0,0],"_t":"a"}},"_t":"a"}
+    expected_output = [{"contents":[{"id":"abc"},{"id":"def"}]},{"contents":[]}];
 
     actual_output = jsondiffpatch.patch(original, diff);
     deepEqual(actual_output, expected_output, 'nested error is fixed');
