@@ -319,3 +319,14 @@ test("nested error", 1, function(){
     actual_output = jsondiffpatch.patch(original, diff);
     deepEqual(actual_output, expected_output, 'nested error is fixed');
 });
+
+
+test("nested error with unscanned indices", 1, function(){
+    var original, diff, expected_output, actual_output
+    original = [{"contents":[]},{"contents":[{"id":"a"},{"id":"b"},{"id":"c"},{"id":"d"}]}];
+    diff = {"0":{"contents":{"0":[{"id":"abc"}],"1":[{"id":"def"}],"_t":"a"}},"1":{"contents":{"0":[{"id":"a"},0,0],"2":[{"id":"c"},0,0],"3":[{"id":"d"},0,0],"_t":"a"}},"_t":"a"}
+    expected_output = [{"contents":[{"id":"abc"},{"id":"def"}]},{"contents":[{"id":"b"}]}];
+
+    actual_output = jsondiffpatch.patch(original, diff);
+    deepEqual(actual_output, expected_output, 'nested error is fixed');
+});

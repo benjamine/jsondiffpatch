@@ -1,6 +1,3 @@
-var RemoveFromDiff = function() { };
-
-
 /*
 *   Json Diff Patch
 *   ---------------
@@ -8,6 +5,8 @@ var RemoveFromDiff = function() { };
 *   by Benjamin Eidelman - beneidel@gmail.com
 */
 (function(){
+
+    var RemoveFromDiff = function() { };
 
     var jdp = {};
     if (typeof jsondiffpatch != 'undefined'){
@@ -528,8 +527,8 @@ var RemoveFromDiff = function() { };
                         var found = true;
                         while (found) {
                             found = false;
-                            for (p in d) {
-                                if (target[p] == RemoveFromDiff) {
+                            for (p in target) {
+                                if (target[p] === RemoveFromDiff) {
                                     target.splice(p, 1);
                                     found = true;
                                 }
