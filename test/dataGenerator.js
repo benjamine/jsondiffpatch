@@ -2,7 +2,7 @@
 // 'node generator.js --input input.json --output testData.js --outputMutations 1000'
 
 // Step 1. Parse arguments to override defaults
-var args = {"input": "input.json", "output": "testData.js", "outputMutations": 1000};
+var args = {"input": "dataGeneratorInput.json", "output": "data.js", "outputMutations": 1000};
 var argKey = null;
 
 process.argv.forEach(function (val, index, array) {
