@@ -13,3 +13,5 @@ logs
 results
 
 npm-debug.log
+/.DS_Store
+/test/.DS_Store
