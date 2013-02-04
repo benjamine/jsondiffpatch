@@ -1,3 +1,4 @@
+"use strict";
 
 if (typeof exports !== "undefined") {
     if (typeof QUnit == 'undefined' && typeof require == 'function') {
@@ -8,12 +9,23 @@ if (typeof exports !== "undefined") {
 
     // load google diff_match_patch library for text diff/patch 
     jsondiffpatch.config.diff_match_patch = require('../lib/diff_match_patch_uncompressed.js');
+
 }
 
 QUnit.module('main', {
 
     setup: function(){
     
+        jsondiffpatch.config.arrayItemComparer = function(item1, item2, array1, array2) {
+            if (item1 === item2) {
+                return true;
+            }
+            if (item1.name && item1.name === item2.name) {
+                return true;
+            }
+            return false;
+        };
+
         // prepare some sample data
         var sa = this.sa = {
             name: 'South America',
