@@ -1,0 +1,81 @@
+{
+    "id": 1,
+    "jsonrpc": "2.0",
+    "total": 2,
+    "result": [
+        {
+            "id": 1,
+            "guid": "dca08932-2622-453a-83f2-8f05d40c40c4",
+            "picture": "http://placehold.it/32x32",
+            "age": 39,
+            "name": "Jasmine Miller",
+            "gender": "female",
+            "company": "Celgra",
+            "phone": "889-599-3026",
+            "email": "jasmine@celgra.com",
+            "address": "28568, Brownsville, Stanton Streets",
+            "about": "Duis eu ut et eum luptatum, esse in nonummy aliquip zzril, vulputate dolore molestie nisl. Lobortis, dolor vero in suscipit minim, consequat consequat eros consequat te, iusto zzril qui. Sit consequat, consequat aliquip iriure dolore augue, commodo ut nulla nibh in, nibh in. Praesent consectetuer consequat, aliquam dolore qui in in, dolor volutpat facilisis consequat ea, dolore. Et accumsan dolore vel, ut amet praesent facilisi illum, dolor nulla commodo iriure dignissim, eros feugait ut adipiscing blandit, exerci diam at eros nulla, ut enim tincidunt enim. Veniam, suscipit magna veniam magna qui, nostrud feugiat.",
+            "registered": "1996-03-25T04:53:50 +05:00",
+            "tags": [
+                "ullamcorper",
+                "ea",
+                "vero",
+                "aliquam",
+                "amet",
+                "consequat",
+                "diam"
+            ],
+            "friends": [
+                {
+                    "id": 1,
+                    "name": "Mia Miln"
+                },
+                {
+                    "id": 2,
+                    "name": "Alexa Wainwright"
+                },
+                {
+                    "id": 3,
+                    "name": "Brooklyn Cook"
+                }
+            ]
+        },
+        {
+            "id": 2,
+            "guid": "329f2acb-7c1f-4642-88c0-94013d703d16",
+            "picture": "http://placehold.it/32x32",
+            "age": 40,
+            "name": "Sofia Adamson",
+            "gender": "female",
+            "company": "Gigaura",
+            "phone": "825-560-3849",
+            "email": "sofia@gigaura.com",
+            "address": "10482, Frisco, Wooster Street",
+            "about": "Feugiat blandit ea eros vel quis, volutpat aliquip ipsum in illum, veniam sed eu autem. Sit, ullamcorper adipiscing hendrerit lobortis consectetuer, lorem in velit vero facilisi, amet ullamcorper sed. Nonummy iriure, dolore ipsum wisi dolore qui, odio esse lorem tation lorem, in eum. Facilisis erat ut, tation dolore aliquip ut blandit, erat te odio odio euismod, lobortis. Exerci at erat ut, qui nisl duis ex quis, ut veniam vero in iusto, nostrud dolor nibh lorem praesent, vero autem ipsum augue exerci, nonummy vulputate ut veniam. Ut, qui et facilisi exerci vero, at facilisi hendrerit vulputate ex, et wisi.",
+            "registered": "1996-05-21T08:27:03 +05:00",
+            "tags": [
+                "suscipit",
+                "et",
+                "dolore",
+                "praesent",
+                "magna",
+                "illum",
+                "nulla"
+            ],
+            "friends": [
+                {
+                    "id": 1,
+                    "name": "Brooklyn Croftoon"
+                },
+                {
+                    "id": 2,
+                    "name": "Mackenzie Hodges"
+                },
+                {
+                    "id": 3,
+                    "name": "Valeria Waller"
+                }
+            ]
+        }
+    ]
+}
