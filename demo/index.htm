@@ -72,6 +72,10 @@
         </div>
         <script type="text/javascript">
             
+            jsondiffpatch.config.objectHash = function(obj) {
+                return obj.id || obj.name || JSON.stringify(obj);
+            };
+
             var data = {
                 name: 'South America',
                 summary: "\
@@ -104,7 +108,6 @@
                     largestCities: ["São Paulo", "Buenos Aires", "Rio de Janeiro", "Lima", "Bogotá"]
                 },
                 languages: ["spanish", "portuguese", "english", "dutch", "french", "quechua", "guaraní", "aimara", "mapudungun"],
-                countries_key: 'name',
                 countries: [{
                     name: "Argentina",
                     capital: "Buenos Aires",

@@ -7,7 +7,7 @@ if (typeof exports !== "undefined") {
     }
     var jsondiffpatch = require('../src/jsondiffpatch');
 
-    // load google diff_match_patch library for text diff/patch 
+    // load google diff_match_patch library for text diff/patch
     jsondiffpatch.config.diff_match_patch = require('../lib/diff_match_patch_uncompressed.js');
 
 }
@@ -221,7 +221,7 @@ test("change long string", 3, function(){
 
     this.makeCopy();
     
-    this.sa2.summary = this.sa2.summary.replace("Amerigo Vespucci", "Américo Vespucio").replace(/[[0-9]+]/g, '') +
+    this.sa2.summary = this.sa2.summary.replace("Amerigo Vespucci", "Américo Vespucio").replace(/\[[0-9]+\]/g, '') +
     "\n\nsource: http://en.wikipedia.org/wiki/South_america\n";
     
     this.diffPatch();
@@ -234,20 +234,22 @@ test("change long string", 3, function(){
     equal(typeof this.delta2, "undefined", 'original equals new');
 });
 
-test("change list with key", 2, function(){
+test("change list, moving items", 2, function(){
 
     this.makeCopy();
     
     this.sa.countries[2].capital = "Rio de Janeiro";
     this.sa.countries[5].mercosur = true;
     this.sa.countries.pop();
+    var toMove = this.sa.countries.pop();
     this.sa2.countries.push({
         name: "French Guiana",
         capital: "Cayenne",
         independence: new Date(2012, 11, 23),
         unasur: true
     });
-    
+    this.sa2.countries.splice(3, 0, toMove);
+
     this.diffPatch();
     
     var deltaSize = JSON.stringify(this.delta).length;
@@ -275,7 +277,7 @@ test("reverse diff", 1, function(){
         surface: [17849832,17840000],
         countries:{
             _t: "a",
-            Argentina: {
+            "0": {
                 independence: [new Date(1716, 6, 19), new Date(1816, 6, 9)],
                 unasur: [true]
             }
@@ -301,7 +303,7 @@ test("unpatch", 1, function(){
     this.sa2.demographics.largestCities.push("Santiago");
 
     // change long text
-    this.sa2.summary = this.sa2.summary.replace("Amerigo Vespucci", "Américo Vespucio").replace(/[[0-9]+]/g, '') +
+    this.sa2.summary = this.sa2.summary.replace("Amerigo Vespucci", "Américo Vespucio").replace(/\[[0-9]+\]/g, '') +
     "\n\nsource: http://en.wikipedia.org/wiki/South_america\n";
     
     // change list with key

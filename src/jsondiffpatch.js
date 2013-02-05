@@ -18,13 +18,22 @@
 
     var sequenceDiffer = {
 
-        diff: function(array1, array2, comparer, objectInnerDiff) {
+        diff: function(array1, array2, objectHash, objectInnerDiff) {
             var commonHead = 0, commonTail = 0, index, index1;
             var len1 = array1.length;
             var len2 = array2.length;
-            var diff, areTheSame = comparer || function(a, b) {
-                return a === b;
-            };
+            var diff;
+            var areTheSame = typeof objectHash == 'function' ?
+                function(a, b) {
+                    if (a === b)
+                        return true;
+                    if (typeof a != 'object' || typeof b != 'object')
+                        return false;
+                    return objectHash(a) === objectHash(b);
+                } :
+                function(a, b) {
+                    return a === b;
+                };
 
             var tryObjectInnerDiff = function(index1, index2) {
                 if (!objectInnerDiff) {
@@ -45,13 +54,13 @@
 
             // separate common head
             while (commonHead < len1 && commonHead < len2 &&
-                areTheSame(array1[commonHead], array2[commonHead], array1, array2)) {
+                areTheSame(array1[commonHead], array2[commonHead])) {
                 tryObjectInnerDiff(commonHead, commonHead);
                 commonHead++;
             }
             // separate common tail
             while (commonTail + commonHead < len1 && commonTail + commonHead < len2 &&
-                areTheSame(array1[len1 - 1 - commonTail], array2[len2 - 1 - commonTail], array1, array2)) {
+                areTheSame(array1[len1 - 1 - commonTail], array2[len2 - 1 - commonTail])) {
                 tryObjectInnerDiff(len1 - 1 - commonTail, len2 - 1 - commonTail);
                 commonTail++;
             }
@@ -80,9 +89,7 @@
             var lcs = this.lcs(
                 array1.slice(commonHead, len1 - commonTail),
                 array2.slice(commonHead, len2 - commonTail),
-                function(a, b) {
-                    return areTheSame(a, b, array1, array2);
-                });
+                areTheSame);
 
             diff = diff || { _t: 'a' };
 
@@ -102,7 +109,7 @@
                     var isMove = false;
                     if (removedItemsLength > 0) {
                         for (index1 = 0; index1 < removedItemsLength; index1++) {
-                            if (areTheSame(array1[removedItems[index1]], array2[index], array1, array2)) {
+                            if (areTheSame(array1[removedItems[index1]], array2[index])) {
                                 // store position move as: [originalValue, newPosition, 3]
                                 diff['_' + removedItems[index1]].splice(1, 2, index, 3);
                                 tryObjectInnerDiff(removedItems[index1], index);
@@ -123,6 +130,56 @@
             }
 
             return diff;
+        },
+
+        getArrayIndexBefore: function(d, indexAfter) {
+            var index, indexBefore = indexAfter;
+            for (var prop in d) {
+                if (d.hasOwnProperty(prop)) {
+                    if (isArray(d[prop])) {
+                        if (prop.slice(0, 1) === '_') {
+                            index = parseInt(prop.slice(1), 10);
+                        } else {
+                            index = parseInt(prop, 10);
+                        }
+                        if (d[prop].length === 1) {
+                            if (index < indexAfter) {
+                                // this item was inserted before
+                                indexBefore--;
+                            } else {
+                                if (index === indexAfter) {
+                                    // the item is new
+                                    return -1;
+                                }
+                            }
+                        } else if (d[prop].length === 3) {
+                            if (d[prop][2] === 0) {
+                                if (index <= indexAfter) {
+                                    // this item was removed before
+                                    indexBefore++;
+                                }
+                            } else {
+                                if (d[prop][2] === 3) {
+                                    if (index <= indexAfter) {
+                                        // this item was moved from a position before
+                                        indexBefore++;
+                                    }
+                                    if (d[prop][1] > indexAfter) {
+                                        // this item was moved to a position before
+                                        indexBefore--;
+                                    } else {
+                                        if (d[prop][1] === indexAfter) {
+                                            // the items was moved from other position
+                                            return index;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            return indexBefore;
         },
 
         patch: function(array, d, objectInnerPatch, path) {
@@ -205,11 +262,11 @@
             return array;
         },
 
-        lcs: function(array1, array2, comparer) {
+        lcs: function(array1, array2, areTheSame) {
 
             // http://en.wikipedia.org/wiki/Longest_common_subsequence_problem
 
-            var matrix = this.lengthMatrix(array1, array2,  comparer || function(value1, value2) {
+            var matrix = this.lengthMatrix(array1, array2,  areTheSame || function(value1, value2) {
                 return value1 === value2;
             });
             var result = this.backtrack(matrix, array1, array2, array1.length, array2.length);
@@ -219,7 +276,7 @@
             return result;
         },
 
-        lengthMatrix: function(array1, array2, comparer) {
+        lengthMatrix: function(array1, array2, areTheSame) {
             var len1 = array1.length;
             var len2 = array2.length;
             var x, y;
@@ -235,14 +292,14 @@
             // save sequence lengths for each coordinate
             for (x = 1; x < len1 + 1; x++) {
                 for (y = 1; y < len2 + 1; y++) {
-                    if (comparer(array1[x - 1], array2[y - 1])) {
+                    if (areTheSame(array1[x - 1], array2[y - 1])) {
                         matrix[x][y] = matrix[x - 1][y - 1] + 1;
                     } else {
                         matrix[x][y] = Math.max(matrix[x - 1][y], matrix[x][y - 1]);
                     }
                 }
             }
-            matrix.comparer = comparer;
+            matrix.areTheSame = areTheSame;
             return matrix;
         },
 
@@ -255,7 +312,7 @@
                 };
             }
 
-            if (lenghtMatrix.comparer(array1[index1 - 1], array2[index2 - 1])) {
+            if (lenghtMatrix.areTheSame(array1[index1 - 1], array2[index2 - 1])) {
                 var subsequence = this.backtrack(lenghtMatrix, array1, array2, index1 - 1, index2 - 1);
                 subsequence.sequence.push(array1[index1 - 1]);
                 subsequence.indices1.push(index1 - 1);
@@ -329,7 +386,7 @@
     };
 
     var arrayDiff = function(o, n){
-        return sequenceDiffer.diff(o, n, jdp.config.arrayItemComparer, jsondiffpatch.diff);
+        return sequenceDiffer.diff(o, n, jdp.config.objectHash, jsondiffpatch.diff);
     };
 
     var objectDiff = function(o, n){
@@ -599,7 +656,47 @@
             {
                 rd = {};
                 if (d._t === 'a') {
-                    throw new Error('reversing array diffs is not implemented yet');
+                    for (prop in d) {
+                        if (d.hasOwnProperty(prop) && prop !== '_t') {
+                            var index, reverseProp = prop;
+                            if (prop.slice(0, 1) === '_') {
+                                index = parseInt(prop.slice(1), 10);
+                            } else {
+                                index = parseInt(prop, 10);
+                            }
+                            if (isArray(d[prop])) {
+                                if (d[prop].length === 1) {
+                                    // add => delete
+                                    reverseProp = '_' + index;
+                                } else {
+                                    if (d[prop].length === 2) {
+                                        // modify => reverse modify
+                                        reverseProp = sequenceDiffer.getArrayIndexBefore(d, index);
+                                    } else {
+                                        if (d[prop][2] === 0) {
+                                            // delete => add
+                                            reverseProp = index.toString();
+                                        } else {
+                                            if (d[prop][2] === 3) {
+                                                // move => reverse move
+                                                reverseProp = '_' + d[prop][1];
+                                                rd[reverseProp] = [d[prop][0], index, 3];
+                                                continue;
+                                            } else {
+                                                // other modify (eg. textDiff) => reverse modify
+                                                reverseProp = sequenceDiffer.getArrayIndexBefore(d, index);
+                                            }
+                                        }
+                                    }
+                                }
+                            } else {
+                                // inner diff => reverse inner diff
+                                reverseProp = sequenceDiffer.getArrayIndexBefore(d, index);
+                            }
+                            rd[reverseProp] = reverse(d[prop]);
+                        }
+                    }
+                    rd._t = 'a';
                 } else {
                     for (prop in d) {
                         if (d.hasOwnProperty(prop)) {

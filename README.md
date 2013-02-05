@@ -19,8 +19,11 @@ npm install jsondiffpatch
 - Works in browsers and server (Node.j or any CommonJS env), open [test page](http://benjamine.github.com/JsonDiffPatch/test/qunit.htm) to check other browsers.
 - Automatically detect environment support and load as CommonJS module (eg: node.js), anonymous AMD module (eg: using RequireJS on the browser, no globals), or as browser global.
 - For long text diffs uses [google-diff_match_patch](http://code.google.com/p/google-diff-match-patch/) library if loaded (other text diff libs can be plugged in)
-- Arrays can be diffed matching items by key, just provide a "_key" property (in either original or new array object). In this case item position will be ignored.
-- Reverse a diff and unpatch (ie. revert object to its original state based on diff)
+- Arrays diffs are smart!
+  - Using [LCS](http://en.wikipedia.org/wiki/Longest_common_subsequence_problem) (the same type of algorithm used by popular text diff tools on lines of text) insertions and deletions are detected efficiently.
+  - Also detects items moved on the same array (a refinement to LCS). Patching will only move the item in the array, and inner changes in the moved object are diffed/patched too.
+  - Works with objects in the array if you provide a hash function, eg: ``` jsondiffpatch.config.objectHash = function(obj) { obj.id || JSON.stringify(obj); }; ```).
+- Reverse a diff and unpatch (eg. revert object to its original state based on diff)
 - Optional lib included for visualizing diffs as html
 
 eg:
