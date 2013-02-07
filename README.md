@@ -144,11 +144,8 @@ Array diffing:
                     "name": "La Plata"
                 },0,0],
             "_4": [
-                // moved from index 4 to index 2
-                {
-                    "name": "Rosario",
-                    "population": 1137520
-                },2,3]
+                // move from index 4 to index 2
+                '',2,3]
         }
     }
     */

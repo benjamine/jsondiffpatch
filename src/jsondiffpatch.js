@@ -13,7 +13,8 @@
     }
     jdp.version = '0.0.6';
     jdp.config = {
-        textDiffMinLength: 60
+        textDiffMinLength: 60,
+        includeValueOnArrayMove: false
     };
 
     var sequenceDiffer = {
@@ -134,6 +135,10 @@
                             if (areTheSameByIndex(removedItems[index1], index)) {
                                 // store position move as: [originalValue, newPosition, 3]
                                 diff['_' + removedItems[index1]].splice(1, 2, index, 3);
+                                if (!jdp.config.includeValueOnArrayMove) {
+                                    // don't include moved value on diff, to save bytes
+                                    diff['_' + removedItems[index1]][0] = '';
+                                }
                                 tryObjectInnerDiff(removedItems[index1], index);
                                 removedItems.splice(index1, 1);
                                 isMove = true;
