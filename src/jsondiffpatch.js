@@ -11,7 +11,8 @@
     if (typeof jsondiffpatch != 'undefined'){
         jdp = jsondiffpatch;
     }
-    jdp.version = '0.0.6';
+    var jsondiffpatch = jdp;
+    jdp.version = '0.0.7';
     jdp.config = {
         textDiffMinLength: 60,
         detectArrayMove: true,
