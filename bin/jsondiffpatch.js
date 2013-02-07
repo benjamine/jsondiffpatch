@@ -7,6 +7,9 @@ var requireFromDir = function(filename) {
 
 var jsondiffpatch = requireFromDir('../src/jsondiffpatch');
 jsondiffpatch.config.diff_match_patch = requireFromDir('../lib/diff_match_patch_uncompressed.js');
+jsondiffpatch.config.objectHash = function(obj) {
+    return obj._id || obj.id || obj.name || JSON.stringify(obj);
+};
 jsondiffpatch.console = requireFromDir('../src/jsondiffpatch.console');
 
 var util = require('util'), fs = require('fs');
@@ -24,4 +27,5 @@ var dataOrig = JSON.parse(fs.readFileSync(file1));
 var dataNew = JSON.parse(fs.readFileSync(file2));
 
 var delta = jsondiffpatch.diff(dataOrig, dataNew);
+
 console.log(jsondiffpatch.console.diffToText(dataOrig, dataNew, delta, hideUnchanged));

@@ -53,11 +53,6 @@
       "unasur": true
     },
     {
-      "name": "Colombia",
-      "capital": "Bogotá",
-      "independence": "1810-07-20T03:00:00.000Z"
-    },
-    {
       "name": "Ecuador",
       "capital": "Quito",
       "independence": "1809-08-10T03:00:00.000Z",
@@ -74,6 +69,12 @@
       "capital": "Lima",
       "independence": "1821-07-28T03:00:00.000Z",
       "unasur": true
+    },
+    {
+      "name": "Colombia",
+      "capital": "Bogotá",
+      "independence": "1810-07-20T03:00:00.000Z",
+      "population": 42888594
     },
     {
       "name": "Suriname",

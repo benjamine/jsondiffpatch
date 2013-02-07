@@ -420,7 +420,7 @@
     };
 
     var arrayDiff = function(o, n){
-        return sequenceDiffer.diff(o, n, jdp.config.objectHash, jsondiffpatch.diff);
+        return sequenceDiffer.diff(o, n, jdp.config.objectHash, jdp.diff);
     };
 
     var objectDiff = function(o, n){

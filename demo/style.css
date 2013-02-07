@@ -52,19 +52,33 @@ h2 {
 }
 
 .header-options {
+    font-weight: normal;
     margin-left: 30px;
     display: inline-block;
 }
 
+table {
+    padding: 20px;
+}
+
+td, th {
+    vertical-align: top;
+    text-align: left;
+}
+
 #jsondiff {
-    width: 95%;
-    height: 200px;
+    overflow: scroll;
+    max-width: 800px;
+}
+
+.jsondiff {
+    width: 800px;
 }
 
 footer {
     font-size: small;
     text-align: center;
-    margin: 40px;
+    margin: 40px;    
 }
 
 .credits {
@@ -79,3 +93,20 @@ footer {
 .credits a:hover {
     text-decoration: underline;
 }
+
+.results {
+    margin-top: 20px;
+}
+
+.results table {
+    width: 100%;
+}
+
+.results  {
+    width: 100%;
+}
+.results > div {
+    vertical-align: top;
+    display: inline-block;
+}
+

@@ -1,4 +1,5 @@
 var jsondiffpatch = require('./jsondiffpatch')
+var jdp = jsondiffpatch;
 
 var clc = require('cli-color');
 
@@ -9,12 +10,15 @@ green = identity, red = identity, gray = identity, strike = identity;
 
 green = clc.green;
 red = clc.red;
+yellow = clc.yellow;
+orange = clc.orange;
 strike = clc.strike;
 
 var tremoved = function(text){
     return strike(red(text));
 }, 
 tadded = green, tunchanged = gray, tnormal = identity, tdiffheader = gray,
+tmovedto = yellow, tmovedfrom = red,
 indent = function(level){
     return new Array(level || 0).join('  ');
 };
@@ -31,7 +35,7 @@ objectToText = function(desc, o, hideUnchanged, level) {
         ), ': ');
     }
     
-    if (typeof o == 'object' && !jsondiffpatch.isDate(o)) {
+    if (o && typeof o == 'object' && !jsondiffpatch.isDate(o)) {
         // a node (object or array)
         buffer.push(o._t === 'a' ? '[\n' : '{\n');
         for (var prop in o) {
@@ -64,7 +68,7 @@ var diffNodeToText = function(desc, o, n, d, hideUnchanged, level, metadata){
     var positionForLabel = buffer.length;
     var label = [desc];
     if (n instanceof Array ) {
-        label.push(' (array', n._key ? ', key=' + n._key : '', ')');
+        label.push(' (array)');
     }
     if (desc) {
         label.push(': ');
@@ -122,19 +126,14 @@ var diffNodeToText = function(desc, o, n, d, hideUnchanged, level, metadata){
                     } else {
                         if (d[2] === 3) {
                             // item moved
-                            buffer.push(tadded('<= _' + metadata));
-                            buffer.push(tadded(objectToText(null, n, hideUnchanged, level)));
-                            labelFunc = tremoved;
-
-                            var melem = document.createElement('div');
                             if (desc == d[1]) {
-                                buffer.push(tadded('<= _' + metadata));
-                                buffer.push(tadded(objectToText(null, n, hideUnchanged, level)));
-                                labelFunc = tadded;
+                                buffer.push(tmovedto('<= _' + metadata));
+                                buffer.push(tmovedto(objectToText(null, n, hideUnchanged, level)));
+                                labelFunc = tmovedto;
                             } else {
-                                buffer.push(tremoved('=> ' + d[1]));
+                                buffer.push(tmovedfrom('=> ' + d[1]));
+                                labelFunc = tmovedfrom;
                             }
-                            elem.appendChild(melem);
                         }
                     }
                 }
@@ -146,7 +145,7 @@ var diffNodeToText = function(desc, o, n, d, hideUnchanged, level, metadata){
         // a node (object or array)
         
         if (typeof metadata != 'undefined') {
-            buffer.push('<= _' + metadata);
+            buffer.push(tmovedto('<= _' + metadata + ' '));
         }
 
         // only members in diff (skip unchanged members)
@@ -166,12 +165,17 @@ var diffNodeToText = function(desc, o, n, d, hideUnchanged, level, metadata){
                         toInsert[d[prop][1]] = { prop: prop, from: index };
                     }
                     removedIndices[index] = true;
-                    var li = diffNodeToText(prop, jdp.getByKey(o, index), null, hideUnchanged, level, d[prop]);
+                    items.push({ 
+                        removed: true, 
+                        text: diffNodeToText(prop, jdp.getByKey(o, index), null, d[prop], hideUnchanged, level + 1)
+                    });
                 } else {
                     // unchanged
                     var prop = index.toString();
-                    var li = objectToText(index, o[index], hideUnchanged, level);
-                    items.push(li);
+                    items.push({ 
+                        unchanged: true, 
+                        text: objectToText(index, o[index], hideUnchanged, level + 1)
+                    });
                 }
             }
             for (var prop in d) {
@@ -201,19 +205,27 @@ var diffNodeToText = function(desc, o, n, d, hideUnchanged, level, metadata){
                         }
                     }
                     oldIndex = parseInt(oldIndex, 10);
-                    var li = diffNodeToText(index, jdp.getByKey(o, oldIndex), jdp.getByKey(n, index), d[prop], hideUnchanged, level, insertion.from));
-                    items.splice(index + indexOffset, d[prop].length == 1 || d[prop][2] === 3 ? 0 : 1, li);
+                    var item = {
+                        inserted: true,
+                        from: insertion.from,
+                        text: diffNodeToText(index, jdp.getByKey(o, oldIndex), jdp.getByKey(n, index), 
+                            d[prop], hideUnchanged, level + 1, insertion.from)
+                    };
+                    items.splice(index + indexOffset, d[prop].length == 1 || d[prop][2] === 3 ? 0 : 1, item);
                 }
             }
             for (index = 0; index < items.length; index++) {
-                buffer.push(items[index]);
+                var item = items[index];
+                if (!item.unchanged || !hideUnchanged) {
+                    buffer.push(items[index].text);
+                }
             }
 
         } else {
             for (var prop in d) {
                 if (d.hasOwnProperty(prop) && prop !== '_t') {
-                    buffer.push(diffNodeToText(prop, jsondiffpatch.getByKey(o, prop), jsondiffpatch.getByKey(n, prop), d[prop]
-                        , hideUnchanged, level+1));
+                    buffer.push(diffNodeToText(prop, jsondiffpatch.getByKey(o, prop), jsondiffpatch.getByKey(n, prop), 
+                        d[prop], hideUnchanged, level + 1));
                 }
             }
             
@@ -227,14 +239,13 @@ var diffNodeToText = function(desc, o, n, d, hideUnchanged, level, metadata){
                                 k = o[prop][o._key];
                             }
                             if (!d || !d.hasOwnProperty(k)) {
-                                buffer.push(objectToText(k, o[prop], hideUnchanged, level+1));
+                                buffer.push(objectToText(k, o[prop], hideUnchanged, level + 1));
                             }
                         }
                     }
                 }
             }
         }
-
 
         buffer.push(indentation, d._t === 'a' ? ']\n' : '}\n');
     }
