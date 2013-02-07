@@ -83,7 +83,7 @@
         <script type="text/javascript">
             
             jsondiffpatch.config.objectHash = function(obj) {
-                return obj.id || obj.name || JSON.stringify(obj);
+                return obj._id || obj.id || obj.name || JSON.stringify(obj);
             };
 
             var data = {
@@ -192,6 +192,11 @@
                 name: 'Antártida',
                 unasur: false
             });
+
+            // modify and move
+            data.countries[4].population = 42888594;
+            data.countries.splice(8, 0, data.countries.splice(4, 1)[0]);
+
             delete data.surface;
             data.spanishName = 'Sudamérica';
             data.demographics.population += 2342;

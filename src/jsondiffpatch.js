@@ -14,6 +14,7 @@
     jdp.version = '0.0.6';
     jdp.config = {
         textDiffMinLength: 60,
+        detectArrayMove: true,
         includeValueOnArrayMove: false
     };
 
@@ -111,8 +112,12 @@
             // diff is not trivial, find the LCS (Longest Common Subsequence)
             var lcs = this.lcs(
                 array1.slice(commonHead, len1 - commonTail),
-                array2.slice(commonHead, len2 - commonTail),
-                areTheSame);
+                array2.slice(commonHead, len2  - commonTail),
+                {
+                    areTheSameByIndex: function(index1, index2) {
+                        return areTheSameByIndex(index1 + commonHead, index2 + commonHead);
+                    }
+                });
 
             diff = diff || { _t: 'a' };
 
@@ -130,19 +135,21 @@
                 if (indexOnArray2 < 0) {
                     // added, try to match with a removed item and register as position move
                     var isMove = false;
-                    if (removedItemsLength > 0) {
-                        for (index1 = 0; index1 < removedItemsLength; index1++) {
-                            if (areTheSameByIndex(removedItems[index1], index)) {
-                                // store position move as: [originalValue, newPosition, 3]
-                                diff['_' + removedItems[index1]].splice(1, 2, index, 3);
-                                if (!jdp.config.includeValueOnArrayMove) {
-                                    // don't include moved value on diff, to save bytes
-                                    diff['_' + removedItems[index1]][0] = '';
+                    if (jdp.config.detectArrayMove) {                        
+                        if (removedItemsLength > 0) {
+                            for (index1 = 0; index1 < removedItemsLength; index1++) {
+                                if (areTheSameByIndex(removedItems[index1], index)) {
+                                    // store position move as: [originalValue, newPosition, 3]
+                                    diff['_' + removedItems[index1]].splice(1, 2, index, 3);
+                                    if (!jdp.config.includeValueOnArrayMove) {
+                                        // don't include moved value on diff, to save bytes
+                                        diff['_' + removedItems[index1]][0] = '';
+                                    }
+                                    tryObjectInnerDiff(removedItems[index1], index);
+                                    removedItems.splice(index1, 1);
+                                    isMove = true;
+                                    break;
                                 }
-                                tryObjectInnerDiff(removedItems[index1], index);
-                                removedItems.splice(index1, 1);
-                                isMove = true;
-                                break;
                             }
                         }
                     }
@@ -289,13 +296,13 @@
             return array;
         },
 
-        lcs: function(array1, array2, areTheSame) {
+        lcs: function(array1, array2, options) {
 
             // http://en.wikipedia.org/wiki/Longest_common_subsequence_problem
-
-            var matrix = this.lengthMatrix(array1, array2, areTheSame || function(value1, value2) {
-                return value1 === value2;
-            });
+            options.areTheSameByIndex = options.areTheSameByIndex || function(index1, index2) {
+                return array1[index1] === array2[index2];
+            };
+            var matrix = this.lengthMatrix(array1, array2, options);
             var result = this.backtrack(matrix, array1, array2, array1.length, array2.length);
             if (typeof array1 == 'string' && typeof array2 == 'string') {
                 result.sequence = result.sequence.join('');
@@ -303,7 +310,7 @@
             return result;
         },
 
-        lengthMatrix: function(array1, array2, areTheSame) {
+        lengthMatrix: function(array1, array2, options) {
             var len1 = array1.length;
             var len2 = array2.length;
             var x, y;
@@ -316,14 +323,11 @@
                     matrix[x][y] = 0;
                 }
             }
-            matrix.areTheSame = areTheSame;
-            matrix.areTheSameByIndex = function(index1, index2) {
-                return matrix.areTheSame(array1[index1], array2[index2], index1, index2);
-            };
+            matrix.options = options;
             // save sequence lengths for each coordinate
             for (x = 1; x < len1 + 1; x++) {
                 for (y = 1; y < len2 + 1; y++) {
-                    if (matrix.areTheSameByIndex(x - 1, y - 1)) {
+                    if (options.areTheSameByIndex(x - 1, y - 1)) {
                         matrix[x][y] = matrix[x - 1][y - 1] + 1;
                     } else {
                         matrix[x][y] = Math.max(matrix[x - 1][y], matrix[x][y - 1]);
@@ -342,7 +346,7 @@
                 };
             }
 
-            if (lenghtMatrix.areTheSameByIndex(index1 - 1, index2 - 1)) {
+            if (lenghtMatrix.options.areTheSameByIndex(index1 - 1, index2 - 1)) {
                 var subsequence = this.backtrack(lenghtMatrix, array1, array2, index1 - 1, index2 - 1);
                 subsequence.sequence.push(array1[index1 - 1]);
                 subsequence.indices1.push(index1 - 1);

@@ -17,6 +17,14 @@
     text-decoration: line-through;
 }
 
+.jsondiffpatch-moved-to span, .jsondiffpatch-moved-to p, span.jsondiffpatch-moved-to {
+    background: #ffffbb;
+}
+
+.jsondiffpatch-moved-from span, .jsondiffpatch-moved-from p {
+    background: #ffccbb;
+}
+
 .jsondiffpatch-deleted span:hover {
     text-decoration: none;
 }
