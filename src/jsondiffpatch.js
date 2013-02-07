@@ -23,17 +23,39 @@
             var len1 = array1.length;
             var len2 = array2.length;
             var diff;
+            var hashCache1 = [];
+            var hashCache2 = [];
             var areTheSame = typeof objectHash == 'function' ?
-                function(a, b) {
-                    if (a === b)
+                function(value1, value2, index1, index2) {
+                    if (value1 === value2)
                         return true;
-                    if (typeof a != 'object' || typeof b != 'object')
+                    if (typeof value1 != 'object' || typeof value2 != 'object')
                         return false;
-                    return objectHash(a) === objectHash(b);
+                    var hash1, hash2;
+                    if (typeof index1 == 'number') {
+                        hash1 =  hashCache1[index1];
+                        if (typeof hash1 == 'undefined') {
+                            hashCache1[index1] = hash1 = objectHash(value1);
+                        }
+                    } else {
+                        hash1 = objectHash(value1);
+                    }
+                    if (typeof index2 == 'number') {
+                        hash2 =  hashCache2[index2];
+                        if (typeof hash2 == 'undefined') {
+                            hashCache2[index2] = hash2 = objectHash(value2);
+                        }
+                    } else {
+                        hash2 = objectHash(value2);
+                    }
+                    return hash1 === hash2;
                 } :
-                function(a, b) {
-                    return a === b;
+                function(value1, value2) {
+                    return value1 === value2;
                 };
+            var areTheSameByIndex = function(index1, index2) {
+                return areTheSame(array1[index1], array2[index2], index1, index2);
+            };
 
             var tryObjectInnerDiff = function(index1, index2) {
                 if (!objectInnerDiff) {
@@ -54,13 +76,13 @@
 
             // separate common head
             while (commonHead < len1 && commonHead < len2 &&
-                areTheSame(array1[commonHead], array2[commonHead])) {
+                areTheSameByIndex(commonHead, commonHead)) {
                 tryObjectInnerDiff(commonHead, commonHead);
                 commonHead++;
             }
             // separate common tail
             while (commonTail + commonHead < len1 && commonTail + commonHead < len2 &&
-                areTheSame(array1[len1 - 1 - commonTail], array2[len2 - 1 - commonTail])) {
+                areTheSameByIndex(len1 - 1 - commonTail, len2 - 1 - commonTail)) {
                 tryObjectInnerDiff(len1 - 1 - commonTail, len2 - 1 - commonTail);
                 commonTail++;
             }
@@ -109,7 +131,7 @@
                     var isMove = false;
                     if (removedItemsLength > 0) {
                         for (index1 = 0; index1 < removedItemsLength; index1++) {
-                            if (areTheSame(array1[removedItems[index1]], array2[index])) {
+                            if (areTheSameByIndex(removedItems[index1], index)) {
                                 // store position move as: [originalValue, newPosition, 3]
                                 diff['_' + removedItems[index1]].splice(1, 2, index, 3);
                                 tryObjectInnerDiff(removedItems[index1], index);
@@ -266,7 +288,7 @@
 
             // http://en.wikipedia.org/wiki/Longest_common_subsequence_problem
 
-            var matrix = this.lengthMatrix(array1, array2,  areTheSame || function(value1, value2) {
+            var matrix = this.lengthMatrix(array1, array2, areTheSame || function(value1, value2) {
                 return value1 === value2;
             });
             var result = this.backtrack(matrix, array1, array2, array1.length, array2.length);
@@ -289,17 +311,20 @@
                     matrix[x][y] = 0;
                 }
             }
+            matrix.areTheSame = areTheSame;
+            matrix.areTheSameByIndex = function(index1, index2) {
+                return matrix.areTheSame(array1[index1], array2[index2], index1, index2);
+            };
             // save sequence lengths for each coordinate
             for (x = 1; x < len1 + 1; x++) {
                 for (y = 1; y < len2 + 1; y++) {
-                    if (areTheSame(array1[x - 1], array2[y - 1])) {
+                    if (matrix.areTheSameByIndex(x - 1, y - 1)) {
                         matrix[x][y] = matrix[x - 1][y - 1] + 1;
                     } else {
                         matrix[x][y] = Math.max(matrix[x - 1][y], matrix[x][y - 1]);
                     }
                 }
             }
-            matrix.areTheSame = areTheSame;
             return matrix;
         },
 
@@ -312,7 +337,7 @@
                 };
             }
 
-            if (lenghtMatrix.areTheSame(array1[index1 - 1], array2[index2 - 1])) {
+            if (lenghtMatrix.areTheSameByIndex(index1 - 1, index2 - 1)) {
                 var subsequence = this.backtrack(lenghtMatrix, array1, array2, index1 - 1, index2 - 1);
                 subsequence.sequence.push(array1[index1 - 1]);
                 subsequence.indices1.push(index1 - 1);
