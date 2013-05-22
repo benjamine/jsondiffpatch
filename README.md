@@ -22,7 +22,7 @@ npm install jsondiffpatch
 - Arrays diffs are smart!
   - Using [LCS](http://en.wikipedia.org/wiki/Longest_common_subsequence_problem) (the same type of algorithm used by popular text diff tools on lines of text) insertions and deletions are detected efficiently.
   - Also detects items moved on the same array (a refinement to LCS). Patching will only move the item in the array, and inner changes in the moved object are diffed/patched too.
-  - Works with objects in the array if you provide a hash function, eg: ``` jsondiffpatch.config.objectHash = function(obj) { obj.id || JSON.stringify(obj); }; ```).
+  - Works with objects in the array if you provide a hash function, eg: ``` jsondiffpatch.config.objectHash = function(obj) { return obj.id || JSON.stringify(obj); }; ```
 - Reverse a diff and unpatch (eg. revert object to its original state based on diff)
 - Optional lib included for visualizing diffs as html
 
