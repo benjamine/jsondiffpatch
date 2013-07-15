@@ -22,7 +22,7 @@ npm install jsondiffpatch
 - Arrays diffs are smart!
   - Using [LCS](http://en.wikipedia.org/wiki/Longest_common_subsequence_problem) (the same type of algorithm used by popular text diff tools on lines of text) insertions and deletions are detected efficiently.
   - Also detects items moved on the same array (a refinement to LCS). Patching will only move the item in the array, and inner changes in the moved object are diffed/patched too.
-  - Works with objects in the array if you provide a hash function, eg: ``` jsondiffpatch.config.objectHash = function(obj) { return obj.id || JSON.stringify(obj); }; ```
+  - Works with objects in the array if you provide a hash function, eg: ``` jsondiffpatch.config.objectHash = function(obj) { return obj.id || JSON.stringify(obj); }; ```. ***NOTE: If no objectHash function is configured Array items are compared using just ```===```***, meaning ```{ a: 1 }``` is different from ```{ a: 1 }``` unless they reference the same instance, this is by design, because object equality is a problem without trivial solution. Some use-cases are fine with just ```===``` (the default), others need comparison by an id field, others full JSON stringify, be sure to provide yours if default is not enough, as in DEMO page)
 - Reverse a diff and unpatch (eg. revert object to its original state based on diff)
 - Optional lib included for visualizing diffs as html
 
@@ -41,7 +41,7 @@ Example:
     var country2 = JSON.parse(JSON.stringify(country),jsondiffpatch.dateReviver);
      
     // make some changes
-    country2.name = "República Argentina";
+    country2.name = "Repï¿½blica Argentina";
     country2.population = "41324992";
     delete country2.capital;
   
@@ -49,7 +49,7 @@ Example:
     
     /*
     delta = {
-        "name":["Argentina","República Argentina"], // old value, new value
+        "name":["Argentina","Repï¿½blica Argentina"], // old value, new value
         "population":["41324992"], // new value
         "capital":["Buenos Aires",0,0] // deleted
     }
@@ -79,7 +79,7 @@ Array diffing:
             population: 13028000,
         },
         {
-            name: 'Córdoba',
+            name: 'Cï¿½rdoba',
             population: 1430023,
         },
         {
@@ -91,7 +91,7 @@ Array diffing:
             population: 901126,
         },
         {
-            name: 'San Miguel de Tucumán',
+            name: 'San Miguel de Tucumï¿½n',
             population: 800000,
         }
         ]
@@ -100,7 +100,7 @@ Array diffing:
     // clone country
     var country2 = JSON.parse(JSON.stringify(country));
 
-    // delete Córdoba
+    // delete Cï¿½rdoba
     country.cities.splice(1, 1);
 
     // add La Plata
@@ -126,7 +126,7 @@ Array diffing:
             "1": [
                 // inserted at index 1
                 {
-                    "name": "Córdoba",
+                    "name": "Cï¿½rdoba",
                     "population": 1430023
                 }]
             ,
