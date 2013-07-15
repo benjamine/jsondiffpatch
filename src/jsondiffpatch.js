@@ -19,6 +19,19 @@
         includeValueOnArrayMove: false
     };
 
+    var arrayIndexOf = typeof Array.prototype.indexOf === 'function' ?
+        function(array, item) {
+            return array.indexOf(item);
+        } : function(array, item) {
+            var length = array.length;
+            for (var i = 0; i < length; i++) {
+                if (array[i] === item) {
+                    return i;
+                }
+            }
+            return -1;
+        };
+
     var sequenceDiffer = {
 
         diff: function(array1, array2, objectHash, objectInnerDiff) {
@@ -124,7 +137,7 @@
 
             var removedItems = [];
             for (index = commonHead; index < len1 - commonTail; index++) {
-                if (lcs.indices1.indexOf(index - commonHead) < 0) {
+                if (arrayIndexOf(lcs.indices1, index - commonHead) < 0) {
                     // removed
                     diff['_'+index] = [array1[index], 0, 0];
                     removedItems.push(index);
@@ -132,7 +145,7 @@
             }
             var removedItemsLength = removedItems.length;
             for (index = commonHead; index < len2 - commonTail; index++) {
-                var indexOnArray2 = lcs.indices2.indexOf(index - commonHead);
+                var indexOnArray2 = arrayIndexOf(lcs.indices2, index - commonHead);
                 if (indexOnArray2 < 0) {
                     // added, try to match with a removed item and register as position move
                     var isMove = false;
@@ -384,7 +397,9 @@
         }
         if (typeof diff_match_patch != 'undefined') {
             if (typeof diff_match_patch == 'function') {
+                /* jshint newcap: false */
                 dmp = new diff_match_patch();
+                /* jshint newcap: true */
             }
             else if (typeof diff_match_patch == 'object' && typeof diff_match_patch.diff_match_patch == 'function') {
                 dmp = new diff_match_patch.diff_match_patch();
@@ -868,7 +883,7 @@
     if (typeof require === 'function' && typeof exports === 'object' && typeof module === 'object') {
         // CommonJS, eg: node.js
         module.exports = jdp;
-    } else if (typeof define === 'function' && define['amd']) {
+    } else if (typeof define === 'function' && define.amd) {
         // AMD
         define(jdp);
     } else {
