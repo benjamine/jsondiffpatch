@@ -199,7 +199,11 @@
                     for (var prop in d) {
                         if (d.hasOwnProperty(prop) && prop !== '_t') {
                             var li = document.createElement('li');
-                            li.appendChild(diffNodeToHtml(prop, jdp.getByKey(o, prop), jdp.getByKey(n, prop), d[prop]));
+
+                            li.appendChild(diffNodeToHtml(prop, 
+                                typeof o == 'undefined' ? o : jdp.getByKey(o, prop),
+                                typeof n == 'undefined' ? n : jdp.getByKey(n, prop),
+                                d[prop]));
                             ul.appendChild(li);
                         }
                     }
