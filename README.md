@@ -26,7 +26,23 @@ npm install jsondiffpatch
 - Reverse a diff and unpatch (eg. revert object to its original state based on diff)
 - Optional lib included for visualizing diffs as html
 
-Example:
+## Delta Legend
+
+- Objects on the graph means that it's a node in the diff tree and will continue recursively
+  - `_t`: (special member) indicates the type of node, `a` means `array`, otherwise it's an `object`.
+  - in arrays, `N` indicates index on the new array, `_N` means index at the original array.
+
+- Arrays in the delta means that the node has changed
+  - `[newValue]` -> added
+  - `[oldValue, newValue]` -> modified
+  - `[oldValue, 0, 0]` -> deleted
+  - `[textDiff, 0, 2]` -> text diff
+  - `["", N, 3]` -> element was moved to N
+
+
+###Example
+
+Object diffing:
 
 ``` javascript
     // sample data
