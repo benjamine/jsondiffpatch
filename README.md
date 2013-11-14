@@ -9,6 +9,12 @@ Now available on npm:
 ```
 npm install jsondiffpatch
 ```
+
+or
+
+```
+bower install jsondiffpatch
+```
 -----
 **[DEMO](http://benjamine.github.com/JsonDiffPatch/demo/index.htm)**
 -----
@@ -52,17 +58,17 @@ Object diffing:
         independence: new Date(1816, 6, 9),
         unasur: true
     };
-  
+
     // clone country, using dateReviver for Date objects
     var country2 = JSON.parse(JSON.stringify(country),jsondiffpatch.dateReviver);
-     
+
     // make some changes
     country2.name = "Rep�blica Argentina";
     country2.population = "41324992";
     delete country2.capital;
-  
+
     var delta = jsondiffpatch.diff(country,country2);
-    
+
     /*
     delta = {
         "name":["Argentina","Rep�blica Argentina"], // old value, new value
@@ -70,8 +76,8 @@ Object diffing:
         "capital":["Buenos Aires",0,0] // deleted
     }
     */
-  
-    // patch original 
+
+    // patch original
     jsondiffpatch.patch(country, delta);
 
     // reverse diff
@@ -79,7 +85,7 @@ Object diffing:
     // also country2 can be return to original value with: jsondiffpatch.unpatch(country2, delta);
 
     var delta2 = jsondiffpatch.diff(country,country2);
-    
+
     // delta2 is undefined, no difference
 ```
 
@@ -135,7 +141,7 @@ Array diffing:
     }
 
     var delta = jsondiffpatch.diff(country,country2);
-    
+
     /*
     delta = {
         "cities": {
@@ -192,8 +198,8 @@ Targeted platforms
 * Tested on Chrome, FireFox, IE7+, to check other browsers open [test page](http://benjamine.github.com/JsonDiffPatch/test/qunit.htm) to run unit tests.
 * Node.js
 
-[QUnit](http://docs.jquery.com/Qunit) is used for unit testing. 
-Just open the [test page](http://benjamine.github.com/JsonDiffPatch/test/qunit.htm) on your preferred browser. 
+[QUnit](http://docs.jquery.com/Qunit) is used for unit testing.
+Just open the [test page](http://benjamine.github.com/JsonDiffPatch/test/qunit.htm) on your preferred browser.
 
 To run tests on Node.js on jsondiffpatch root folder:
 
@@ -222,7 +228,7 @@ Install using npm:
 npm install jsondiffpatch
 ```
 
-or, Download the latest release from the web site (http://github.com/benjamine/JsonDiffPatch) and copy 
+or, Download the latest release from the web site (http://github.com/benjamine/JsonDiffPatch) and copy
 `jsondiffpatch.min.js` to a suitable location. To support text diffs include Google's diff_match_patch.
 
 Then include it in your HTML
@@ -230,26 +236,26 @@ like so:
 
     <script type="text/javascript" src="/path/to/jsondiffpatch.min.js"></script>
     <script type="text/javascript" src="/path/to/diff_match_patch_uncompressed.js"></script>
-    
-Note: you can use JsonDiffPatch on browserless JavaScript environments too (as [Node.js](http://nodejs.org/), or [Mozilla Rhino](http://www.mozilla.org/rhino/)). 
+
+Note: you can use JsonDiffPatch on browserless JavaScript environments too (as [Node.js](http://nodejs.org/), or [Mozilla Rhino](http://www.mozilla.org/rhino/)).
 
 On Node.js you have to connect your text diff/patch library explicitly. eg:
 
     var jsondiffpatch = require('./jsondiffpatch.js');
-    
-    // load google diff_match_patch library for text diff/patch 
+
+    // load google diff_match_patch library for text diff/patch
     jsondiffpatch.config.diff_match_patch = require('./diff_match_patch_uncompressed.js');
-    
-    // use text diff for strings longer than 5 chars 
+
+    // use text diff for strings longer than 5 chars
     jsondiffpatch.config.textDiffMinLength = 5;
-    
+
     var d = jsondiffpatch.diff({ age: 5, name: 'Arturo' }, {age: 7, name: 'Armando' });
-    // d = { 
+    // d = {
     //   age: [ 5, 7 ],
     //   name: [ '@@ -1,6 +1,7 @@\n Ar\n-tur\n+mand\n o\n', 0, 2 ] }
-    
+
     console.log(d.name[0])
-    // prints: 
+    // prints:
     // @@ -1,6 +1,7 @@
     // Ar
     // -tur
