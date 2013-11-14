@@ -3,6 +3,9 @@
   "version": "0.0.8",
   "homepage": "https://github.com/benjamine/JsonDiffPatch",
   "main": "jsondiffpatch.min.js",
+  "authors": [
+    "Benjamín Eidelman"
+  ],
   "keywords": [
     "json",
     "diff",
