@@ -1,0 +1,22 @@
+{
+  "name": "jsondiffpatch",
+  "version": "0.0.8",
+  "homepage": "https://github.com/benjamine/JsonDiffPatch",
+  "main": "jsondiffpatch.min.js",
+  "keywords": [
+    "json",
+    "diff",
+    "patch",
+    "jsondiffpatch"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "lib",
+    "test",
+    "bin",
+    "demo",
+    "src",
+    "tools"
+  ]
+}
