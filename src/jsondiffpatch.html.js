@@ -1,7 +1,7 @@
 (function(){
 
     var factory = function(jdp) {
-        
+
         var jdpHtml = {};
 
         jdpHtml.objectToHtml = function(desc, o){
@@ -12,11 +12,11 @@
                 descspan.setAttribute('class', 'jsondiffpatch-property-name');
                 container.appendChild(descspan);
             }
-            
+
             if (typeof o == 'object') {
                 // a node (object or array)
                 var ul = document.createElement('ul');
-                
+
                 for (var prop in o) {
                     if (o.hasOwnProperty(prop)) {
                         var li = document.createElement('li');
@@ -38,7 +38,7 @@
             }
             return container;
         };
-        
+
         var diffNodeToHtml = function(desc, o, n, d, metadata){
             var index;
             var container = document.createElement('div');
@@ -79,21 +79,21 @@
                                 // text diff
                                 container.setAttribute('class', 'jsondiffpatch-textdiff');
                                 var lines = d[0].split('\n'), lcount = lines.length;
-                                
+
                                 for (var i = 0; i < lcount; i++) {
                                     var lelem = document.createElement('span');
                                     if (lines[i][0] === '+') {
                                         lelem.setAttribute('class', 'jsondiffpatch-added');
                                     }
-                                    else 
+                                    else
                                         if (lines[i][0] === '-') {
                                             lelem.setAttribute('class', 'jsondiffpatch-deleted');
                                         }
-                                        else 
+                                        else
                                             if (lines[i][0] === '@') {
                                                 lelem.setAttribute('class', 'jsondiffpatch-header');
                                             }
-                                    
+
                                     lelem.appendChild(document.createTextNode(lines[i].substring(lines[i][0] !== '@' ? 1 : 0)));
                                     elem.appendChild(lelem);
                                 }
@@ -200,14 +200,14 @@
                         if (d.hasOwnProperty(prop) && prop !== '_t') {
                             var li = document.createElement('li');
 
-                            li.appendChild(diffNodeToHtml(prop, 
+                            li.appendChild(diffNodeToHtml(prop,
                                 typeof o == 'undefined' ? o : jdp.getByKey(o, prop),
                                 typeof n == 'undefined' ? n : jdp.getByKey(n, prop),
                                 d[prop]));
                             ul.appendChild(li);
                         }
                     }
-                
+
                     // unchanged props
                     if (typeof o == 'object') {
                         for (var prop in o) {
@@ -231,7 +231,7 @@
             }
             return container;
         };
-        
+
         jdpHtml.diffToHtml = function(o, n, d){
             var elem = diffNodeToHtml('root', o, n, d);
             elem.setAttribute('class', elem.getAttribute('class') + ' jsondiffpatch-visualdiff-root');
@@ -241,7 +241,7 @@
         return jdpHtml;
 
     }
-    
+
     if (typeof require === 'function' && typeof exports === 'object' && typeof module === 'object') {
         // CommonJS, eg: node.js
         module.exports = factory(require('./jsondiffpatch'));
@@ -251,11 +251,11 @@
     } else {
         // browser global
         if (typeof jsondiffpatch == 'undefined'){
-            window.jsondiffpatch = jdp = {};            
+            window.jsondiffpatch = jdp = {};
         } else {
             jdp = jsondiffpatch;
         }
         jdp.html = factory(jdp);
     }
-    
+
 })();
