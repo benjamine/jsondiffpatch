@@ -16,7 +16,7 @@ strike = clc.strike;
 
 var tremoved = function(text){
     return strike(red(text));
-}, 
+},
 tadded = green, tunchanged = gray, tnormal = identity, tdiffheader = gray,
 tmovedto = yellow, tmovedfrom = red,
 indent = function(level){
@@ -34,7 +34,7 @@ objectToText = function(desc, o, hideUnchanged, level) {
             (o instanceof Array ? ' (array)' : '')
         ), ': ');
     }
-    
+
     if (o && typeof o == 'object' && !jsondiffpatch.isDate(o)) {
         // a node (object or array)
         buffer.push(o._t === 'a' ? '[\n' : '{\n');
@@ -55,7 +55,7 @@ objectToText = function(desc, o, hideUnchanged, level) {
     }
     return buffer.join('');
 };
-        
+
 var diffNodeToText = function(desc, o, n, d, hideUnchanged, level, metadata){
 
     if (typeof d == 'undefined') {
@@ -105,16 +105,16 @@ var diffNodeToText = function(desc, o, n, d, hideUnchanged, level, metadata){
                             if (lines[i][0] === '+') {
                                 tfunc = tadded;
                             }
-                            else 
+                            else
                                 if (lines[i][0] === '-') {
                                     tfunc = tremoved;
                                 }
-                                else 
+                                else
                                     if (lines[i][0] === '@') {
                                         diffheader = true;
                                         tfunc = tdiffheader;
                                     }
-                            
+
                             if (diffheader){
                                 buffer.push('\n', indentation);
                             }
@@ -143,7 +143,7 @@ var diffNodeToText = function(desc, o, n, d, hideUnchanged, level, metadata){
     }
     else {
         // a node (object or array)
-        
+
         if (typeof metadata != 'undefined') {
             buffer.push(tmovedto('<= _' + metadata + ' '));
         }
@@ -165,15 +165,15 @@ var diffNodeToText = function(desc, o, n, d, hideUnchanged, level, metadata){
                         toInsert[d[prop][1]] = { prop: prop, from: index };
                     }
                     removedIndices[index] = true;
-                    items.push({ 
-                        removed: true, 
+                    items.push({
+                        removed: true,
                         text: diffNodeToText(prop, jdp.getByKey(o, index), null, d[prop], hideUnchanged, level + 1)
                     });
                 } else {
                     // unchanged
                     var prop = index.toString();
-                    items.push({ 
-                        unchanged: true, 
+                    items.push({
+                        unchanged: true,
                         text: objectToText(index, o[index], hideUnchanged, level + 1)
                     });
                 }
@@ -208,7 +208,7 @@ var diffNodeToText = function(desc, o, n, d, hideUnchanged, level, metadata){
                     var item = {
                         inserted: true,
                         from: insertion.from,
-                        text: diffNodeToText(index, jdp.getByKey(o, oldIndex), jdp.getByKey(n, index), 
+                        text: diffNodeToText(index, jdp.getByKey(o, oldIndex), jdp.getByKey(n, index),
                             d[prop], hideUnchanged, level + 1, insertion.from)
                     };
                     items.splice(index + indexOffset, d[prop].length == 1 || d[prop][2] === 3 ? 0 : 1, item);
@@ -224,11 +224,11 @@ var diffNodeToText = function(desc, o, n, d, hideUnchanged, level, metadata){
         } else {
             for (var prop in d) {
                 if (d.hasOwnProperty(prop) && prop !== '_t') {
-                    buffer.push(diffNodeToText(prop, jsondiffpatch.getByKey(o, prop), jsondiffpatch.getByKey(n, prop), 
+                    buffer.push(diffNodeToText(prop, jsondiffpatch.getByKey(o, prop), jsondiffpatch.getByKey(n, prop),
                         d[prop], hideUnchanged, level + 1));
                 }
             }
-            
+
             if (!hideUnchanged) {
                 // unchanged props
                 if (typeof o == 'object') {
