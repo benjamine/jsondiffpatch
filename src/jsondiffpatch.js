@@ -887,8 +887,12 @@
         // AMD
         define(jdp);
     } else {
-        // browser global
-        window.jsondiffpatch = jdp;
+        // browser or worker global
+        if (typeof window !== 'undefined') {
+            window.jsondiffpatch = jdp;
+        } else {
+            self.jsondiffpatch = jdp;
+        }
     }
 
 })();
