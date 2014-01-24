@@ -1,6 +1,6 @@
 {
   "name": "jsondiffpatch",
-  "version": "0.0.9",
+  "version": "0.0.11",
   "homepage": "https://github.com/benjamine/JsonDiffPatch",
   "main": "jsondiffpatch.min.js",
   "authors": [
@@ -19,7 +19,6 @@
     "test",
     "bin",
     "demo",
-    "src",
     "tools"
   ]
 }

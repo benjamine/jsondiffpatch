@@ -12,7 +12,7 @@
         jdp = jsondiffpatch;
     }
     var jsondiffpatch = jdp;
-    jdp.version = '0.0.8';
+    jdp.version = '0.0.11';
     jdp.config = {
         textDiffMinLength: 60,
         detectArrayMove: true,
@@ -887,8 +887,12 @@
         // AMD
         define(jdp);
     } else {
-        // browser global
-        window.jsondiffpatch = jdp;
+        // browser or worker global
+        if (typeof window !== 'undefined') {
+            window.jsondiffpatch = jdp;
+        } else {
+            self.jsondiffpatch = jdp;
+        }
     }
 
 })();
