@@ -12,7 +12,7 @@
         jdp = jsondiffpatch;
     }
     var jsondiffpatch = jdp;
-    jdp.version = '0.0.7';
+    jdp.version = '0.0.11';
     jdp.config = {
         textDiffMinLength: 60,
         detectArrayMove: true,
