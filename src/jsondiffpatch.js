@@ -43,10 +43,12 @@
             var hashCache2 = [];
             var areTheSame = typeof objectHash == 'function' ?
                 function(value1, value2, index1, index2) {
-                    if (value1 === value2)
+                    if (value1 === value2) {
                         return true;
-                    if (typeof value1 != 'object' || typeof value2 != 'object')
+                    }
+                    if (typeof value1 != 'object' || typeof value2 != 'object') {
                         return false;
+                    }
                     var hash1, hash2;
                     if (typeof index1 == 'number') {
                         hash1 =  hashCache1[index1];
@@ -67,7 +69,20 @@
                     return hash1 === hash2;
                 } :
                 function(value1, value2) {
-                    return value1 === value2;
+                    if (value1 === value2) {
+                        return true;
+                    }
+                    if (typeof value1 != 'object' || typeof value2 != 'object') {
+                        return false;
+                    }
+                    // default implementation: look for "id" or "_id" fields
+                    if (typeof value1.id !== 'undefined' && typeof value2.id !== 'undefined') {
+                        return value1.id === value2.id;
+                    }
+                    if (typeof value1._id !== 'undefined' && typeof value2._id !== 'undefined') {
+                        return value1._id === value2._id;
+                    }
+                    return false;
                 };
             var areTheSameByIndex = function(index1, index2) {
                 return areTheSame(array1[index1], array2[index2], index1, index2);
@@ -497,6 +512,10 @@
             }
         }
 
+        if (otype == 'function' || ntype == 'function') {
+            throw new Error('diffing functions is not supported');
+        }
+
         if (nnull || onull || ntype == 'undefined' || ntype != otype ||
         ntype == 'number' ||
         otype == 'number' ||
@@ -599,7 +618,6 @@
 
         if (!jdp.config.textDiffReverse){
             jdp.config.textDiffReverse = function(d){
-
                 var i, l, lines, line, lineTmp, header = null, headerRegex = /^@@ +\-(\d+),(\d+) +\+(\d+),(\d+) +@@$/, lineHeader, lineAdd, lineRemove;
 
                 var diffSwap = function() {
@@ -643,6 +661,12 @@
                     } else if (lineStart == '+'){
                         lineAdd = i;
                         lines[i] = '-' + lines[i].slice(1);
+                        if (lines[i-1].slice(0,1)==='+') {
+                            // swap lines to keep default order (-+)
+                            lineTmp = lines[i];
+                            lines[i] = lines[i-1];
+                            lines[i-1] = lineTmp;
+                        }
                     } else if (lineStart == '-'){
                         lineRemove = i;
                         lines[i] = '+' + lines[i].slice(1);
@@ -815,8 +839,9 @@
                             if (!jdp.config.textPatch) {
                                 throw new Error("textPatch function not found");
                             }
+                            target = pname === null ? o : objectGet(o, pname)
                             try {
-                                nvalue = jdp.config.textPatch(objectGet(o, pname), d[0]);
+                                nvalue = jdp.config.textPatch(target, d[0]);
                             }
                             catch (text_patch_err) {
                                 throw new Error('cannot apply patch at "' + subpath + '": ' + text_patch_err);
@@ -878,6 +903,40 @@
         }
 
         return patch(o, pname, reverse(d), path);
+    };
+
+    var Instance = jdp.Instance = function Instance(options) {
+        this.options = options || {};
+    };
+
+    Instance.prototype.setOptions = function(options) {
+        this.options = options;
+    };
+
+    Instance.prototype.diff = function() {
+        return jdp.diff.apply(jdp, arguments);
+    };
+
+    Instance.prototype.combine = function() {
+        return null;
+    };
+
+    Instance.prototype.reverse = function() {
+        return jdp.reverse.apply(jdp, arguments);
+    };
+
+    Instance.prototype.patch = function() {
+        return jdp.patch.apply(jdp, arguments);
+    };
+
+    Instance.prototype.unpatch = function() {
+        return jdp.unpatch.apply(jdp, arguments);
+    };
+
+    jdp.Instance = Instance;
+
+    jdp.create = function(options) {
+        return new Instance(options);
     };
 
     if (typeof require === 'function' && typeof exports === 'object' && typeof module === 'object') {
