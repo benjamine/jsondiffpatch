@@ -8,7 +8,7 @@
   ],
   "bin": {},
   "scripts": {
-    "test": "./node_modules/.bin/mocha --reporter spec --recursive ./test"
+    "test": "make test test-browser"
   },
   "main": "./src/main",
   "repository": {
