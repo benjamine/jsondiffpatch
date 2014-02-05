@@ -15,5 +15,5 @@ results
 
 npm-debug.log
 
-dist
+dist/**.js
 test-bundle.js

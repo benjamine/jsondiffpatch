@@ -2,9 +2,9 @@ filter = ""
 browser="Firefox"
 libname="jsondiffpatch"
 
+build: dist/bundle.min.js dist/bundle-full.min.js test/test-bundle.js
 node_modules:
 	npm install
-build: dist/bundle.min.js dist/bundle-full.min.js test/test-bundle.js
 dist/bundle.js: node_modules
 	@./node_modules/.bin/browserify ./src/main.js --exclude "../../lib/diff_match_patch_uncompressed" --standalone $(libname) --outfile dist/bundle.js
 	@echo dist/bundle.js built
@@ -21,7 +21,7 @@ test/test-bundle.js:
 	@./node_modules/.bin/browserify ./test/test.js --outfile ./test/test-bundle.js
 	@echo test/test-bundle.js built
 clean:
-	@rm -f dist/*
+	@rm -f dist/*.js
 	@rm -f test/test-bundle.js
 	@echo cleaned
 clean-dependencies: clean
