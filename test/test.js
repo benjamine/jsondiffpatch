@@ -1,5 +1,5 @@
 
-var expect = require("expect.js");
+var expect = (typeof window !== 'undefined' && window.expect) ? window.expect : require("expect.js");
 var jsondiffpatch = (typeof window !== 'undefined') ? window.jsondiffpatch : require("../src/" + "main.js");
 var DiffPatcher = jsondiffpatch.DiffPatcher;
 

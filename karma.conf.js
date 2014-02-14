@@ -1,8 +1,13 @@
 module.exports = function(config) {
-  config.set({
-    basePath: '.',
-    frameworks: ['mocha'],
-    files: ['dist/bundle.js', 'lib/diff_match_patch_uncompressed.js', 'test/test-bundle.js'],
-	reporters : ['spec']
-  });
+    config.set({
+        basePath: '.',
+        frameworks: ['mocha'],
+        files: [
+            'build/bundle.js', 
+            'lib/diff_match_patch_uncompressed.js', 
+            'node_modules/expect.js/expect.js',
+            'build/test-bundle.js'
+        ],
+        reporters : ['spec', 'growler']
+    });
 };
