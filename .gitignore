@@ -16,5 +16,3 @@ results
 npm-debug.log
 
 build
-bundle.js
-test-bundle.js

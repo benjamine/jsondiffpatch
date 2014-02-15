@@ -5,7 +5,7 @@ var ReverseContext = require('../contexts/reverse').ReverseContext;
 
 var lcs = require('./lcs');
 
-var isArray = (typeof Array.isArray == 'function') ?
+var isArray = (typeof Array.isArray === 'function') ?
     // use native function
     Array.isArray :
     // use instanceof operator
@@ -27,7 +27,7 @@ var arrayIndexOf = typeof Array.prototype.indexOf === 'function' ?
     };
 
 var DiffFilter = function ArraysDiffFilter(context){
-    if (!context.leftIsArray) return;
+    if (!context.leftIsArray) { return; }
 
     var objectHash = context.options && context.options.objectHash;
 
@@ -37,15 +37,15 @@ var DiffFilter = function ArraysDiffFilter(context){
         if (value1 === value2) {
             return true;
         }
-        if (typeof value1 != 'object' || typeof value2 != 'object') {
+        if (typeof value1 !== 'object' || typeof value2 !== 'object') {
             return false;
         }
-        if (!objectHash) return false;
+        if (!objectHash) { return false; }
         var hash1, hash2;
-        if (typeof index1 == 'number') {
+        if (typeof index1 === 'number') {
             context.hashCache1 = context.hashCache1 || [];
             hash1 = context.hashCache1[index1];
-            if (typeof hash1 == 'undefined') {
+            if (typeof hash1 === 'undefined') {
                 context.hashCache1[index1] = hash1 = objectHash(value1, index1);
             }
         } else {
@@ -54,10 +54,10 @@ var DiffFilter = function ArraysDiffFilter(context){
         if (typeof hash1 === 'undefined') {
             return false;
         }
-        if (typeof index2 == 'number') {
+        if (typeof index2 === 'number') {
             context.hashCache2 = context.hashCache2 || [];
             hash2 = context.hashCache2[index2];
-            if (typeof hash2 == 'undefined') {
+            if (typeof hash2 === 'undefined') {
                 context.hashCache2[index2] = hash2 = objectHash(value2, index2);
             }
         } else {
@@ -99,7 +99,7 @@ var DiffFilter = function ArraysDiffFilter(context){
     if (commonHead + commonTail === len1) {
         if (len1 === len2) {
             // arrays are identical
-            context.setResult(undefined).exit()
+            context.setResult(undefined).exit();
             return;
         }
         // trivial case, a block (1 or more consecutive items) was added
@@ -154,25 +154,24 @@ var DiffFilter = function ArraysDiffFilter(context){
         if (indexOnArray2 < 0) {
             // added, try to match with a removed item and register as position move
             var isMove = false;
-            if (detectMove) {
-                if (removedItemsLength > 0) {
-                    for (index1 = 0; index1 < removedItemsLength; index1++) {
-                        if (match(trimmed1, trimmed2, removedItems[index1] - commonHead, index - commonHead, matchContext)) {
-                            // store position move as: [originalValue, newPosition, 3]
-                            result['_' + removedItems[index1]].splice(1, 2, index, 3);
-                            if (!includeValueOnMove) {
-                                // don't include moved value on diff, to save bytes
-                                result['_' + removedItems[index1]][0] = '';
-                            }
-
-                            index1 = removedItems[index1];
-                            index2 = index;
-                            child = new DiffContext(context.left[index1], context.right[index2]);
-                            context.push(child, index2);
-                            removedItems.splice(index1, 1);
-                            isMove = true;
-                            break;
+            if (detectMove && removedItemsLength > 0) {
+                for (index1 = 0; index1 < removedItemsLength; index1++) {
+                    if (match(trimmed1, trimmed2, removedItems[index1] - commonHead,
+                        index - commonHead, matchContext)) {
+                        // store position move as: [originalValue, newPosition, 3]
+                        result['_' + removedItems[index1]].splice(1, 2, index, 3);
+                        if (!includeValueOnMove) {
+                            // don't include moved value on diff, to save bytes
+                            result['_' + removedItems[index1]][0] = '';
                         }
+
+                        index1 = removedItems[index1];
+                        index2 = index;
+                        child = new DiffContext(context.left[index1], context.right[index2]);
+                        context.push(child, index2);
+                        removedItems.splice(index1, 1);
+                        isMove = true;
+                        break;
                     }
                 }
             }
@@ -205,8 +204,8 @@ var compare = {
 };
 
 var PatchFilter = function NestedPatchFilter(context) {
-    if (!context.nested) return;
-    if (context.delta._t !== 'a') return;
+    if (!context.nested) { return; }
+    if (context.delta._t !== 'a') { return; }
     var index, index1;
 
     var delta = context.delta;
@@ -218,12 +217,13 @@ var PatchFilter = function NestedPatchFilter(context) {
     var toModify = [];
     for (index in delta) {
         if (index !== '_t') {
-            if (index[0] == '_') {
+            if (index[0] === '_') {
                 // removed item from original array
                 if (delta[index][2] === 0 || delta[index][2] === 3) {
                     toRemove.push(parseInt(index.slice(1), 10));
                 } else {
-                    throw new Error('only removal or move can be applied at original array indices, invalid diff type: ' + d[index][2]);
+                    throw new Error('only removal or move can be applied at original array indices' +
+                        ', invalid diff type: ' + delta[index][2]);
                 }
             } else {
                 if (delta[index].length === 1) {
@@ -285,11 +285,10 @@ var PatchFilter = function NestedPatchFilter(context) {
 };
 
 var CollectChildrenPatchFilter = function CollectChildrenPatchFilter(context) {
-    if (!context || !context.children) return;
-    if (context.delta._t !== 'a') return;
+    if (!context || !context.children) { return; }
+    if (context.delta._t !== 'a') { return; }
     var length = context.children.length;
     var child;
-    var result = context.result;
     for (var index = 0; index < length; index++) {
         child = context.children[index];
         context.left[child.childName] = child.result;
@@ -305,10 +304,10 @@ var ReverseFilter = function NestedReverseFilter(context) {
         }
         return;
     }
-    if (context.delta._t !== 'a') return;
+    if (context.delta._t !== 'a') { return; }
     var name, child;
     for (name in context.delta) {
-        if (name === '_t') continue;
+        if (name === '_t') { continue; }
         child = new ReverseContext(context.delta[name]);
         context.push(child, name);
     }
@@ -336,8 +335,8 @@ var reverseArrayDeltaIndex = function(delta, index, itemDelta) {
 };
 
 var CollectChildrenReverseFilter = function CollectChildrenReverseFilter(context) {
-    if (!context || !context.children) return;
-    if (context.delta._t !== 'a') return;
+    if (!context || !context.children) { return; }
+    if (context.delta._t !== 'a') { return; }
     var length = context.children.length;
     var child;
     var delta = { _t: 'a' };

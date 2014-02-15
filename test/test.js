@@ -1,14 +1,15 @@
+/* global describe, it, before */
 
-var expect = (typeof window !== 'undefined' && window.expect) ? window.expect : require("expect.js");
-var jsondiffpatch = (typeof window !== 'undefined') ? window.jsondiffpatch : require("../src/" + "main.js");
+var expect = (typeof window !== 'undefined' && window.expect) ? window.expect : require('expect.js');
+var jsondiffpatch = (typeof window !== 'undefined') ? window.jsondiffpatch : require('../src/' + 'main.js');
 var DiffPatcher = jsondiffpatch.DiffPatcher;
 
-var isArray = (typeof Array.isArray == 'function') ?
+var isArray = (typeof Array.isArray === 'function') ?
     // use native function
     Array.isArray :
     // use instanceof operator
     function(a) {
-        return typeof a == 'object' && a instanceof Array;
+        return typeof a === 'object' && a instanceof Array;
     };
 
 var dateReviver = function(key, value){
@@ -26,28 +27,29 @@ var deepEqual = function(obj1, obj2) {
     if (obj1 === obj2) {
         return true;
     }
-    if (obj1 === null || obj2 == null) return false;
+    if (obj1 === null || obj2 === null) { return false; }
     if ((typeof obj1 === 'object') && (typeof obj2 === 'object')) {
         if (obj1 instanceof Date) {
-            if (!(obj2 instanceof Date)) return false;
+            if (!(obj2 instanceof Date)) { return false; }
             return obj1.toString() === obj2.toString();
         }
         if (isArray(obj1)) {
-            if (!isArray(obj2)) return false;
-            if (obj1.length !== obj2.length) return false;
+            if (!isArray(obj2)) { return false; }
+            if (obj1.length !== obj2.length) { return false; }
             var length = obj1.length;
             for (var i = 0; i < length; i++) {
-                if (!deepEqual(obj1[i], obj2[i])) return false;
+                if (!deepEqual(obj1[i], obj2[i])) { return false; }
             }
             return true;
         } else {
-            if (isArray(obj2)) return false;
+            if (isArray(obj2)) { return false; }
         }
-        for (var name in obj2) {
-            if (typeof obj1[name] === 'undefined') return false;
+        var name;
+        for (name in obj2) {
+            if (typeof obj1[name] === 'undefined') { return false; }
         }
-        for (var name in obj1) {
-            if (!deepEqual(obj1[name], obj2[name])) return false;
+        for (name in obj1) {
+            if (!deepEqual(obj1[name], obj2[name])) { return false; }
         }
         return true;
     }
@@ -70,29 +72,29 @@ var valueDescription = function(value) {
     if (value === null) {
         return 'null';
     }
-    if (typeof value == 'boolean') {
+    if (typeof value === 'boolean') {
         return value.toString();
     }
     if (value instanceof Date) {
-        return "Date";
+        return 'Date';
     }
     if (isArray(value)) {
-        return "array";
+        return 'array';
     }
-    if (typeof value == 'string') {
+    if (typeof value === 'string') {
         if (value.length >= 60) {
-            return "large text"
+            return 'large text';
         }
     }
     return typeof value;
 };
 
 var clone = function(obj) {
-    if (typeof obj == 'undefined') {
+    if (typeof obj === 'undefined') {
         return undefined;
     }
     return JSON.parse(JSON.stringify(obj), dateReviver);
-}
+};
 
 describe('DiffPatcher', function(){
     var examples = require('./examples/diffpatch');
@@ -100,7 +102,7 @@ describe('DiffPatcher', function(){
         var group = examples[groupName];
         describe(groupName, function(){
             group.forEach(function(example){
-                if (!example) return;
+                if (!example) { return; }
                 var name = example.name || valueDescription(example.left) + ' -> ' + valueDescription(example.right);
                 describe(name, function(){
                     before(function(){
@@ -110,7 +112,7 @@ describe('DiffPatcher', function(){
                         it('diff should fail with: ' + example.error, function(){
                             var instance = this.instance;
                             expect(function(){
-                                var delta = instance.diff(example.left, example.right);
+                                instance.diff(example.left, example.right);
                             }).to.throwException(example.error);
                         });
                         return;
@@ -147,4 +149,4 @@ describe('DiffPatcher', function(){
             });
         });
     });
-})
+});

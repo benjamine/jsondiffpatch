@@ -6,18 +6,8 @@ reference: http://en.wikipedia.org/wiki/Longest_common_subsequence_problem
 
 */
 
-var defaultMatch = function(array1, array2, index1, index2, context) {
+var defaultMatch = function(array1, array2, index1, index2) {
     return array1[index1] === array2[index2];
-};
-
-var get = function(array1, array2, match, context) {
-    var context = context || {};
-    var matrix = lengthMatrix(array1, array2, match || defaultMatch, context);
-    var result = backtrack(matrix, array1, array2, array1.length, array2.length, context);
-    if (typeof array1 == 'string' && typeof array2 == 'string') {
-        result.sequence = result.sequence.join('');
-    }
-    return result;
 };
 
 var lengthMatrix = function(array1, array2, match, context) {
@@ -69,6 +59,16 @@ var backtrack = function(matrix, array1, array2, index1, index2, context) {
     } else {
         return backtrack(matrix, array1, array2, index1 - 1, index2, context);
     }
+};
+
+var get = function(array1, array2, match, context) {
+    context = context || {};
+    var matrix = lengthMatrix(array1, array2, match || defaultMatch, context);
+    var result = backtrack(matrix, array1, array2, array1.length, array2.length, context);
+    if (typeof array1 === 'string' && typeof array2 === 'string') {
+        result.sequence = result.sequence.join('');
+    }
+    return result;
 };
 
 exports.get = get;

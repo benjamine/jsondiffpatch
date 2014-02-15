@@ -4,7 +4,7 @@ var PatchContext = require('../contexts/patch').PatchContext;
 var ReverseContext = require('../contexts/reverse').ReverseContext;
 
 var CollectChildrenDiffFilter = function CollectChildrenDiffFilter(context) {
-    if (!context || !context.children) return;
+    if (!context || !context.children) { return; }
     var length = context.children.length;
     var child;
     var result = context.result;
@@ -23,7 +23,7 @@ var CollectChildrenDiffFilter = function CollectChildrenDiffFilter(context) {
 };
 
 var ObjectsDiffFilter = function ObjectsDiffFilter(context) {
-    if (context.leftIsArray || context.leftType !== 'object') return;
+    if (context.leftIsArray || context.leftType !== 'object') { return; }
 
     var name, child;
     for (name in context.left) {
@@ -45,8 +45,8 @@ var ObjectsDiffFilter = function ObjectsDiffFilter(context) {
 };
 
 var PatchFilter = function NestedPatchFilter(context) {
-    if (!context.nested) return;
-    if (context.delta._t) return;
+    if (!context.nested) { return; }
+    if (context.delta._t) { return; }
     var name, child;
     for (name in context.delta) {
         child = new PatchContext(context.left[name], context.delta[name]);
@@ -56,8 +56,8 @@ var PatchFilter = function NestedPatchFilter(context) {
 };
 
 var CollectChildrenPatchFilter = function CollectChildrenPatchFilter(context) {
-    if (!context || !context.children) return;
-    if (context.delta._t) return;
+    if (!context || !context.children) { return; }
+    if (context.delta._t) { return; }
     var length = context.children.length;
     var child;
     for (var index = 0; index < length; index++) {
@@ -70,8 +70,8 @@ var CollectChildrenPatchFilter = function CollectChildrenPatchFilter(context) {
 };
 
 var ReverseFilter = function NestedReverseFilter(context) {
-    if (!context.nested) return;
-    if (context.delta._t) return;
+    if (!context.nested) { return; }
+    if (context.delta._t) { return; }
     var name, child;
     for (name in context.delta) {
         child = new ReverseContext(context.delta[name]);
@@ -81,8 +81,8 @@ var ReverseFilter = function NestedReverseFilter(context) {
 };
 
 var CollectChildrenReverseFilter = function CollectChildrenReverseFilter(context) {
-    if (!context || !context.children) return;
-    if (context.delta._t) return;
+    if (!context || !context.children) { return; }
+    if (context.delta._t) { return; }
     var length = context.children.length;
     var child;
     var delta = {};

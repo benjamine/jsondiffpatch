@@ -1,5 +1,5 @@
 
-var isArray = (typeof Array.isArray == 'function') ?
+var isArray = (typeof Array.isArray === 'function') ?
     // use native function
     Array.isArray :
     // use instanceof operator
@@ -13,7 +13,7 @@ var DiffFilter = function TrivialMatchesDiffFilter(context) {
         return;
     }
     if (typeof context.left === 'undefined') {
-        if (typeof context.right == 'function') {
+        if (typeof context.right === 'function') {
             throw new Error('functions are not supported');
         }
         context.setResult([context.right]).exit();
@@ -23,7 +23,7 @@ var DiffFilter = function TrivialMatchesDiffFilter(context) {
         context.setResult([context.left, 0, 0]).exit();
         return;
     }
-    if (typeof context.left == 'function' || typeof context.right == 'function' ) {
+    if (typeof context.left === 'function' || typeof context.right === 'function' ) {
         throw new Error('functions are not supported');
     }
     context.leftType = context.left === null ? 'null' : typeof context.left;
@@ -55,7 +55,7 @@ var PatchFilter = function TrivialMatchesPatchFilter(context) {
         return;
     }
     context.nested = !isArray(context.delta);
-    if (context.nested) return;
+    if (context.nested) { return; }
     if (context.delta.length === 1) {
         context.setResult(context.delta[0]).exit();
         return;
@@ -76,7 +76,7 @@ var ReverseFilter = function TrivialReferseFilter(context) {
         return;
     }
     context.nested = !isArray(context.delta);
-    if (context.nested) return;
+    if (context.nested) { return; }
     if (context.delta.length === 1) {
         context.setResult([context.delta[0], 0, 0]).exit();
         return;

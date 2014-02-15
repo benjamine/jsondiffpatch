@@ -16,7 +16,7 @@ Context.prototype.exit = function() {
 };
 
 Context.prototype.switchTo = function(next, pipe) {
-	if (typeof next == 'string' || next instanceof Pipe) {
+	if (typeof next === 'string' || next instanceof Pipe) {
 		this.nextPipe = next;
 	} else {
 		this.next = next;

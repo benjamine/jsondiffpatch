@@ -1,7 +1,7 @@
 var DiffFilter = function DatesDiffFilter(context) {
     if (context.left instanceof Date) {
         if (context.right instanceof Date) {
-            if (context.left.getTime() != context.right.getTime()) {
+            if (context.left.getTime() !== context.right.getTime()) {
                 context.setResult([context.left, context.right]);
             } else {
                 context.setResult(undefined);

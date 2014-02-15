@@ -39,8 +39,12 @@
     "gulp-load-plugins": "~0.3.0",
     "gulp-karma": "0.0.2",
     "mocha": "~1.17.1",
-    "gulp-filter": "~0.2.1",
-    "karma-growler-reporter": "0.0.1"
+    "karma-growler-reporter": "0.0.1",
+    "gulp-clean": "~0.2.4",
+    "gulp-jshint": "~1.4.2",
+    "jshint-stylish": "~0.1.5",
+    "gulp-replace": "~0.2.0",
+    "gulp-plumber": "~0.5.6"
   },
   "bundleDependencies": [],
   "license": "MIT",

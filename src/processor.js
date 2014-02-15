@@ -21,7 +21,7 @@ Processor.prototype.pipe = function(name, pipe) {
 	}
 	if (name && name.name) {
 		pipe = name;
-		if (pipe.processor === this) return pipe;
+		if (pipe.processor === this) { return pipe; }
 		this.pipes[pipe.name] = pipe;
 	}
 	pipe.processor = this;
@@ -34,7 +34,7 @@ Processor.prototype.process = function(input, pipe) {
 	var nextPipe = pipe || input.pipe || 'default';
 	var lastPipe, lastContext;
 	while (nextPipe) {
-		if (typeof context.nextAfterChildren != 'undefined') {
+		if (typeof context.nextAfterChildren !== 'undefined') {
 			// children processed and coming back to parent
 			context.next = context.nextAfterChildren;
 			context.nextAfterChildren = null;

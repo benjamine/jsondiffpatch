@@ -1,3 +1,5 @@
+"use strict";
+
 var jsondiffpatch = require('./jsondiffpatch')
 var jdp = jsondiffpatch;
 

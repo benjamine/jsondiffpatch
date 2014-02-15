@@ -1,4 +1,5 @@
 (function(){
+"use strict";
 
     var factory = function(jdp) {
 

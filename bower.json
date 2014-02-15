@@ -1,6 +1,5 @@
 {
   "name": "jsondiffpatch",
-  "version": "0.0.11",
   "homepage": "https://github.com/benjamine/JsonDiffPatch",
   "main": "src/main.js",
   "authors": [
@@ -15,10 +14,9 @@
   "license": "MIT",
   "ignore": [
     "**/.*",
-    "lib",
+    "src",
     "test",
     "bin",
-    "demo",
-    "tools"
+    "demo"
   ]
 }
