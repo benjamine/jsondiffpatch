@@ -439,13 +439,21 @@
         return sequenceDiffer.diff(o, n, jdp.config.objectHash, jdp.diff);
     };
 
-    var objectDiff = function(o, n){
+    var objectDiff = function(o, n, transform){
 
         var odiff, pdiff, prop, addPropDiff;
 
-        addPropDiff = function(name){
 
-            pdiff = diff(o[name], n[name]);
+        addPropDiff = function(name){
+            if(transform && transform[name]){
+                var transformFn = transform[name];
+                var transformedOriginal = o[name]? transformFn(o[name]) : undefined;
+                var transformedNew = n[name]? transformFn(n[name]) : undefined;
+                pdiff = diff(transformedOriginal, transformedNew);                
+            } else {
+                pdiff = diff(o[name], n[name]);
+            }
+            
             if (typeof pdiff != 'undefined') {
                 if (typeof odiff == 'undefined') {
                     odiff = {};
@@ -469,7 +477,7 @@
         return odiff;
     };
 
-    var diff = jdp.diff = function(o, n){
+    var diff = jdp.diff = function(o, n, transform){
         var ntype, otype, nnull, onull, d;
 
         if (o === n) {
@@ -496,6 +504,8 @@
                 }
             }
         }
+
+
 
         if (nnull || onull || ntype == 'undefined' || ntype != otype ||
         ntype == 'number' ||
@@ -544,7 +554,7 @@
             }
             else {
                 // diff 2 objects
-                return objectDiff(o, n);
+                return objectDiff(o, n, transform);
             }
         }
     };

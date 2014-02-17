@@ -317,3 +317,85 @@ test("unpatch", 1, function(){
 
     equal(typeof this.delta2, "undefined", 'reversed new equals original');
 });
+
+
+test("diff with transform - modify a value", function(){
+    var o = {
+        'name' : {
+            'firstName': 'A',
+            'lastName': 'B',
+        }, 
+        'age': 10
+    }
+
+    var n = {
+        'name' : {
+            'firstName': 'D',
+            'lastName': 'C',
+        },
+        'age': 10
+    }
+
+    var transform = {
+        'name' : function(name){
+            return name.firstName + ' ' +  name.lastName;
+        }
+    }
+
+    var diff = jsondiffpatch.diff(o, n, transform);
+    var expectedDiff = { "name": ["A B", "D C"] };
+
+    deepEqual(diff, expectedDiff, 'diff');
+});
+
+
+test("diff with transform - remove a value", function(){
+    var o = {
+        'name' : {
+            'firstName': 'A',
+            'lastName': 'B',
+        },
+        'age': 10
+    };
+
+    var n = {
+        'age': 10
+    };
+
+    var transform = {
+        'name' : function(name){
+            return name.firstName + ' ' +  name.lastName;
+        }
+    };
+
+    var diff = jsondiffpatch.diff(o, n, transform);
+    var expectedDiff = { "name": ["A B", 0, 0] };
+
+    deepEqual(diff, expectedDiff, 'diff');
+});
+
+
+test("diff with transform - add new value", function(){
+    var n = {
+        'name' : {
+            'firstName': 'A',
+            'lastName': 'B',
+        },
+        'age': 10
+    };
+
+    var o = {
+        'age': 12
+    };
+
+    var transform = {
+        'name' : function(name){
+            return name.firstName + ' ' +  name.lastName;
+        }
+    };
+
+    var diff = jsondiffpatch.diff(o, n, transform);
+    var expectedDiff = { "name": ["A B"] , "age": [12, 10] };
+
+    deepEqual(diff, expectedDiff, 'diff');
+});
