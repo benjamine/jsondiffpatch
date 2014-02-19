@@ -195,7 +195,7 @@ To use as AMD module (eg: using RequireJS on the browser):
 Targeted platforms
 ----------------
 
-* Tested on Chrome, FireFox, IE7+, to check other browsers open [test page](http://benjamine.github.com/JsonDiffPatch/test/qunit.htm) to run unit tests.
+* Tested on Chrome, FireFox, IE8+, to check other browsers open [test page](http://benjamine.github.com/JsonDiffPatch/test/qunit.htm) to run unit tests.
 * Node.js
 
 [QUnit](http://docs.jquery.com/Qunit) is used for unit testing.

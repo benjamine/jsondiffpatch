@@ -69,6 +69,10 @@ td, th {
 #jsondiff {
     overflow: scroll;
     max-width: 800px;
+    font-family: 'Bitstream Vera Sans Mono', 'DejaVu Sans Mono', Monaco, Courier, monospace;
+    font-size: 12px;
+    margin: 0;
+    padding: 0;
 }
 
 .jsondiff {
@@ -78,7 +82,7 @@ td, th {
 footer {
     font-size: small;
     text-align: center;
-    margin: 40px;    
+    margin: 40px;
 }
 
 .credits {

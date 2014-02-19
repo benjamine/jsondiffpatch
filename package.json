@@ -1,12 +1,14 @@
 {
   "name": "jsondiffpatch",
-  "version": "0.0.11",
+  "version": "0.1.0",
   "author": "Benjamin Eidelman <beneidel@gmail.com>",
   "description": "Diff & Patch for JSON object graphs",
   "contributors": [
     "Benjamin Eidelman <beneidel@gmail.com>"
   ],
-  "bin": {},
+  "bin": {
+    "jsondiffpatch": "./bin/jsondiffpatch"
+  },
   "scripts": {
     "test": "npm install && ./node_modules/.bin/gulp test test-browser"
   },
@@ -51,7 +53,9 @@
   "engine": {
     "node": ">=0.4"
   },
-  "dependencies": {},
+  "dependencies": {
+    "chalk": "~0.4.0"
+  },
   "optionalDependencies": {
     "cli-color": ">=0.1.7"
   },

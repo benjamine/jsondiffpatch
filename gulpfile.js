@@ -7,7 +7,7 @@ var packageInfo = JSON.parse(fs.readFileSync('./package.json'));
 var browsers = process.env.BROWSERS || process.env.BROWSER || 'PhantomJS';
 browsers = browsers ? browsers.split(' ') : undefined;
 
-gulp.task('default', ['test']);
+gulp.task('default', ['build', 'test']);
 
 gulp.task('clean', function() {
     return gulp.src('./build', {read: false})
@@ -71,6 +71,14 @@ bundle({
     name: 'bundle-full',
     browserifyOptions: {
         standalone: packageInfo.name
+    }
+});
+
+bundle({
+    name: 'formatters',
+    src: './src/formatters/index.js',
+    browserifyOptions: {
+        standalone: packageInfo.name + '.formatters'
     }
 });
 

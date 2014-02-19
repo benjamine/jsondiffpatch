@@ -29,7 +29,7 @@ Context.prototype.switchTo = function(next, pipe) {
 
 Context.prototype.push = function(child, name) {
 	child.parent = this;
-	if (name) {
+	if (typeof name !== 'undefined') {
 		child.childName = name;
 	}
 	child.root = this.root || this;

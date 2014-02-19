@@ -9,6 +9,8 @@ exports.create = function(options){
 	return new DiffPatcher(options);
 };
 
+exports.dateReviver = require('./date-reviver');
+
 var defaultInstance;
 
 exports.diff = function() {
@@ -38,3 +40,8 @@ exports.reverse = function() {
 	}
 	return defaultInstance.reverse.apply(defaultInstance, arguments);
 };
+
+var inNode = typeof process !== 'undefined' && typeof process.execPath === 'string';
+if (inNode) {
+	exports.console = require('./formatters/' + 'console');
+}

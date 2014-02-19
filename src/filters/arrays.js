@@ -5,6 +5,8 @@ var ReverseContext = require('../contexts/reverse').ReverseContext;
 
 var lcs = require('./lcs');
 
+var ARRAY_MOVE = 3;
+
 var isArray = (typeof Array.isArray === 'function') ?
     // use native function
     Array.isArray :
@@ -158,8 +160,8 @@ var DiffFilter = function ArraysDiffFilter(context){
                 for (index1 = 0; index1 < removedItemsLength; index1++) {
                     if (match(trimmed1, trimmed2, removedItems[index1] - commonHead,
                         index - commonHead, matchContext)) {
-                        // store position move as: [originalValue, newPosition, 3]
-                        result['_' + removedItems[index1]].splice(1, 2, index, 3);
+                        // store position move as: [originalValue, newPosition, ARRAY_MOVE]
+                        result['_' + removedItems[index1]].splice(1, 2, index, ARRAY_MOVE);
                         if (!includeValueOnMove) {
                             // don't include moved value on diff, to save bytes
                             result['_' + removedItems[index1]][0] = '';
@@ -219,7 +221,7 @@ var PatchFilter = function NestedPatchFilter(context) {
         if (index !== '_t') {
             if (index[0] === '_') {
                 // removed item from original array
-                if (delta[index][2] === 0 || delta[index][2] === 3) {
+                if (delta[index][2] === 0 || delta[index][2] === ARRAY_MOVE) {
                     toRemove.push(parseInt(index.slice(1), 10));
                 } else {
                     throw new Error('only removal or move can be applied at original array indices' +
@@ -249,7 +251,7 @@ var PatchFilter = function NestedPatchFilter(context) {
         index1 = toRemove[index];
         var indexDiff = delta['_' + index1];
         var removedValue = array.splice(index1, 1)[0];
-        if (indexDiff[2] === 3) {
+        if (indexDiff[2] === ARRAY_MOVE) {
             // reinsert later
             toInsert.push({
                 index: indexDiff[1],
@@ -298,9 +300,9 @@ var CollectChildrenPatchFilter = function CollectChildrenPatchFilter(context) {
 
 var ReverseFilter = function NestedReverseFilter(context) {
     if (!context.nested) {
-        if (context.delta[2] === 3) {
+        if (context.delta[2] === ARRAY_MOVE) {
             context.newName = '_' + context.delta[1];
-            context.setResult([context.delta[0], parseInt(context.childName.substr(1), 10), 3]).exit();
+            context.setResult([context.delta[0], parseInt(context.childName.substr(1), 10), ARRAY_MOVE]).exit();
         }
         return;
     }
@@ -325,7 +327,7 @@ var reverseArrayDeltaIndex = function(delta, index, itemDelta) {
         } else {
             for (var index2 in delta) {
                 var itemDelta2 = delta[index2];
-                if (isArray(itemDelta2) && itemDelta2[2] === 3 && itemDelta2[1].toString() === index) {
+                if (isArray(itemDelta2) && itemDelta2[2] === ARRAY_MOVE && itemDelta2[1].toString() === index) {
                     newIndex = index2.substr(1);
                 }
             }
