@@ -37,7 +37,7 @@ var ObjectsDiffFilter = function ObjectsDiffFilter(context) {
         }
     }
 
-    if (!context.children.length) {
+    if (!context.children || context.children.length === 0) {
         context.setResult(undefined).exit();
         return;
     }

@@ -1,10 +1,32 @@
 body {
     font-family: Georgia, serif;
+    min-width: 600px;
 }
 
 h1 {
-    margin: 30px;
+    margin: 4px;
 }
+
+header > * {
+    display: inline-block;
+}
+
+#description {
+    margin-left: 10px;
+    font-size: x-large;
+}
+
+#external-link {
+    font-size: smaller;
+    vertical-align: top;
+    margin-top: 10px;
+}
+
+h2 {
+    display: inline-block;
+    margin: 5px 0;
+}
+
 
 a#fork_me {
     position: absolute;
@@ -12,43 +34,56 @@ a#fork_me {
     right: 0;
 }
 
-.jsontext {
-    text-align: center;
-}
-
-.jsontext > div {
+.json-input > div {
     float: left;
     width: 50%;
 }
 
-.jsontext textarea {
+.json-input > div
+{
+    text-align: center;
+}
+
+.CodeMirror
+{
+    text-align: initial;
+    border: 1px solid #ccc;
+}
+
+.json-input > div > textarea {
     width: 95%;
     height: 200px;
 }
 
-.buttons {
-    text-align: center;
+.prettyfy {
+    font-weight: bold;
+    font-size: smaller;
+    margin-left: 5px;
 }
 
-.buttons input {
-    margin: 15px 1px 0 1px;
-    padding: 5px 10px;
+.buttons {
+    width: 100%;
+    text-align:center;
+    height: 1px;
+}
+
+.buttons > div
+{
+    margin: 0 auto;
 }
 
 .json-error {
     background: #ffdfdf;
     -webkit-transition: all 1s;
+    transition: all 1s;
 }
 
-.jsonerrormessage {
+.error-message {
     font-weight: bold;
     color: red;
     font-size: smaller;
-}
-
-h2 {
-    display: inline-block;
-    margin: 5px 0;
+    min-height: 20px;
+    display: block;
 }
 
 .header-options {
@@ -57,26 +92,26 @@ h2 {
     display: inline-block;
 }
 
-table {
-    padding: 20px;
+#delta-panel-visual {
+    width: 100%;
+    overflow: auto;
 }
 
-td, th {
-    vertical-align: top;
-    text-align: left;
+#visualdiff {
+    margin-top: 4px;
 }
 
-#jsondiff {
-    overflow: scroll;
-    max-width: 800px;
+#json-delta {
     font-family: 'Bitstream Vera Sans Mono', 'DejaVu Sans Mono', Monaco, Courier, monospace;
     font-size: 12px;
     margin: 0;
     padding: 0;
+    width: 100%;
+    height: 200px;
 }
 
-.jsondiff {
-    width: 800px;
+#delta-panel-json > p {
+    margin: 4px;
 }
 
 footer {
@@ -102,13 +137,6 @@ footer {
     margin-top: 20px;
 }
 
-.results table {
-    width: 100%;
-}
-
-.results  {
-    width: 100%;
-}
 .results > div {
     vertical-align: top;
     display: inline-block;

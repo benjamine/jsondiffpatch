@@ -16,13 +16,13 @@ or
 bower install jsondiffpatch
 ```
 -----
-**[DEMO](http://benjamine.github.com/JsonDiffPatch/demo/index.htm)**
+**[DEMO](http://benjamine.github.com/JsonDiffPatch/demo/index.html)**
 -----
 -----
 
 - Could be used for logging, audit, remote (client-server) synchronization of changes, etc.
 - Minified version is < 6KB
-- Works in browsers and server (Node.j or any CommonJS env), open [test page](http://benjamine.github.com/JsonDiffPatch/test/qunit.htm) to check other browsers.
+- Works in browsers and server (Node.js or any CommonJS env), open [test page](http://benjamine.github.com/JsonDiffPatch/test/index.html) to check other browsers.
 - Automatically detect environment support and load as CommonJS module (eg: node.js), anonymous AMD module (eg: using RequireJS on the browser, no globals), or as browser global.
 - For long text diffs uses [google-diff_match_patch](http://code.google.com/p/google-diff-match-patch/) library if loaded (other text diff libs can be plugged in)
 - Arrays diffs are smart!
@@ -195,28 +195,14 @@ To use as AMD module (eg: using RequireJS on the browser):
 Targeted platforms
 ----------------
 
-* Tested on Chrome, FireFox, IE8+, to check other browsers open [test page](http://benjamine.github.com/JsonDiffPatch/test/qunit.htm) to run unit tests.
+* Tested on Chrome, FireFox, IE8+, to check other browsers open [test page](http://benjamine.github.com/JsonDiffPatch/test/index.html) to run unit tests.
 * Node.js
-
-[QUnit](http://docs.jquery.com/Qunit) is used for unit testing.
-Just open the [test page](http://benjamine.github.com/JsonDiffPatch/test/qunit.htm) on your preferred browser.
 
 To run tests on Node.js on jsondiffpatch root folder:
 
 ```
     npm i
     npm test
-```
-
-Minification
-----------------
-
-A minified version is provided as jsondiffpatch.min.js
-To regenerate that file run (npm i is required as uglifyjs is used):
-
-```
-    npm i
-    npm run-script minify
 ```
 
 Including JsonDiffPatch in your application
@@ -228,8 +214,13 @@ Install using npm:
 npm install jsondiffpatch
 ```
 
-or, Download the latest release from the web site (http://github.com/benjamine/JsonDiffPatch) and copy
-`jsondiffpatch.min.js` to a suitable location. To support text diffs include Google's diff_match_patch.
+or
+
+```
+bower install jsondiffpatch
+```
+
+To support text diffs include Google's diff_match_patch.
 
 Then include it in your HTML
 like so:
@@ -238,30 +229,6 @@ like so:
     <script type="text/javascript" src="/path/to/diff_match_patch_uncompressed.js"></script>
 
 Note: you can use JsonDiffPatch on browserless JavaScript environments too (as [Node.js](http://nodejs.org/), or [Mozilla Rhino](http://www.mozilla.org/rhino/)).
-
-On Node.js you have to connect your text diff/patch library explicitly. eg:
-
-    var jsondiffpatch = require('./jsondiffpatch.js');
-
-    // load google diff_match_patch library for text diff/patch
-    jsondiffpatch.config.diff_match_patch = require('./diff_match_patch_uncompressed.js');
-
-    // use text diff for strings longer than 5 chars
-    jsondiffpatch.config.textDiffMinLength = 5;
-
-    var d = jsondiffpatch.diff({ age: 5, name: 'Arturo' }, {age: 7, name: 'Armando' });
-    // d = {
-    //   age: [ 5, 7 ],
-    //   name: [ '@@ -1,6 +1,7 @@\n Ar\n-tur\n+mand\n o\n', 0, 2 ] }
-
-    console.log(d.name[0])
-    // prints:
-    // @@ -1,6 +1,7 @@
-    // Ar
-    // -tur
-    // +mand
-    //  o
-
 
 Visual Diff
 ----------------
