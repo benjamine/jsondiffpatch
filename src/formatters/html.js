@@ -85,21 +85,10 @@ var adjustArrows = function jsondiffpatchHtmlFormatterAdjustArrows(node) {
     });
 };
 
-HtmlFormatter.prototype.nodeBegin = function(context, key, type, nodeType) {
-    var nodeClass = 'jsondiffpatch-' + type +
-        (nodeType ? ' jsondiffpatch-child-node-type-' + nodeType : '');
-    context.out('<li class="' + nodeClass + '" data-key="' + key + '">' +
-        '<div class="jsondiffpatch-property-name">' + key + '</div>');
-};
-
 HtmlFormatter.prototype.rootBegin = function(context, type, nodeType) {
     var nodeClass = 'jsondiffpatch-' + type +
         (nodeType ? ' jsondiffpatch-child-node-type-' + nodeType : '');
     context.out('<div class="jsondiffpatch-delta ' + nodeClass + '">');
-};
-
-HtmlFormatter.prototype.nodeEnd = function(context) {
-    context.out('</li>');
 };
 
 HtmlFormatter.prototype.rootEnd = function(context) {
@@ -107,6 +96,18 @@ HtmlFormatter.prototype.rootEnd = function(context) {
         ('<script type="text/javascript">setTimeout(' +
             adjustArrows.toString() +
             ',10);</script>') : ''));
+};
+
+HtmlFormatter.prototype.nodeBegin = function(context, key, leftKey, type, nodeType) {
+    var nodeClass = 'jsondiffpatch-' + type +
+        (nodeType ? ' jsondiffpatch-child-node-type-' + nodeType : '');
+    context.out('<li class="' + nodeClass + '" data-key="' + leftKey + '">' +
+        '<div class="jsondiffpatch-property-name">' + leftKey + '</div>');
+};
+
+
+HtmlFormatter.prototype.nodeEnd = function(context) {
+    context.out('</li>');
 };
 
 /* jshint camelcase: false */

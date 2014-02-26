@@ -74,7 +74,7 @@ BaseFormatter.prototype.finalize = function(context) {
     }
 };
 
-BaseFormatter.prototype.recurse = function(context, delta, left, key, movedFrom) {
+BaseFormatter.prototype.recurse = function(context, delta, left, key, leftKey, movedFrom, isLast) {
     if (typeof delta === 'undefined' && typeof key === 'undefined') {
         return undefined;
     }
@@ -82,7 +82,7 @@ BaseFormatter.prototype.recurse = function(context, delta, left, key, movedFrom)
     var nodeType = type === 'node' ? (delta._t === 'a' ? 'array' : 'object') : '';
 
     if (typeof key !== 'undefined') {
-        this.nodeBegin(context, key, type, nodeType);
+        this.nodeBegin(context, key, leftKey, type, nodeType, isLast);
     } else {
         this.rootBegin(context, type, nodeType);
     }
@@ -90,16 +90,16 @@ BaseFormatter.prototype.recurse = function(context, delta, left, key, movedFrom)
     var typeFormattter;
     try {
         typeFormattter = this['format_' + type] || this.typeFormattterNotFound(context, type);
-        typeFormattter.call(this, context, delta, left);
+        typeFormattter.call(this, context, delta, left, key, leftKey, movedFrom);
     } catch (err) {
-        this.typeFormattterErrorFormatter(context, err, delta, left);
+        this.typeFormattterErrorFormatter(context, err, delta, left, key, leftKey, movedFrom);
         if (typeof console !== 'undefined' && console.error) {
             console.error(err.stack);
         }
     }
 
     if (typeof key !== 'undefined') {
-        this.nodeEnd(context, key, type, nodeType);
+        this.nodeEnd(context, key, leftKey, type, nodeType, isLast);
     } else {
         this.rootEnd(context, type, nodeType);
     }
@@ -107,9 +107,9 @@ BaseFormatter.prototype.recurse = function(context, delta, left, key, movedFrom)
 
 BaseFormatter.prototype.formatDeltaChildren = function(context, delta, left) {
     var self = this;
-    this.forEachDeltaKey(delta, left, function(key, leftKey, movedFrom) {
+    this.forEachDeltaKey(delta, left, function(key, leftKey, movedFrom, isLast) {
         self.recurse(context, delta[key], left ? left[leftKey] : undefined,
-            leftKey, movedFrom);
+            key, leftKey, movedFrom, isLast);
     });
 };
 
@@ -126,13 +126,14 @@ BaseFormatter.prototype.forEachDeltaKey = function(delta, left, fn) {
             }
         }
     }
+    // look for move destinations
     for (name in delta) {
         var value = delta[name];
         if (isArray(value) && value[2] === 3) {
             moveDestinations[value[1].toString()] = value[0];
-            if (typeof left === 'undefined') {
-                // array move, ensure destination is in keys
-                if (typeof delta[value[1]] === 'undefined') {
+            if (this.includeMoveDestinations !== false) {
+                if ((typeof left === 'undefined') &&
+                    (typeof delta[value[1]] === 'undefined')) {
                     keys.push(value[1].toString());
                 }
             }
@@ -149,7 +150,8 @@ BaseFormatter.prototype.forEachDeltaKey = function(delta, left, fn) {
         var leftKey = arrayKeys ?
             (typeof key === 'number' ? key : parseInt(trimUnderscore(key), 10)) :
             key;
-        fn(keys[index], leftKey, moveDestinations[leftKey]);
+        var isLast = (index === length - 1);
+        fn(key, leftKey, moveDestinations[leftKey], isLast);
     }
 };
 

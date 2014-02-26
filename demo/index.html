@@ -5,6 +5,7 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <link rel="stylesheet" href="style.css" type="text/css" media="screen" />
         <link rel="stylesheet" href="../src/formatters/html.css" type="text/css" media="screen" />
+        <link rel="stylesheet" href="../src/formatters/annotated.css" type="text/css" media="screen" />
         <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/codemirror/3.21.0/codemirror.min.css" type="text/css" media="screen" />
         <script type='text/javascript' src='../build/bundle.min.js'>
         </script>
@@ -71,6 +72,10 @@
                 <input id="show-delta-type-json" type="radio" name="delta-type">
                 JSON
             </label>
+            <label>
+                <input id="show-delta-type-annotated" type="radio" name="delta-type">
+                JSON (Annotated)
+            </label>
             <div id="delta-panel-visual">
                 <div class="header-options">
                     <input id="showunchanged" type="checkbox">
@@ -79,6 +84,10 @@
                     </label>
                 </div>
                 <p id="visualdiff">
+                </p>
+            </div>
+            <div id="delta-panel-annotated" style="display: none;">
+                <p id="annotateddiff">
                 </p>
             </div>
             <div id="delta-panel-json" style="display: none;">

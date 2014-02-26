@@ -81,15 +81,6 @@ ConsoleFormatter.prototype.formatTextDiffString = function(context, value) {
     context.indent(-1);
 };
 
-ConsoleFormatter.prototype.nodeBegin = function(context, key, type, nodeType) {
-    context.pushColor(colors[type]);
-    context.out(key +  ': ');
-    if (type ==='node') {
-        context.out(nodeType === 'array' ? '[' : '{');
-        context.indent();
-    }
-};
-
 ConsoleFormatter.prototype.rootBegin = function(context, type, nodeType) {
     context.pushColor(colors[type]);
     if (type ==='node') {
@@ -98,7 +89,7 @@ ConsoleFormatter.prototype.rootBegin = function(context, type, nodeType) {
     }
 };
 
-ConsoleFormatter.prototype.nodeEnd = function(context, key, type, nodeType) {
+ConsoleFormatter.prototype.rootEnd = function(context, type, nodeType) {
     if (type ==='node') {
         context.out(nodeType === 'array' ? ']' : '}');
         context.indent(-1);
@@ -108,10 +99,20 @@ ConsoleFormatter.prototype.nodeEnd = function(context, key, type, nodeType) {
     context.popColor();
 };
 
-ConsoleFormatter.prototype.rootEnd = function(context, type, nodeType) {
+ConsoleFormatter.prototype.nodeBegin = function(context, key, leftKey, type, nodeType) {
+    context.pushColor(colors[type]);
+    context.out(leftKey +  ': ');
     if (type ==='node') {
-        context.out(nodeType === 'array' ? ']' : '}');
+        context.out(nodeType === 'array' ? '[' : '{');
+        context.indent();
+    }
+};
+
+ConsoleFormatter.prototype.nodeEnd = function(context, key, leftKey, type, nodeType, isLast) {
+    if (type ==='node') {
         context.indent(-1);
+        context.out(nodeType === 'array' ? ']' : '}' +
+            (isLast ? '' : ','));
     } else {
         context.outLine();
     }

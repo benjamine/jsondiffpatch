@@ -309,27 +309,48 @@
             areas.delta.setValue('');
             return;
         }
+        var selectedType = getSelectedDeltaType();
         var visualdiff = document.getElementById('visualdiff');
+        var annotateddiff = document.getElementById('annotateddiff');
         var jsondifflength = document.getElementById('jsondifflength');
         try {
             var delta = instance.diff(left, right);
 
             if (typeof delta === 'undefined') {
-                areas.delta.setValue('no diff');
-                jsondifflength.innerHTML = '0';
-                visualdiff.innerHTML = 'no diff';
-            } else {
-                areas.delta.setValue(JSON.stringify(delta, null, 2));
-                jsondifflength.innerHTML = (Math.round(JSON.stringify(delta).length / 102.4) / 10.0)+'';
-                visualdiff.innerHTML = jsondiffpatch.formatters.html.format(delta, left);
-                if (!document.getElementById('showunchanged').checked) {
-                    jsondiffpatch.formatters.html.hideUnchanged();
+                switch (selectedType) {
+                    case 'visual':
+                        visualdiff.innerHTML = 'no diff';
+                        break;
+                    case 'annotated':
+                        annotateddiff.innerHTML = 'no diff';
+                        break;
+                    case 'json':
+                        areas.delta.setValue('no diff');
+                        jsondifflength.innerHTML = '0';
+                        break;
                 }
-                dom.runScriptTags(visualdiff);
+            } else {
+                switch (selectedType) {
+                    case 'visual':
+                        visualdiff.innerHTML = jsondiffpatch.formatters.html.format(delta, left);
+                        if (!document.getElementById('showunchanged').checked) {
+                            jsondiffpatch.formatters.html.hideUnchanged();
+                        }
+                        dom.runScriptTags(visualdiff);
+                        break;
+                    case 'annotated':
+                        annotateddiff.innerHTML = jsondiffpatch.formatters.annotated.format(delta);
+                        break;
+                    case 'json':
+                        areas.delta.setValue(JSON.stringify(delta, null, 2));
+                        jsondifflength.innerHTML = (Math.round(JSON.stringify(delta).length / 102.4) / 10.0)+'';
+                        break;
+                }
             }
         } catch(err) {
             jsondifflength.innerHTML = '0';
             visualdiff.innerHTML = '';
+            annotateddiff.innerHTML = '';
             areas.delta.setValue('');
             areas.delta.error(err);
             if (typeof console !== 'undefined' && console.error) {
@@ -348,6 +369,33 @@
     dom.on(areas.left.element, 'keyup', compare);
     dom.on(areas.right.element, 'keyup', compare);
 
+    var getSelectedDeltaType = function() {
+        if (document.getElementById('show-delta-type-visual').checked) {
+            return 'visual';
+        }
+        if (document.getElementById('show-delta-type-annotated').checked) {
+            return 'annotated';
+        }
+        if (document.getElementById('show-delta-type-json').checked) {
+            return 'json';
+        }
+    };
+
+    var showSelectedDeltaType = function() {
+        var type = getSelectedDeltaType();
+        document.getElementById('delta-panel-visual').style.display =
+            type === 'visual' ? '' : 'none';
+        document.getElementById('delta-panel-annotated').style.display =
+            type === 'annotated' ? '' : 'none';
+        document.getElementById('delta-panel-json').style.display =
+            type === 'json' ? '' : 'none';
+        compare();
+    };
+
+    dom.on(document.getElementById('show-delta-type-visual'), 'click', showSelectedDeltaType);
+    dom.on(document.getElementById('show-delta-type-annotated'), 'click', showSelectedDeltaType);
+    dom.on(document.getElementById('show-delta-type-json'), 'click', showSelectedDeltaType);
+
     dom.on(document.getElementById('swap'), 'click', function(){
         var leftValue = areas.left.getValue();
         areas.left.setValue(areas.right.getValue());
@@ -364,15 +412,6 @@
     dom.on(document.getElementById('showunchanged'), 'change', function(){
         jsondiffpatch.formatters.html.showUnchanged(document.getElementById('showunchanged').checked, null, 800);
     });
-
-    var showSelectedDeltaType = function() {
-        var visual = !document.getElementById('show-delta-type-json').checked;
-        document.getElementById('delta-panel-json').style.display = visual ? 'none' : '';
-        document.getElementById('delta-panel-visual').style.display = (!visual) ? 'none' : '';
-    };
-
-    dom.on(document.getElementById('show-delta-type-visual'), 'click', showSelectedDeltaType);
-    dom.on(document.getElementById('show-delta-type-json'), 'click', showSelectedDeltaType);
 
     dom.ready(setTimeout(compare));
 
