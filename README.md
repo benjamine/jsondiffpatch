@@ -1,54 +1,30 @@
-JsonDiffPatch
-=========
+<h1>Js<span class="jsondiffpatch-textdiff-deleted" style="background:#fbb;text-decoration:line-through;"><span>on</span></span><span class="jsondiffpatch-textdiff-added" style="background:#bfb"><span>Diff</span></span>Patch</h1>
+<!--- badges -->
+[![Build Status](https://secure.travis-ci.org/benjamine/JsonDiffPatch.png)](http://travis-ci.org/benjamine/JsonDiffPatch)
+[![NPM version](https://badge.fury.io/js/jsondiffpatch.png)](http://badge.fury.io/js/jsondiffpatch)
+[![Bower version](https://badge.fury.io/bo/jsondiffpatch.png)](http://badge.fury.io/bo/jsondiffpatch)
 
-*Diff & Patch for JavaScript objects and arrays (ie. any JSON serializable structure)*
+Diff & patch JavaScript objects
 
-JsonDiffPatch is a small library that allows to diff object graphs, create a patch (in pure JSON), and apply it to update an original version.
-
-Now available on npm:
-```
-npm install jsondiffpatch
-```
-
-or
-
-```
-bower install jsondiffpatch
-```
 -----
-**[DEMO](http://benjamine.github.com/JsonDiffPatch/demo/index.html)**
------
+**[Live Demo](http://benjamine.github.com/JsonDiffPatch/demo/index.html)**
 -----
 
-- Could be used for logging, audit, remote (client-server) synchronization of changes, etc.
-- Minified version is < 6KB
-- Works in browsers and server (Node.js or any CommonJS env), open [test page](http://benjamine.github.com/JsonDiffPatch/test/index.html) to check other browsers.
-- Automatically detect environment support and load as CommonJS module (eg: node.js), anonymous AMD module (eg: using RequireJS on the browser, no globals), or as browser global.
-- For long text diffs uses [google-diff_match_patch](http://code.google.com/p/google-diff-match-patch/) library if loaded (other text diff libs can be plugged in)
-- Arrays diffs are smart!
-  - Using [LCS](http://en.wikipedia.org/wiki/Longest_common_subsequence_problem) (the same type of algorithm used by popular text diff tools on lines of text) insertions and deletions are detected efficiently.
-  - Also detects items moved on the same array (a refinement to LCS). Patching will only move the item in the array, and inner changes in the moved object are diffed/patched too.
-  - Works with objects in the array if you provide a hash function, eg: ``` jsondiffpatch.config.objectHash = function(obj) { return obj.id || JSON.stringify(obj); }; ```. ***NOTE: If no objectHash function is configured Array items are compared using just ```===```***, meaning ```{ a: 1 }``` is different from ```{ a: 1 }``` unless they reference the same instance, this is by design, because object equality is a problem without trivial solution. Some use-cases are fine with just ```===``` (the default), others need comparison by an id field, others full JSON stringify, be sure to provide yours if default is not enough, as in DEMO page)
-- Reverse a diff and unpatch (eg. revert object to its original state based on diff)
-- Optional lib included for visualizing diffs as html
+- min+gzipped < 6KB
+- browser (´´´/build/bundle.js´´´) and server (eg. node.js)
+- includes [google-diff_match_patch](http://code.google.com/p/google-diff-match-patch/) for long text diffs (diff at characther level)
+- smart array diffing using [LCS](http://en.wikipedia.org/wiki/Longest_common_subsequence_problem), ***IMPORTANT NOTE:*** to match objects inside an array you ***must*** provide an ```objectHash``` function, check [Array diff documentation](docs/arrays.md)
+- reverse a delta
+- unpatch (eg. revert object to its original state using a delta)
+- simplistic low footprint [delta format](docs/formatters.md)
+- multiple output formatters:
+    - html (check it at the [Live Demo](http://benjamine.github.com/JsonDiffPatch/demo/index.html))
+    - annotated json (html), makes the JSON delta forma self-explained
+    - console (colored), try running ```./node_modules/.bin/jsondiffpatch left.json right.json```
+    - write your own! check [Formatters documentation](docs/formatters.md)
 
-## Delta Legend
-
-- Objects on the graph means that it's a node in the diff tree and will continue recursively
-  - `_t`: (special member) indicates the type of node, `a` means `array`, otherwise it's an `object`.
-  - in arrays, `N` indicates index on the new array, `_N` means index at the original array.
-
-- Arrays in the delta means that the node has changed
-  - `[newValue]` -> added
-  - `[oldValue, newValue]` -> modified
-  - `[oldValue, 0, 0]` -> deleted
-  - `[textDiff, 0, 2]` -> text diff
-  - `["", N, 3]` -> element was moved to N
-
-
-###Example
-
-Object diffing:
+Usage
+-----
 
 ``` javascript
     // sample data
@@ -60,22 +36,20 @@ Object diffing:
     };
 
     // clone country, using dateReviver for Date objects
-    var country2 = JSON.parse(JSON.stringify(country),jsondiffpatch.dateReviver);
+    var country2 = JSON.parse(JSON.stringify(country), jsondiffpatch.dateReviver);
 
     // make some changes
-    country2.name = "Rep�blica Argentina";
-    country2.population = "41324992";
+    country2.name = "Republica Argentina";
+    country2.population = 41324992;
     delete country2.capital;
 
-    var delta = jsondiffpatch.diff(country,country2);
+    var delta = jsondiffpatch.diff(country, country2);
 
-    /*
-    delta = {
-        "name":["Argentina","Rep�blica Argentina"], // old value, new value
+    assertSame(delta, {
+        "name":["Argentina","Republica Argentina"], // old value, new value
         "population":["41324992"], // new value
-        "capital":["Buenos Aires",0,0] // deleted
-    }
-    */
+        "capital":["Buenos Aires", 0, 0] // deleted
+    });
 
     // patch original
     jsondiffpatch.patch(country, delta);
@@ -84,9 +58,9 @@ Object diffing:
     var reverseDelta = jsondiffpatch.reverse(delta);
     // also country2 can be return to original value with: jsondiffpatch.unpatch(country2, delta);
 
-    var delta2 = jsondiffpatch.diff(country,country2);
-
-    // delta2 is undefined, no difference
+    var delta2 = jsondiffpatch.diff(country, country2);
+    assert(delta2 === undefined)
+    // undefined => no difference
 ```
 
 Array diffing:
@@ -101,7 +75,7 @@ Array diffing:
             population: 13028000,
         },
         {
-            name: 'C�rdoba',
+            name: 'Cordoba',
             population: 1430023,
         },
         {
@@ -113,7 +87,7 @@ Array diffing:
             population: 901126,
         },
         {
-            name: 'San Miguel de Tucum�n',
+            name: 'San Miguel de Tucuman',
             population: 800000,
         }
         ]
@@ -122,7 +96,7 @@ Array diffing:
     // clone country
     var country2 = JSON.parse(JSON.stringify(country));
 
-    // delete C�rdoba
+    // delete Cordoba
     country.cities.splice(1, 1);
 
     // add La Plata
@@ -135,20 +109,22 @@ Array diffing:
     rosario.population += 1234;
     country.cities.push(rosario);
 
-    // match objects by name
-    jsondiffpatch.config.objectHash = function(obj) {
-        return obj.name;
-    }
+    // create a configured instance, match objects by name
+    var diffpatcher = jsondiffpatch.create({
+        objectHash: function(obj) {
+            return obj.name;
+        }
+    });
 
-    var delta = jsondiffpatch.diff(country,country2);
+    var delta = jsondiffpatch.diff(country, country2);
 
-    /*
-    delta = {
+    assertSame(delta, {
         "cities": {
+            "_t": "a", // indicates this node is an array (not an object)
             "1": [
                 // inserted at index 1
                 {
-                    "name": "C�rdoba",
+                    "name": "Cordoba",
                     "population": 1430023
                 }]
             ,
@@ -159,97 +135,108 @@ Array diffing:
                     1136286
                 ]
             },
-            "_t": "a",
             "_3": [
                 // removed from index 3
                 {
                     "name": "La Plata"
-                },0,0],
+                }, 0, 0],
             "_4": [
                 // move from index 4 to index 2
-                '',2,3]
+                '', 2, 3]
         }
-    }
-    */
+    });
 ```
 
-For more complex cases (nested objects or arrays, long text diffs) check unit tests in /test/test.js
+For more example cases (nested objects or arrays, long text diffs) check ```test/examples/```
 
-To use as AMD module (eg: using RequireJS on the browser):
-
-    require('jsondiffpatch', function(jsondiffpatch){
-
-        // code using jsondiffpatch
-
-    });
-
-    // a module that depends on jsondiffpatch
-    define('mytexteditor.visualcomparer', ['jsondiffpatch'], function(jsondiffpatch){
-
-        // module implementation using jsondiffpatch
-
-    });
-
-
+If you want to understand deltas, see [delta format documentation](docs/formatters.md)
 
 Targeted platforms
 ----------------
 
-* Tested on Chrome, FireFox, IE8+, to check other browsers open [test page](http://benjamine.github.com/JsonDiffPatch/test/index.html) to run unit tests.
-* Node.js
+* Any modern browser including IE8+, Firefox is tested on CI, you can test your current browser visiting [test page](http://benjamine.github.com/JsonDiffPatch/test/index.html).
+* Node.js, tested on CI
 
-To run tests on Node.js on jsondiffpatch root folder:
+To run tests locally:
 
-```
+``` sh
     npm i
     npm test
+
+    # test on specific browsers (using karma.js)
+    BROWSERS=chrome,phantomjs npm test
 ```
 
-Including JsonDiffPatch in your application
+Installing
 ---------------
 
-Install using npm:
+### npm (node.js)
 
-```
+``` sh
 npm install jsondiffpatch
 ```
 
-or
-
+``` js
+var jsondiffpatch = require('jsondiffpatch').create(options);
 ```
+
+### bower (browser)
+
+``` sh
 bower install jsondiffpatch
 ```
 
-To support text diffs include Google's diff_match_patch.
+bundles to include are on the ```/build``` folder:
+- bundle.js main bundle
+- bundle.full.js includes diff_match_patch library for text diffs
+- formatters.js includes builtin formatters (only those useful in a browser)
 
-Then include it in your HTML
-like so:
-
-    <script type="text/javascript" src="/path/to/jsondiffpatch.min.js"></script>
-    <script type="text/javascript" src="/path/to/diff_match_patch_uncompressed.js"></script>
-
-Note: you can use JsonDiffPatch on browserless JavaScript environments too (as [Node.js](http://nodejs.org/), or [Mozilla Rhino](http://www.mozilla.org/rhino/)).
+(all these include minified versions)
 
 Visual Diff
 ----------------
 
-To visualize diffs you can include JsonDiffPatch.Html script + css on your page:
+``` html
+<!DOCTYPE html>
+<html>
+    <head>
+        <script type="text/javascript" src="build/bundle.min.js"></script>
+        <script type="text/javascript" src="build/formatters.min.js"></script>
+        <link rel="stylesheet" href="src/formatters/html.css" type="text/css" />
+        <link rel="stylesheet" href="src/formatters/annotated.css" type="text/css" />
+    </head>
+    <body>
+        <div id="visual"></div>
+        <hr/>
+        <div id="annotated"></div>
+        <script>
+            var left = { a: 3, b: 4 };
+            var right = { a: 5, c: 9 };
+            var delta = jsondiffpatch.diff(left, right);
 
-    <script type="text/javascript" src="/path/to/jsondiffpatch.html.js"></script>
-    <link rel="stylesheet" href="../src/jsondiffpatch.html.css" type="text/css" />
-Now you can use the jsondiffpatch.html.diffToHtml() function to visualize diffs as html:
+            // beautiful html diff
+            document.getElementById('visual').innerHTML = jsondiffpatch.formatters.html.format(delta, left);
 
+            // self-explained json
+            document.getElementById('annotated').innerHTML = jsondiffpatch.formatters.annotated.format(delta, left);
+        </script>
+    </body>
+</html>
 ```
-    var json1 = JSON.parse($('#json1').val());
-    var json2 = JSON.parse($('#json2').val());
-    var d = jsondiffpatch.diff(json1, json2);
-    $('#myvisualdiffcontainer').empty().append(jsondiffpatch.html.diffToHtml(json1, json2, d));
-```
 
-To see this in action check the [DEMO](http://benjamine.github.com/JsonDiffPatch/demo/index.htm) page.
+To see formatters in action check the [Live Demo](http://benjamine.github.com/JsonDiffPatch/demo/index.html).
 
-Also you can generate diffs with jsondiffpatch on your console:
+For more details check [Formatters documentation](docs/formatters.md)
 
-```
-jsondiffpatch .\test\testdata.json .\test\testdata2.json
+Console
+--------
+
+``` sh
+# diff two json files, colored output (using chalk lib)
+./node_modules/.bin/jsondiffpatch ./left.json ./right.json
+
+# or install globally
+npm install -g jsondiffpatch
+
+jsondiffpatch ./left.json ./right.json
 ```
