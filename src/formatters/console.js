@@ -14,6 +14,7 @@ var colors = {
 };
 
 var ConsoleFormatter = function ConsoleFormatter() {
+    this.includeMoveDestinations = false;
 };
 
 ConsoleFormatter.prototype = new BaseFormatter();
@@ -91,10 +92,8 @@ ConsoleFormatter.prototype.rootBegin = function(context, type, nodeType) {
 
 ConsoleFormatter.prototype.rootEnd = function(context, type, nodeType) {
     if (type ==='node') {
-        context.out(nodeType === 'array' ? ']' : '}');
         context.indent(-1);
-    } else {
-        context.outLine();
+        context.out(nodeType === 'array' ? ']' : '}');
     }
     context.popColor();
 };
@@ -113,7 +112,8 @@ ConsoleFormatter.prototype.nodeEnd = function(context, key, leftKey, type, nodeT
         context.indent(-1);
         context.out(nodeType === 'array' ? ']' : '}' +
             (isLast ? '' : ','));
-    } else {
+    }
+    if (!isLast) {
         context.outLine();
     }
     context.popColor();

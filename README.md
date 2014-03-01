@@ -11,12 +11,12 @@ Diff & patch JavaScript objects
 -----
 
 - min+gzipped < 6KB
-- browser (´´´/build/bundle.js´´´) and server (eg. node.js)
+- browser (```/build/bundle.js```) and server (eg. node.js)
 - includes [google-diff_match_patch](http://code.google.com/p/google-diff-match-patch/) for long text diffs (diff at characther level)
 - smart array diffing using [LCS](http://en.wikipedia.org/wiki/Longest_common_subsequence_problem), ***IMPORTANT NOTE:*** to match objects inside an array you ***must*** provide an ```objectHash``` function, check [Array diff documentation](docs/arrays.md)
 - reverse a delta
 - unpatch (eg. revert object to its original state using a delta)
-- simplistic low footprint [delta format](docs/formatters.md)
+- simplistic, pure JSON, low footprint [delta format](docs/formatters.md)
 - multiple output formatters:
     - html (check it at the [Live Demo](http://benjamine.github.com/JsonDiffPatch/demo/index.html))
     - annotated json (html), makes the JSON delta forma self-explained
@@ -154,16 +154,17 @@ If you want to understand deltas, see [delta format documentation](docs/formatte
 Targeted platforms
 ----------------
 
-* Any modern browser including IE8+, Firefox is tested on CI, you can test your current browser visiting [test page](http://benjamine.github.com/JsonDiffPatch/test/index.html).
+* Any modern browser and IE8+. Firefox is tested on CI, you can test your current browser visiting [test page](http://benjamine.github.com/JsonDiffPatch/test/index.html).
 * Node.js, tested on CI
 
 To run tests locally:
 
 ``` sh
     npm i
+    # will test in node.js and phantomjs (headless browser)
     npm test
 
-    # test on specific browsers (using karma.js)
+    # or test on specific browsers (using karma.js)
     BROWSERS=chrome,phantomjs npm test
 ```
 
@@ -238,5 +239,7 @@ Console
 # or install globally
 npm install -g jsondiffpatch
 
-jsondiffpatch ./left.json ./right.json
+jsondiffpatch ./demo/left.json ./demo/right.json
 ```
+
+![console_demo!](demo/consoledemo.png)
