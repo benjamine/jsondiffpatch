@@ -19,47 +19,46 @@ Here is an example to provide number differences in deltas (when left and right 
 This, way when diffing 2 numbers instead of obtaining ```[ oldValue, newValue ] ```, the difference between both values will be saved, this could be useful for counters simultaneously incremented in multiple client applications (patches that both increment a value would be combined, instead of failing with a conflict).
 
 ``` javascript
+
+/*
+Plugin a new diff filter
+*/
+
   var diffpatcher = jsondiffpatch.create();
   var NUMERIC_DIFFERENCE = -8;
   
   var numericDiffFilter = function(context) {
     if (typeof context.left === 'number' && typeof context.right === 'number') {
-      context.setResult([context.left, context.right - context.left, NUMERIC_DIFFERENCE]).exit();
+      context.setResult([0, context.right - context.left, NUMERIC_DIFFERENCE]).exit();
     }
   };
   // a filterName is useful if I want to allow other filters to be inserted before/after this one
   numericDiffFilter.filterName = 'numeric';
 
-  // check the list of filters for the diff pipe
-  var list = diffpatcher.processor.pipes.diff.list();
-  assertSame(list, ["collectChildren", "trivial", "dates", "texts", "objects", "arrays"]);
+  // to decide where to insert your filter you can look at the pipe's filter list
+  assertSame(diffpatcher.processor.pipes.diff.list(),
+    ["collectChildren", "trivial", "dates", "texts", "objects", "arrays"]);
 
   // insert my new filter, right before trivial one
   diffpatcher.processor.pipes.diff.before('trivial', numericDiffFilter);
 
+  // for debugging, log each filter
+  diffpatcher.processor.pipes.diff.debug = true;
+
   // try it
   var delta = diffpatcher.diff({ population: 400 }, { population: 403 });
-  assertSame(delta, [400, 3, -8]);
+  assertSame(delta, [0, 3, NUMERIC_DIFFERENCE]);
 
-```
+/*
+Let's make the corresponding patch filter that will handle the new delta type
+*/
 
-Now let's make the corresponding patch filter that will handle the new delta type
-
-``` javascript
   var numericPatchFilter = function(context) {
     if (context.delta && Array.isArray(context.delta) && context.delta[2] === NUMERIC_DIFFERENCE) {
-      console.log('A number diff!');
       context.setResult(context.left + context.delta[1]).exit();
     }
   };
-  // a filterName is useful if I want to allow other filters to be inserted before/after this one
   numericPatchFilter.filterName = 'numeric';
-
-  // check the list of filters for the patch pipe
-  var list = diffpatcher.processor.pipes.patch.list();
-  assertSame(list, ["collectChildren", "arraysCollectChildren", "trivial", "texts", "objects", "arrays"]);
-
-  // insert my new filter, right before trivial one
   diffpatcher.processor.pipes.patch.before('trivial', numericPatchFilter);
 
   // try it
@@ -67,6 +66,30 @@ Now let's make the corresponding patch filter that will handle the new delta typ
   assertSame(right, { population: 403 });
   
   // patch twice!
-  var right = diffpatcher.patch(right, delta);
+  right = diffpatcher.patch(right, delta);
   assertSame(right, { population: 406 });
+
+/*
+To complete the plugin, let's add the reverse filter, so numeric deltas can be reversed 
+(this is needed for unpatching too)
+*/
+
+  var numericReverseFilter = function(context) {
+    if (context.nested) { return; }
+    if (context.delta && Array.isArray(context.delta) && context.delta[2] === NUMERIC_DIFFERENCE) {
+      context.setResult([0, -context.delta[1], NUMERIC_DIFFERENCE]).exit();
+    }
+  };
+  numericReverseFilter.filterName = 'numeric';
+  diffpatcher.processor.pipes.reverse.after('trivial', numericReverseFilter);
+
+  // try it
+  var reverseDelta = diffpatcher.reverse(delta);
+  assertSame(reverseDelta, [0, -3, NUMERIC_DIFFERENCE]);
+  
+  // unpatch twice!
+  right = diffpatcher.unpatch(right, delta);
+  right = diffpatcher.unpatch(right, delta);
+  assertSame(right, { population: 400 });
 ```
+
