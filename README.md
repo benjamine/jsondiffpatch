@@ -154,11 +154,15 @@ For more example cases (nested objects or arrays, long text diffs) check ```test
 
 If you want to understand deltas, see [delta format documentation](docs/deltas.md)
 
-Targeted platforms
+Supported platforms
 ----------------
 
-* Any modern browser and IE8+. Firefox is tested on CI, you can test your current browser visiting [test page](http://benjamine.github.com/jsondiffpatch/test/index.html).
-* Node.js, tested on CI
+* Any modern browser and IE8+
+[![Testling Status](https://ci.testling.com/benjamine/jsondiffpatch.png)](https://ci.testling.com/benjamine/jsondiffpatch)
+
+you can test your current browser visiting [test page](http://benjamine.github.com/jsondiffpatch/test/index.html).
+
+* Node.js [![Build Status](https://secure.travis-ci.org/benjamine/jsondiffpatch.png)](http://travis-ci.org/benjamine/jsondiffpatch)
 
 To run tests locally:
 
