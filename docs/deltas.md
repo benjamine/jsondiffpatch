@@ -48,6 +48,15 @@ delta = {
 
 > Note: only properties with inner deltas are included
 
+Here's an example combining what we have:
+
+```
+delta = {
+  property1: [ newValue1 ], // obj[property1] = newValue1
+  property2: [ oldValue2, newValue2] // obj[property2] = newValue2 (and previous value was oldValue2)
+  property5: [ oldValue5, 0, 0] // delete obj[property5] (and previous value was oldValue5)
+}
+```
 
 Array with inner changes
 -----
@@ -63,6 +72,7 @@ delta = {
 ```
 
 > Note: only indices with inner deltas are included
+
 > Note: _t: 'a', indicates this applies to an array, when patching if a regular object (or a value type) is found, an error will be thrown
 
 ### Index Notation
@@ -77,6 +87,7 @@ an item was moved to a different position in the same array
 delta = [ '', destinationIndex, 3]
 ```
 > Note: '', represents the moved item value, suppresed by default
+
 > Note: 3, is the magical number that indicates "array move"
 
 Text Diffs
@@ -89,7 +100,7 @@ delta = [ "some text", "some text modified" ]
 But if both strings are long enough, [a text diffing algorythm](https://code.google.com/p/google-diff-match-patch/) will be used to efficiently detect changes in parts of the text.
 
 You can modify the minimum length with:
-```
+``` javascript
 var customDiffPatch = jsondiffpatch.create({ 
   textDiff: { 
     minLength: 60 // default value
@@ -104,5 +115,6 @@ delta = [ unidiff, 0, 2 ]
 
 ```
 > Note: 2, is the magical number that indicates "text diff"
+
 > Note: unidiff is actually a character-based variation of Unidiff format that is explained [here](https://code.google.com/p/google-diff-match-patch/wiki/Unidiff)
 
