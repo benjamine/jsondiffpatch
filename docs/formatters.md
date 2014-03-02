@@ -6,7 +6,7 @@ Some formatters are included that let you convert a JSON delta into other format
 Html
 ----
 
-include ```/build/formatters.js``` and ```/src/formatters/html.css``` on your page, and:
+add ```build/formatters.js``` and ```src/formatters/html.css``` to your page, and:
 
 ``` javascript
   var delta = jsondiffpatch.diff(left, right);
@@ -27,7 +27,7 @@ Annotated JSON
 
 This will render the original JSON delta in html, with annotations aside explaining the meaning of each part. This attempts to make the JSON delta format self-explained.
 
-include ```/build/formatters.js``` and ```/src/formatters/annotated.css``` on your page, and:
+add ```build/formatters.js``` and ```src/formatters/annotated.css``` to your page, and:
 
 ``` javascript
   var delta = jsondiffpatch.diff(left, right);
