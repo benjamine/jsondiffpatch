@@ -66,7 +66,7 @@ Let's make the corresponding patch filter that will handle the new delta type
   assertSame(right, { population: 403 });
   
   // patch twice!
-  right = diffpatcher.patch(right, delta);
+  diffpatcher.patch(right, delta);
   assertSame(right, { population: 406 });
 
 /*
@@ -88,8 +88,9 @@ To complete the plugin, let's add the reverse filter, so numeric deltas can be r
   assertSame(reverseDelta, [0, -3, NUMERIC_DIFFERENCE]);
   
   // unpatch twice!
-  right = diffpatcher.unpatch(right, delta);
-  right = diffpatcher.unpatch(right, delta);
+  diffpatcher.unpatch(right, delta);
+  assertSame(right, { population: 403 });
+  diffpatcher.unpatch(right, delta);
   assertSame(right, { population: 400 });
 ```
 
