@@ -85,4 +85,4 @@ For more details check [delta format documentation](deltas.md)
 
 #### Html
 
-On html you will see moves as fancy curved arrows (check [Live Demo](http://benjamine.github.com/JsonDiffPatch/demo/index.html), these are implemented using SVG elements and an embedded script tag, they will only show up [if your browser supports SVG](http://caniuse.com/svg)
+On html you will see moves as fancy curved arrows (check [Live Demo](http://benjamine.github.com/JsonDiffPatch/demo/index.html) ), these are implemented using SVG elements and an embedded script tag, they will only show up [if your browser supports SVG](http://caniuse.com/svg)
