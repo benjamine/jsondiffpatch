@@ -1,15 +1,15 @@
-JsonDiffPatch
+jsondiffpatch
 =============
 
 <!--- badges -->
-[![Build Status](https://secure.travis-ci.org/benjamine/JsonDiffPatch.png)](http://travis-ci.org/benjamine/JsonDiffPatch)
+[![Build Status](https://secure.travis-ci.org/benjamine/jsondiffpatch.png)](http://travis-ci.org/benjamine/jsondiffpatch)
 [![NPM version](https://badge.fury.io/js/jsondiffpatch.png)](http://badge.fury.io/js/jsondiffpatch)
 [![Bower version](https://badge.fury.io/bo/jsondiffpatch.png)](http://badge.fury.io/bo/jsondiffpatch)
 
 Diff & patch JavaScript objects
 
 -----
-**[Live Demo](http://benjamine.github.com/JsonDiffPatch/demo/index.html)**
+**[Live Demo](http://benjamine.github.com/jsondiffpatch/demo/index.html)**
 -----
 
 - min+gzipped < 6KB
@@ -20,7 +20,7 @@ Diff & patch JavaScript objects
 - unpatch (eg. revert object to its original state using a delta)
 - simplistic, pure JSON, low footprint [delta format](docs/deltas.md)
 - multiple output formatters:
-    - html (check it at the [Live Demo](http://benjamine.github.com/JsonDiffPatch/demo/index.html))
+    - html (check it at the [Live Demo](http://benjamine.github.com/jsondiffpatch/demo/index.html))
     - annotated json (html), makes the JSON delta format self-explained
     - console (colored), try running ```./node_modules/.bin/jsondiffpatch left.json right.json```
     - write your own! check [Formatters documentation](docs/formatters.md)
@@ -156,7 +156,7 @@ If you want to understand deltas, see [delta format documentation](docs/deltas.m
 Targeted platforms
 ----------------
 
-* Any modern browser and IE8+. Firefox is tested on CI, you can test your current browser visiting [test page](http://benjamine.github.com/JsonDiffPatch/test/index.html).
+* Any modern browser and IE8+. Firefox is tested on CI, you can test your current browser visiting [test page](http://benjamine.github.com/jsondiffpatch/test/index.html).
 * Node.js, tested on CI
 
 To run tests locally:
@@ -250,7 +250,7 @@ Visual Diff
 </html>
 ```
 
-To see formatters in action check the [Live Demo](http://benjamine.github.com/JsonDiffPatch/demo/index.html).
+To see formatters in action check the [Live Demo](http://benjamine.github.com/jsondiffpatch/demo/index.html).
 
 For more details check [Formatters documentation](docs/formatters.md)
 
