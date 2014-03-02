@@ -17,7 +17,7 @@ Added
 -----
 a value is added, ie. it was ```undefined``` and now has a value.
 ``` javascript
-delta = [newValue ]
+delta = [ newValue ]
 ```
 
 Modified
@@ -31,7 +31,7 @@ Deleted
 -----
 value deleted, ie. it had a value and is now ```undefined```
 ``` javascript
-delta = [ oldValue, 0, 0]
+delta = [ oldValue, 0, 0 ]
 ```
 
 Object with inner changes
@@ -53,8 +53,8 @@ Here's an example combining what we have:
 ```
 delta = {
   property1: [ newValue1 ], // obj[property1] = newValue1
-  property2: [ oldValue2, newValue2] // obj[property2] = newValue2 (and previous value was oldValue2)
-  property5: [ oldValue5, 0, 0] // delete obj[property5] (and previous value was oldValue5)
+  property2: [ oldValue2, newValue2 ] // obj[property2] = newValue2 (and previous value was oldValue2)
+  property5: [ oldValue5, 0, 0 ] // delete obj[property5] (and previous value was oldValue5)
 }
 ```
 
