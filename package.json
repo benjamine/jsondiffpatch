@@ -1,6 +1,6 @@
 {
   "name": "jsondiffpatch",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "author": "Benjamin Eidelman <beneidel@gmail.com>",
   "description": "Diff & Patch for JSON object graphs",
   "contributors": [
@@ -15,7 +15,7 @@
   "main": "./src/main",
   "repository": {
     "type": "git",
-    "url": "git://github.com/benjamine/JsonDiffPatch.git"
+    "url": "git://github.com/benjamine/jsondiffpatch.git"
   },
   "keywords": [
     "json",
@@ -62,5 +62,5 @@
   "engines": {
     "node": "*"
   },
-  "homepage": "https://github.com/benjamine/JsonDiffPatch"
+  "homepage": "https://github.com/benjamine/jsondiffpatch"
 }
