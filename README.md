@@ -26,6 +26,25 @@ Diff & patch JavaScript objects
     - console (colored), try running ```./node_modules/.bin/jsondiffpatch left.json right.json```
     - write your own! check [Formatters documentation](docs/formatters.md)
 
+Supported platforms
+----------------
+
+* Any modern browser and IE8+
+
+[![Testling Status](https://ci.testling.com/benjamine/jsondiffpatch.png)](https://ci.testling.com/benjamine/jsondiffpatch)
+
+And you can test your current browser visiting the [test page](http://benjamine.github.com/jsondiffpatch/test/index.html).
+
+* Node.js [![Build Status](https://secure.travis-ci.org/benjamine/jsondiffpatch.png)](http://travis-ci.org/benjamine/jsondiffpatch)
+
+If you want to run tests locally:
+``` sh
+npm i
+# will test in node.js and phantomjs (headless browser)
+npm test
+# or test on specific browsers (using karma.js)
+BROWSERS=chrome,phantomjs npm test
+```
 Usage
 -----
 
@@ -153,27 +172,6 @@ Array diffing:
 For more example cases (nested objects or arrays, long text diffs) check ```test/examples/```
 
 If you want to understand deltas, see [delta format documentation](docs/deltas.md)
-
-Supported platforms
-----------------
-
-* Any modern browser and IE8+
-[![Testling Status](https://ci.testling.com/benjamine/jsondiffpatch.png)](https://ci.testling.com/benjamine/jsondiffpatch)
-
-you can test your current browser visiting [test page](http://benjamine.github.com/jsondiffpatch/test/index.html).
-
-* Node.js [![Build Status](https://secure.travis-ci.org/benjamine/jsondiffpatch.png)](http://travis-ci.org/benjamine/jsondiffpatch)
-
-To run tests locally:
-
-``` sh
-    npm i
-    # will test in node.js and phantomjs (headless browser)
-    npm test
-
-    # or test on specific browsers (using karma.js)
-    BROWSERS=chrome,phantomjs npm test
-```
 
 Installing
 ---------------
