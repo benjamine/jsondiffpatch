@@ -12,7 +12,7 @@ Diff & patch JavaScript objects
 
 - min+gzipped < 6KB
 - browser (```/build/bundle.js```) and server (eg. node.js)
-- includes [google-diff_match_patch](http://code.google.com/p/google-diff-match-patch/) for long text diffs (diff at characther level)
+- includes [google-diff-match-patch](http://code.google.com/p/google-diff-match-patch/) for long text diffs (diff at characther level)
 - smart array diffing using [LCS](http://en.wikipedia.org/wiki/Longest_common_subsequence_problem), ***IMPORTANT NOTE:*** to match objects inside an array you ***must*** provide an ```objectHash``` function, check [Array diff documentation](docs/arrays.md)
 - reverse a delta
 - unpatch (eg. revert object to its original state using a delta)
@@ -187,9 +187,9 @@ var jsondiffpatch = require('jsondiffpatch').create(options);
 bower install jsondiffpatch
 ```
 
-bundles to include are on the ```/build``` folder:
+brower bundles are in the ```/build``` folder (run ```make``` or ```gulp``` to generate these):
 - bundle.js main bundle
-- bundle.full.js includes diff_match_patch library for text diffs
+- bundle.full.js includes [google-diff-match-patch](http://code.google.com/p/google-diff-match-patch/) library for text diffs
 - formatters.js includes builtin formatters (only those useful in a browser)
 
 (all these include minified versions)
@@ -243,3 +243,10 @@ jsondiffpatch ./demo/left.json ./demo/right.json
 ```
 
 ![console_demo!](demo/consoledemo.png)
+
+Plugins
+-------
+
+```diff()```, ```patch()``` and ```reverse()``` functions are implemented using a pipes &filters pattern, making it extremely customizable by adding or replacing filters on a pipe.
+
+Check [Plugins documentation](docs/formatters.md) for more info.
