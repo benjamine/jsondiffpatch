@@ -6,7 +6,7 @@ This page intends to be a reference for JSON format used to represent deltas (ie
 This format was created with a balance between readability and low footprint in mind.
 
 - when diffing 2 objects, the delta will reflect the same object structure (common part on both sides)
-- to represent changed parts, arrays and magic numbers are used to keep a low footprint (ie. you won't see verbosity like ```"type": "added")
+- to represent changed parts, arrays and magic numbers are used to keep a low footprint (ie. you won't see verbosity like ```"type": "added"```)
 - keep it pure JSON serializable
 
 A great way to understand this format is using the "Annotated JSON" option in the [Live Demo](http://benjamine.github.com/jsondiffpatch/demo/index.html), and try the different left/right examples, or edit left/right JSON to see the annotated delta update as your type.
@@ -17,7 +17,7 @@ Added
 -----
 a value is added, ie. it was ```undefined``` and now has a value.
 ``` javascript
-delta = [newValue ]
+delta = [ newValue ]
 ```
 
 Modified
@@ -31,7 +31,7 @@ Deleted
 -----
 value deleted, ie. it had a value and is now ```undefined```
 ``` javascript
-delta = [ oldValue, 0, 0]
+delta = [ oldValue, 0, 0 ]
 ```
 
 Object with inner changes
@@ -53,8 +53,8 @@ Here's an example combining what we have:
 ```
 delta = {
   property1: [ newValue1 ], // obj[property1] = newValue1
-  property2: [ oldValue2, newValue2] // obj[property2] = newValue2 (and previous value was oldValue2)
-  property5: [ oldValue5, 0, 0] // delete obj[property5] (and previous value was oldValue5)
+  property2: [ oldValue2, newValue2 ] // obj[property2] = newValue2 (and previous value was oldValue2)
+  property5: [ oldValue5, 0, 0 ] // delete obj[property5] (and previous value was oldValue5)
 }
 ```
 
