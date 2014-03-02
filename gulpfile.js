@@ -10,7 +10,7 @@ browsers = browsers ? browsers.split(' ') : undefined;
 gulp.task('default', ['build', 'test']);
 
 gulp.task('clean', function() {
-    return gulp.src('./build', {read: false})
+    return gulp.src(['./build', './test-external'], {read: false})
         .pipe(plugins.clean());
 });
 
@@ -89,7 +89,8 @@ bundle({
 });
 
 gulp.task('copy-test-res', function() {
-    gulp.src('./node_modules/expect.js/expect.js')
+    gulp.src('./node_modules/expect.js/index.js')
+      .pipe(plugins.rename('expect.js'))
       .pipe(gulp.dest('./test-external'));
     gulp.src('./node_modules/mocha/mocha.js')
       .pipe(gulp.dest('./test-external'));

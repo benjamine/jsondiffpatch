@@ -5,7 +5,7 @@ module.exports = function(config) {
         files: [
             'build/bundle.js',
             'external/diff_match_patch_uncompressed.js',
-            'node_modules/expect.js/expect.js',
+            'test-external/expect.js',
             'build/test-bundle.js'
         ],
         reporters : ['spec', 'growler']
