@@ -221,9 +221,6 @@ exports.DiffPatcher = DiffPatcher;
 },{"./contexts/diff":3,"./contexts/patch":4,"./contexts/reverse":5,"./filters/arrays":9,"./filters/dates":10,"./filters/nested":12,"./filters/texts":13,"./filters/trivial":14,"./pipe":15,"./processor":16}],8:[function(_dereq_,module,exports){
 (function (process){
 
-exports.homepage = 'https://github.com/benjamine/JsonDiffPatch';
-exports.version = '0.1.0';
-
 var DiffPatcher = _dereq_('./diffpatcher').DiffPatcher;
 exports.DiffPatcher = DiffPatcher;
 
@@ -269,6 +266,9 @@ if (inNode) {
 	exports.formatters = formatters;
 	// shortcut for console
 	exports.console = formatters.console;
+} else {
+	exports.homepage = 'https://github.com/benjamine/jsondiffpatch';
+	exports.version = '0.1.1';
 }
 
 }).call(this,_dereq_("/home/sheila/proj/JsonDiffPatch/node_modules/gulp-browserify/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js"))

@@ -1,7 +1,4 @@
 
-exports.homepage = '{{package-homepage}}';
-exports.version = '{{package-version}}';
-
 var DiffPatcher = require('./diffpatcher').DiffPatcher;
 exports.DiffPatcher = DiffPatcher;
 
@@ -47,4 +44,7 @@ if (inNode) {
 	exports.formatters = formatters;
 	// shortcut for console
 	exports.console = formatters.console;
+} else {
+	exports.homepage = '{{package-homepage}}';
+	exports.version = '{{package-version}}';
 }
