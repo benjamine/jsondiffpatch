@@ -88,7 +88,7 @@ bundle({
     minify: false
 });
 
-gulp.task('copy-test-res', function() {
+gulp.task('copy-test-res', ['clean'], function() {
     gulp.src('./node_modules/expect.js/index.js')
       .pipe(plugins.rename('expect.js'))
       .pipe(gulp.dest('./test-external'));
