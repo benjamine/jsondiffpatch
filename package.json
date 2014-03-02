@@ -1,6 +1,6 @@
 {
   "name": "jsondiffpatch",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "author": "Benjamin Eidelman <beneidel@gmail.com>",
   "description": "Diff & Patch for JSON object graphs",
   "contributors": [

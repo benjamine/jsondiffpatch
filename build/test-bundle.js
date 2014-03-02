@@ -1929,9 +1929,24 @@ var clone = function(obj) {
     return JSON.parse(JSON.stringify(obj), dateReviver);
 };
 
+// Object.keys polyfill
+var objectKeys = (typeof Object.keys === 'function') ?
+function(obj) {
+    return Object.keys(obj);
+} :
+function(obj) {
+    var keys = [];
+    for (var key in obj) {
+        if (obj.hasOwnProperty(key)) {
+            keys.push(key);
+        }
+    }
+    return keys;
+};
+
 describe('DiffPatcher', function(){
     var examples = require('./examples/diffpatch');
-    Object.keys(examples).forEach(function(groupName){
+    objectKeys(examples).forEach(function(groupName){
         var group = examples[groupName];
         describe(groupName, function(){
             group.forEach(function(example){
