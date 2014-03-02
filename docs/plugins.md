@@ -26,7 +26,7 @@ Plugin a new diff filter
 
   var diffpatcher = jsondiffpatch.create();
   var NUMERIC_DIFFERENCE = -8;
-  
+
   var numericDiffFilter = function(context) {
     if (typeof context.left === 'number' && typeof context.right === 'number') {
       context.setResult([0, context.right - context.left, NUMERIC_DIFFERENCE]).exit();
@@ -64,13 +64,13 @@ Let's make the corresponding patch filter that will handle the new delta type
   // try it
   var right = diffpatcher.patch({ population: 400 }, delta);
   assertSame(right, { population: 403 });
-  
+
   // patch twice!
   diffpatcher.patch(right, delta);
   assertSame(right, { population: 406 });
 
 /*
-To complete the plugin, let's add the reverse filter, so numeric deltas can be reversed 
+To complete the plugin, let's add the reverse filter, so numeric deltas can be reversed
 (this is needed for unpatching too)
 */
 
@@ -86,7 +86,7 @@ To complete the plugin, let's add the reverse filter, so numeric deltas can be r
   // try it
   var reverseDelta = diffpatcher.reverse(delta);
   assertSame(reverseDelta, [0, -3, NUMERIC_DIFFERENCE]);
-  
+
   // unpatch twice!
   diffpatcher.unpatch(right, delta);
   assertSame(right, { population: 403 });
