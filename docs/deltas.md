@@ -6,7 +6,7 @@ This page intends to be a reference for JSON format used to represent deltas (ie
 This format was created with a balance between readability and low footprint in mind.
 
 - when diffing 2 objects, the delta will reflect the same object structure (common part on both sides)
-- to represent changed parts, arrays and magic numbers are used to keep a low footprint (ie. you won't see verbosity like ```"type": "added")
+- to represent changed parts, arrays and magic numbers are used to keep a low footprint (ie. you won't see verbosity like ```"type": "added"```)
 - keep it pure JSON serializable
 
 A great way to understand this format is using the "Annotated JSON" option in the [Live Demo](http://benjamine.github.com/jsondiffpatch/demo/index.html), and try the different left/right examples, or edit left/right JSON to see the annotated delta update as your type.
