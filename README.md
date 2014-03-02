@@ -274,4 +274,4 @@ Plugins
 
 ```diff()```, ```patch()``` and ```reverse()``` functions are implemented using Pipes &Filters pattern, making it extremely customizable by adding or replacing filters on a pipe.
 
-Check [Plugins documentation](docs/formatters.md) for details.
+Check [Plugins documentation](docs/plugins.md) for details.
