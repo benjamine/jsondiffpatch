@@ -88,6 +88,17 @@ bundle({
     minify: false
 });
 
+gulp.task('copy-test-res', function() {
+    gulp.src('./node_modules/expect.js/expect.js')
+      .pipe(gulp.dest('./test-external'));
+    gulp.src('./node_modules/mocha/mocha.js')
+      .pipe(gulp.dest('./test-external'));
+    gulp.src('./node_modules/mocha/mocha.css')
+      .pipe(gulp.dest('./test-external'));
+});
+
+buildDependencies.push('copy-test-res');
+
 gulp.task('build', buildDependencies, function() {
 });
 
