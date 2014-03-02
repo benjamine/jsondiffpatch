@@ -66,7 +66,7 @@ moves are detected by default, you can turn move detection off with:
 
 ### Representation
 
-# JSON deltas
+#### JSON deltas
 
 ``` js
 {
@@ -83,6 +83,6 @@ _originalIndex: // this is the item original position in the array
 
 For more details check [delta format documentation](deltas.md)
 
-# Html
+#### Html
 
 On html you will see moves as fancy curved arrows (check [Live Demo](http://benjamine.github.com/JsonDiffPatch/demo/index.html), these are implemented using SVG elements and an embedded script tag, they will only show up [if your browser supports SVG](http://caniuse.com/svg)
