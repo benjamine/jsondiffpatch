@@ -1,0 +1,18 @@
+#!/usr/bin/env node
+
+var jsondiffpatch = require('../src/main');
+
+var fs = require('fs');
+
+var fileLeft = process.argv[2], fileRight = process.argv[3];
+
+if (!fileLeft || !fileRight){
+    console.log('\n  USAGE: jsondiffpatch left.json right.json');
+    return;
+}
+
+var left = JSON.parse(fs.readFileSync(fileLeft));
+var right = JSON.parse(fs.readFileSync(fileRight));
+
+var delta = jsondiffpatch.diff(left, right);
+jsondiffpatch.console.log(delta);
