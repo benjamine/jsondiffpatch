@@ -1,4 +1,4 @@
-```diff()```, ```patch()``` and ```reverse()``` functions are implemented using a pipes &filters pattern, making it extremely customizable by adding or replacing filters on a pipe.
+```diff()```, ```patch()``` and ```reverse()``` functions are implemented using a pipes &filters pattern, making them extremely customizable by adding or replacing filters.
 
 Some examples of what you can acheive writing your own filter:
 - diff special custom objects (eg. DOM nodes, native objects, functions, RegExp, node.js streams?)
