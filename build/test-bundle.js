@@ -1944,12 +1944,23 @@ function(obj) {
     return keys;
 };
 
+// Array.prototype.forEach polyfill
+var arrayForEach = (typeof Array.prototype.forEach === 'function') ?
+function(array, fn) {
+    return array.forEach(fn);
+} :
+function(array, fn) {
+    for (var index = 0, length = array.length; index < length; index++) {
+        fn(array[index], index, array);
+    }
+};
+
 describe('DiffPatcher', function(){
     var examples = require('./examples/diffpatch');
-    objectKeys(examples).forEach(function(groupName){
+    arrayForEach(objectKeys(examples), function(groupName){
         var group = examples[groupName];
         describe(groupName, function(){
-            group.forEach(function(example){
+            arrayForEach(group, function(example){
                 if (!example) { return; }
                 var name = example.name || valueDescription(example.left) + ' -> ' + valueDescription(example.right);
                 describe(name, function(){
