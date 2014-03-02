@@ -190,11 +190,11 @@ bower install jsondiffpatch
 ```
 
 browser bundles are in the ```/build``` folder (run ```make``` or ```gulp``` to generate these):
-- bundle.js main bundle
-- bundle.full.js includes [google-diff-match-patch](http://code.google.com/p/google-diff-match-patch/) library for text diffs
-- formatters.js includes builtin formatters (only those useful in a browser)
+- ```bundle.js``` main bundle
+- ```bundle.full.js``` main bundle + [google-diff-match-patch](http://code.google.com/p/google-diff-match-patch/) library for text diffs
+- ```formatters.js``` builtin formatters (only those useful in a browser)
 
-(all these include minified versions)
+(all these come in minified versions: ```.min.js```)
 
 Options
 -------
