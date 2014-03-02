@@ -1,6 +1,6 @@
 {
   "name": "jsondiffpatch",
-  "homepage": "https://github.com/benjamine/JsonDiffPatch",
+  "homepage": "https://github.com/benjamine/jsondiffpatch",
   "main": "src/main.js",
   "authors": [
     "Benjamín Eidelman"
