@@ -10,9 +10,9 @@ Some examples of what you can acheive writing your own filter:
 - implement custom diff mechanisms, like relative numeric deltas
 - suprise me! :)
 
-Check the ```/src/filters``` folder for code examples.
+Check the ```/src/filters``` folder for filter examples.
 
-Example
+Plugin Example
 ------
 
 Here is an example to provide number differences in deltas (when left and right values are both numbers)
