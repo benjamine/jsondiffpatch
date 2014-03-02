@@ -32,14 +32,14 @@ This, way when diffing 2 numbers instead of obtaining ```[ oldValue, newValue ] 
 
   // check the list of filters for the diff pipe
   var list = diffpatcher.processor.pipes.diff.list();
-  // assertSame(list, ["collectChildren", "trivial", "dates", "texts", "objects", "arrays"]);
+  assertSame(list, ["collectChildren", "trivial", "dates", "texts", "objects", "arrays"]);
 
   // insert my new filter, right before trivial one
   diffpatcher.processor.pipes.diff.before('trivial', numericDiffFilter);
 
   // try it
   var delta = diffpatcher.diff({ population: 400 }, { population: 403 });
-  // assertSame(delta, [400, 3, -8]);
+  assertSame(delta, [400, 3, -8]);
 
 ```
 
@@ -57,16 +57,16 @@ Now let's make the corresponding patch filter that will handle the new delta typ
 
   // check the list of filters for the patch pipe
   var list = diffpatcher.processor.pipes.patch.list();
-  // assertSame(list, ["collectChildren", "arraysCollectChildren", "trivial", "texts", "objects", "arrays"]);
+  assertSame(list, ["collectChildren", "arraysCollectChildren", "trivial", "texts", "objects", "arrays"]);
 
   // insert my new filter, right before trivial one
   diffpatcher.processor.pipes.patch.before('trivial', numericPatchFilter);
 
   // try it
   var right = diffpatcher.patch({ population: 400 }, delta);
-  // assertSame(right, { population: 403 });
+  assertSame(right, { population: 403 });
   
   // patch twice!
   var right = diffpatcher.patch(right, delta);
-  // assertSame(right, { population: 406 });
+  assertSame(right, { population: 406 });
 ```
