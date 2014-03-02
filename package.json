@@ -71,7 +71,7 @@
       "ie/8..latest",
       "iphone/6..latest",
       "ipad/6..latest",
-      "android-browser/3..latest"
+      "android-browser/4.2..latest"
     ]
   },
   "engines": {
