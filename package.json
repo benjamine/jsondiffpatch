@@ -58,13 +58,17 @@
   },
   "testling": {
     "harness": "mocha",
-    "html": "test/index.html",
+    "files": "test/*.js",
+    "scripts": [
+      "build/bundle.js",
+      "external/diff_match_patch_uncompressed.js"
+    ],
     "browsers": [
-      "ie/8..latest",
       "chrome/22..latest",
       "firefox/16..latest",
       "safari/latest",
       "opera/11.0..latest",
+      "ie/8..latest",
       "iphone/6",
       "ipad/6",
       "android-browser/latest"
