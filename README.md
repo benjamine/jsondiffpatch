@@ -1,4 +1,6 @@
-<h1>Js<span class="jsondiffpatch-textdiff-deleted" style="background:#fbb;text-decoration:line-through;"><span>on</span></span><span class="jsondiffpatch-textdiff-added" style="background:#bfb"><span>Diff</span></span>Patch</h1>
+JsonDiffPatch
+=============
+
 <!--- badges -->
 [![Build Status](https://secure.travis-ci.org/benjamine/JsonDiffPatch.png)](http://travis-ci.org/benjamine/JsonDiffPatch)
 [![NPM version](https://badge.fury.io/js/jsondiffpatch.png)](http://badge.fury.io/js/jsondiffpatch)
