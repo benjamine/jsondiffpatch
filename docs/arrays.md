@@ -70,12 +70,12 @@ moves are detected by default, you can turn move detection off with:
 
 ``` js
 {
-_originalIndex: // this is the item original position in the array
-[
-  '', // the moved item value, supressed by default
-  destinationIndex, // this is the item final position in the array
-  3 // magic number to indicate: array move
-]
+  "_originalIndex": // this is the item original position in the array
+  [
+    '', // the moved item value, supressed by default
+    destinationIndex, // this is the item final position in the array
+    3 // magic number to indicate: array move
+  ]
 }
 ```
 
