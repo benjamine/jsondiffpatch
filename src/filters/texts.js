@@ -39,7 +39,7 @@ var getDiffMatchPatch = function(){
     return cachedDiffPatch;
 };
 
-var DiffFilter = function TextsDiffFilter(context) {
+var diffFilter = function textsDiffFilter(context) {
     if (context.leftType !== 'string') { return; }
     var minLength = (context.options && context.options.textDiff &&
         context.options.textDiff.minLength) || DEFAULT_MIN_LENGTH;
@@ -52,8 +52,9 @@ var DiffFilter = function TextsDiffFilter(context) {
     var diff = getDiffMatchPatch().diff;
     context.setResult([diff(context.left, context.right), 0, TEXT_DIFF]).exit();
 };
+diffFilter.filterName = 'texts';
 
-var PatchFilter = function TextsPatchFilter(context) {
+var patchFilter = function textsPatchFilter(context) {
     if (context.nested) { return; }
     if (context.delta[2] !== TEXT_DIFF) { return; }
 
@@ -61,6 +62,7 @@ var PatchFilter = function TextsPatchFilter(context) {
     var patch = getDiffMatchPatch().patch;
     context.setResult(patch(context.left, context.delta[0])).exit();
 };
+patchFilter.filterName = 'texts';
 
 var textDeltaReverse = function(delta){
     var i, l, lines, line, lineTmp, header = null,
@@ -95,14 +97,15 @@ var textDeltaReverse = function(delta){
     return lines.join('\n');
 };
 
-var ReverseFilter = function TextsReverseFilter(context) {
+var reverseFilter = function textsReverseFilter(context) {
     if (context.nested) { return; }
     if (context.delta[2] !== TEXT_DIFF) { return; }
 
     // text-diff, use a text-diff algorithm
     context.setResult([textDeltaReverse(context.delta[0]), 0, TEXT_DIFF]).exit();
 };
+reverseFilter.filterName = 'texts';
 
-exports.DiffFilter = DiffFilter;
-exports.PatchFilter = PatchFilter;
-exports.ReverseFilter = ReverseFilter;
+exports.diffFilter = diffFilter;
+exports.patchFilter = patchFilter;
+exports.reverseFilter = reverseFilter;

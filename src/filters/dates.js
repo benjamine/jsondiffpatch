@@ -1,4 +1,4 @@
-var DiffFilter = function DatesDiffFilter(context) {
+var diffFilter = function datesDiffFilter(context) {
     if (context.left instanceof Date) {
         if (context.right instanceof Date) {
             if (context.left.getTime() !== context.right.getTime()) {
@@ -14,5 +14,6 @@ var DiffFilter = function DatesDiffFilter(context) {
         context.setResult([context.left, context.right]).exit();
     }
 };
+diffFilter.filterName = 'dates';
 
-exports.DiffFilter = DiffFilter;
+exports.diffFilter = diffFilter;

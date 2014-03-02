@@ -28,7 +28,7 @@ var arrayIndexOf = typeof Array.prototype.indexOf === 'function' ?
         return -1;
     };
 
-var DiffFilter = function ArraysDiffFilter(context){
+var diffFilter = function arraysDiffFilter(context){
     if (!context.leftIsArray) { return; }
 
     var objectHash = context.options && context.options.objectHash;
@@ -193,6 +193,7 @@ var DiffFilter = function ArraysDiffFilter(context){
     context.setResult(result).exit();
 
 };
+diffFilter.filterName = 'arrays';
 
 var compare = {
     numerically: function(a, b) {
@@ -205,7 +206,7 @@ var compare = {
     }
 };
 
-var PatchFilter = function NestedPatchFilter(context) {
+var patchFilter = function nestedPatchFilter(context) {
     if (!context.nested) { return; }
     if (context.delta._t !== 'a') { return; }
     var index, index1;
@@ -285,8 +286,9 @@ var PatchFilter = function NestedPatchFilter(context) {
     }
     context.exit();
 };
+patchFilter.filterName = 'arrays';
 
-var CollectChildrenPatchFilter = function CollectChildrenPatchFilter(context) {
+var collectChildrenPatchFilter = function collectChildrenPatchFilter(context) {
     if (!context || !context.children) { return; }
     if (context.delta._t !== 'a') { return; }
     var length = context.children.length;
@@ -297,8 +299,9 @@ var CollectChildrenPatchFilter = function CollectChildrenPatchFilter(context) {
     }
     context.setResult(context.left).exit();
 };
+collectChildrenPatchFilter.filterName = 'arraysCollectChildren';
 
-var ReverseFilter = function NestedReverseFilter(context) {
+var reverseFilter = function arraysReverseFilter(context) {
     if (!context.nested) {
         if (context.delta[2] === ARRAY_MOVE) {
             context.newName = '_' + context.delta[1];
@@ -315,6 +318,7 @@ var ReverseFilter = function NestedReverseFilter(context) {
     }
     context.exit();
 };
+reverseFilter.filterName = 'arrays';
 
 var reverseArrayDeltaIndex = function(delta, index, itemDelta) {
     var newIndex = index;
@@ -336,7 +340,7 @@ var reverseArrayDeltaIndex = function(delta, index, itemDelta) {
     return newIndex;
 };
 
-var CollectChildrenReverseFilter = function CollectChildrenReverseFilter(context) {
+var collectChildrenReverseFilter = function collectChildrenReverseFilter(context) {
     if (!context || !context.children) { return; }
     if (context.delta._t !== 'a') { return; }
     var length = context.children.length;
@@ -354,9 +358,10 @@ var CollectChildrenReverseFilter = function CollectChildrenReverseFilter(context
     }
     context.setResult(delta).exit();
 };
+collectChildrenReverseFilter.filterName = 'arraysCollectChildren';
 
-exports.DiffFilter = DiffFilter;
-exports.PatchFilter = PatchFilter;
-exports.CollectChildrenPatchFilter = CollectChildrenPatchFilter;
-exports.ReverseFilter = ReverseFilter;
-exports.CollectChildrenReverseFilter = CollectChildrenReverseFilter;
+exports.diffFilter = diffFilter;
+exports.patchFilter = patchFilter;
+exports.collectChildrenPatchFilter = collectChildrenPatchFilter;
+exports.reverseFilter = reverseFilter;
+exports.collectChildrenReverseFilter = collectChildrenReverseFilter;

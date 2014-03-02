@@ -14,28 +14,28 @@ var texts = require('./filters/texts');
 var DiffPatcher = function DiffPatcher(options){
     this.processor = new Processor(options);
     this.processor.pipe(new Pipe('diff').append(
-        nested.CollectChildrenDiffFilter,
-        trivial.DiffFilter,
-        dates.DiffFilter,
-        texts.DiffFilter,
-        nested.ObjectsDiffFilter,
-        arrays.DiffFilter
+        nested.collectChildrenDiffFilter,
+        trivial.diffFilter,
+        dates.diffFilter,
+        texts.diffFilter,
+        nested.objectsDiffFilter,
+        arrays.diffFilter
         ).shouldHaveResult());
     this.processor.pipe(new Pipe('patch').append(
-        nested.CollectChildrenPatchFilter,
-        arrays.CollectChildrenPatchFilter,
-        trivial.PatchFilter,
-        texts.PatchFilter,
-        nested.PatchFilter,
-        arrays.PatchFilter
+        nested.collectChildrenPatchFilter,
+        arrays.collectChildrenPatchFilter,
+        trivial.patchFilter,
+        texts.patchFilter,
+        nested.patchFilter,
+        arrays.patchFilter
         ).shouldHaveResult());
     this.processor.pipe(new Pipe('reverse').append(
-        nested.CollectChildrenReverseFilter,
-        arrays.CollectChildrenReverseFilter,
-        trivial.ReverseFilter,
-        texts.ReverseFilter,
-        nested.ReverseFilter,
-        arrays.ReverseFilter
+        nested.collectChildrenReverseFilter,
+        arrays.collectChildrenReverseFilter,
+        trivial.reverseFilter,
+        texts.reverseFilter,
+        nested.reverseFilter,
+        arrays.reverseFilter
         ).shouldHaveResult());
 };
 

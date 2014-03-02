@@ -43,5 +43,8 @@ exports.reverse = function() {
 
 var inNode = typeof process !== 'undefined' && typeof process.execPath === 'string';
 if (inNode) {
-	exports.console = require('./formatters/' + 'console');
+	var formatters = require('./formatters' + '/index');
+	exports.formatters = formatters;
+	// shortcut for console
+	exports.console = formatters.console;
 }

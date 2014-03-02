@@ -7,7 +7,7 @@ var isArray = (typeof Array.isArray === 'function') ?
         return a instanceof Array;
     };
 
-var DiffFilter = function TrivialMatchesDiffFilter(context) {
+var diffFilter = function trivialMatchesDiffFilter(context) {
     if (context.left === context.right) {
         context.setResult(undefined).exit();
         return;
@@ -47,9 +47,9 @@ var DiffFilter = function TrivialMatchesDiffFilter(context) {
         return;
     }
 };
+diffFilter.filterName = 'trivial';
 
-
-var PatchFilter = function TrivialMatchesPatchFilter(context) {
+var patchFilter = function trivialMatchesPatchFilter(context) {
     if (typeof context.delta === 'undefined') {
         context.setResult(context.left).exit();
         return;
@@ -69,8 +69,9 @@ var PatchFilter = function TrivialMatchesPatchFilter(context) {
         return;
     }
 };
+patchFilter.filterName = 'trivial';
 
-var ReverseFilter = function TrivialReferseFilter(context) {
+var reverseFilter = function trivialReferseFilter(context) {
     if (typeof context.delta === 'undefined') {
         context.setResult(context.delta).exit();
         return;
@@ -90,7 +91,8 @@ var ReverseFilter = function TrivialReferseFilter(context) {
         return;
     }
 };
+reverseFilter.filterName = 'trivial';
 
-exports.DiffFilter = DiffFilter;
-exports.PatchFilter = PatchFilter;
-exports.ReverseFilter = ReverseFilter;
+exports.diffFilter = diffFilter;
+exports.patchFilter = patchFilter;
+exports.reverseFilter = reverseFilter;
