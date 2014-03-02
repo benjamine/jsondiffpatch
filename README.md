@@ -2,7 +2,7 @@ JsonDiffPatch
 =============
 
 <!--- badges -->
-[![Build Status](https://secure.travis-ci.org/benjamine/JsonDiffPatch.png)](http://travis-ci.org/benjamine/JsonDiffPatch)
+[![Build Status](https://secure.travis-ci.org/benjamine/jsondiffpatch.png)](http://travis-ci.org/benjamine/JsonDiffPatch)
 [![NPM version](https://badge.fury.io/js/jsondiffpatch.png)](http://badge.fury.io/js/jsondiffpatch)
 [![Bower version](https://badge.fury.io/bo/jsondiffpatch.png)](http://badge.fury.io/bo/jsondiffpatch)
 
