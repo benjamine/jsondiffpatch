@@ -16,10 +16,10 @@ Diff & patch JavaScript objects
 - smart array diffing using [LCS](http://en.wikipedia.org/wiki/Longest_common_subsequence_problem), ***IMPORTANT NOTE:*** to match objects inside an array you ***must*** provide an ```objectHash``` function, check [Array diff documentation](docs/arrays.md)
 - reverse a delta
 - unpatch (eg. revert object to its original state using a delta)
-- simplistic, pure JSON, low footprint [delta format](docs/formatters.md)
+- simplistic, pure JSON, low footprint [delta format](docs/deltas.md)
 - multiple output formatters:
     - html (check it at the [Live Demo](http://benjamine.github.com/JsonDiffPatch/demo/index.html))
-    - annotated json (html), makes the JSON delta forma self-explained
+    - annotated json (html), makes the JSON delta format self-explained
     - console (colored), try running ```./node_modules/.bin/jsondiffpatch left.json right.json```
     - write your own! check [Formatters documentation](docs/formatters.md)
 
@@ -149,7 +149,7 @@ Array diffing:
 
 For more example cases (nested objects or arrays, long text diffs) check ```test/examples/```
 
-If you want to understand deltas, see [delta format documentation](docs/formatters.md)
+If you want to understand deltas, see [delta format documentation](docs/deltas.md)
 
 Targeted platforms
 ----------------
@@ -270,6 +270,6 @@ jsondiffpatch ./demo/left.json ./demo/right.json
 Plugins
 -------
 
-```diff()```, ```patch()``` and ```reverse()``` functions are implemented using a pipes &filters pattern, making it extremely customizable by adding or replacing filters on a pipe.
+```diff()```, ```patch()``` and ```reverse()``` functions are implemented using Pipes &Filters pattern, making it extremely customizable by adding or replacing filters on a pipe.
 
-Check [Plugins documentation](docs/formatters.md) for more info.
+Check [Plugins documentation](docs/formatters.md) for details.
