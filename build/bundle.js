@@ -268,7 +268,7 @@ if (inNode) {
 	exports.console = formatters.console;
 } else {
 	exports.homepage = 'https://github.com/benjamine/jsondiffpatch';
-	exports.version = '0.1.3';
+	exports.version = '0.1.4';
 }
 
 }).call(this,_dereq_("/home/sheila/proj/JsonDiffPatch/node_modules/gulp-browserify/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js"))
