@@ -15,7 +15,7 @@ Diff & patch JavaScript objects
 
 - min+gzipped < 6KB
 - browser (```/build/bundle.js```) and server (eg. node.js)
-- includes [google-diff-match-patch](http://code.google.com/p/google-diff-match-patch/) for long text diffs (diff at characther level)
+- includes [google-diff-match-patch](http://code.google.com/p/google-diff-match-patch/) for long text diffs (diff at character level)
 - smart array diffing using [LCS](http://en.wikipedia.org/wiki/Longest_common_subsequence_problem), ***IMPORTANT NOTE:*** to match objects inside an array you ***must*** provide an ```objectHash``` function, check [Array diff documentation](docs/arrays.md)
 - reverse a delta
 - unpatch (eg. revert object to its original state using a delta)
