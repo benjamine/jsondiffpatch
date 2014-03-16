@@ -138,7 +138,7 @@ Array diffing:
         }
     });
 
-    var delta = jsondiffpatch.diff(country, country2);
+    var delta = diffpatcher.diff(country, country2);
 
     assertSame(delta, {
         "cities": {
