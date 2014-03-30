@@ -50,9 +50,11 @@ var patchFilter = function nestedPatchFilter(context) {
     if (!context.nested) { return; }
     if (context.delta._t) { return; }
     var name, child;
-    for (name in context.delta) {
-        child = new PatchContext(context.left[name], context.delta[name]);
-        context.push(child, name);
+    if(context.left) {
+        for (name in context.delta) {
+            child = new PatchContext(context.left[name], context.delta[name]);
+            context.push(child, name);
+        }
     }
     context.exit();
 };
