@@ -43,6 +43,13 @@ process.browser = true;
 process.env = {};
 process.argv = [];
 
+function noop() {}
+
+process.on = noop;
+process.once = noop;
+process.off = noop;
+process.emit = noop;
+
 process.binding = function (name) {
     throw new Error('process.binding is not supported');
 }
@@ -145,15 +152,17 @@ exports.ReverseContext = ReverseContext;
 
 // use as 2nd parameter for JSON.parse to revive Date instances
 module.exports = function dateReviver(key, value) {
-    var a;
+    var parts;
     if (typeof value === 'string') {
-        a = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2}(?:\.\d*)?)(Z|([+\-])(\d{2}):(\d{2}))$/.exec(value);
-        if (a) {
-            return new Date(Date.UTC(+a[1], +a[2] - 1, +a[3], +a[4], +a[5], +a[6]));
+        parts = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})(?:\.(\d*))?(Z|([+\-])(\d{2}):(\d{2}))$/.exec(value);
+        if (parts) {
+            return new Date(Date.UTC(+parts[1], +parts[2] - 1, +parts[3],
+              +parts[4], +parts[5], +parts[6], +(parts[7] || 0)));
         }
     }
     return value;
 };
+
 },{}],7:[function(_dereq_,module,exports){
 
 var Processor = _dereq_('./processor').Processor;
@@ -268,11 +277,11 @@ if (inNode) {
 	exports.console = formatters.console;
 } else {
 	exports.homepage = 'https://github.com/benjamine/jsondiffpatch';
-	exports.version = '0.1.5';
+	exports.version = '0.1.6';
 }
 
-}).call(this,_dereq_("/home/sheila/proj/JsonDiffPatch/node_modules/gulp-browserify/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js"))
-},{"./date-reviver":6,"./diffpatcher":7,"/home/sheila/proj/JsonDiffPatch/node_modules/gulp-browserify/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":1}],9:[function(_dereq_,module,exports){
+}).call(this,_dereq_("/Users/Benja/proj/jsondiffpatch/node_modules/gulp-browserify/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js"))
+},{"./date-reviver":6,"./diffpatcher":7,"/Users/Benja/proj/jsondiffpatch/node_modules/gulp-browserify/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":1}],9:[function(_dereq_,module,exports){
 
 var DiffContext = _dereq_('../contexts/diff').DiffContext;
 var PatchContext = _dereq_('../contexts/patch').PatchContext;
