@@ -3115,6 +3115,14 @@ examples.arrays = [
 		reverse: { _t: 'a', _3: ['', 6, 3], _8 :['', 3, 3] }
 	},
 	{
+		name: 'movements(2)',
+		left: [1, 2, 3, 4],
+		right: [2, 4, 1, 3],
+		delta: { _t: 'a', _1: ['', 0, 3], _3: ['', 1, 3] },
+		reverse: { _t: 'a', _2: ['', 0, 3], _3 :['', 2, 3] },
+		exactReverse: false
+	},
+	{
 		name: 'nested',
 		options: {
 			objectHash: function(obj) {
@@ -3160,6 +3168,7 @@ examples.arrays = [
 ];
 
 module.exports = examples;
+
 },{}],6:[function(require,module,exports){
 /* global describe, it, before */
 

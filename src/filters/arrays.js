@@ -157,21 +157,21 @@ var diffFilter = function arraysDiffFilter(context){
             // added, try to match with a removed item and register as position move
             var isMove = false;
             if (detectMove && removedItemsLength > 0) {
-                for (index1 = 0; index1 < removedItemsLength; index1++) {
-                    if (match(trimmed1, trimmed2, removedItems[index1] - commonHead,
+                for (var removeItemIndex1 = 0; removeItemIndex1 < removedItemsLength; removeItemIndex1++) {
+                    index1 = removedItems[removeItemIndex1];
+                    if (match(trimmed1, trimmed2, index1 - commonHead,
                         index - commonHead, matchContext)) {
                         // store position move as: [originalValue, newPosition, ARRAY_MOVE]
-                        result['_' + removedItems[index1]].splice(1, 2, index, ARRAY_MOVE);
+                        result['_' + index1].splice(1, 2, index, ARRAY_MOVE);
                         if (!includeValueOnMove) {
                             // don't include moved value on diff, to save bytes
-                            result['_' + removedItems[index1]][0] = '';
+                            result['_' + index1][0] = '';
                         }
 
-                        index1 = removedItems[index1];
                         index2 = index;
                         child = new DiffContext(context.left[index1], context.right[index2]);
                         context.push(child, index2);
-                        removedItems.splice(index1, 1);
+                        removedItems.splice(removeItemIndex1, 1);
                         isMove = true;
                         break;
                     }
