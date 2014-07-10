@@ -2209,8 +2209,11 @@ process.argv = [];
 function noop() {}
 
 process.on = noop;
+process.addListener = noop;
 process.once = noop;
 process.off = noop;
+process.removeListener = noop;
+process.removeAllListeners = noop;
 process.emit = noop;
 
 process.binding = function (name) {
@@ -2440,11 +2443,11 @@ if (inNode) {
 	exports.console = formatters.console;
 } else {
 	exports.homepage = 'https://github.com/benjamine/jsondiffpatch';
-	exports.version = '0.1.7';
+	exports.version = '0.1.8';
 }
 
-}).call(this,_dereq_("/Users/Benja/proj/jsondiffpatch/node_modules/gulp-browserify/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js"))
-},{"./date-reviver":7,"./diffpatcher":8,"/Users/Benja/proj/jsondiffpatch/node_modules/gulp-browserify/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":2}],10:[function(_dereq_,module,exports){
+}).call(this,_dereq_("1YiZ5S"))
+},{"./date-reviver":7,"./diffpatcher":8,"1YiZ5S":2}],10:[function(_dereq_,module,exports){
 
 var DiffContext = _dereq_('../contexts/diff').DiffContext;
 var PatchContext = _dereq_('../contexts/patch').PatchContext;

@@ -46,8 +46,11 @@ process.argv = [];
 function noop() {}
 
 process.on = noop;
+process.addListener = noop;
 process.once = noop;
 process.off = noop;
+process.removeListener = noop;
+process.removeAllListeners = noop;
 process.emit = noop;
 
 process.binding = function (name) {
@@ -481,8 +484,8 @@ var inNode = typeof process !== 'undefined' && typeof process.execPath === 'stri
 if (inNode) {
 	exports.console = _dereq_('./' + 'console');
 }
-}).call(this,_dereq_("/Users/Benja/proj/jsondiffpatch/node_modules/gulp-browserify/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js"))
-},{"./annotated":2,"./html":5,"/Users/Benja/proj/jsondiffpatch/node_modules/gulp-browserify/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":1}],5:[function(_dereq_,module,exports){
+}).call(this,_dereq_("oMfpAn"))
+},{"./annotated":2,"./html":5,"oMfpAn":1}],5:[function(_dereq_,module,exports){
 
 var base = _dereq_('./base');
 var BaseFormatter = base.BaseFormatter;
