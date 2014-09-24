@@ -1,0 +1,4 @@
+--reporter spec
+--growl
+--ui bdd
+test/index.js

@@ -10,10 +10,16 @@ var getDiffMatchPatch = function(){
         var instance;
         if (typeof diff_match_patch !== 'undefined') {
             // already loaded, probably a browser
-            instance = new diff_match_patch();
+            instance = typeof diff_match_patch === 'function' ?
+              new diff_match_patch() : new diff_match_patch.diff_match_patch();
         } else if (typeof require === 'function') {
-            var dmp = require('../../external/diff_match_patch_uncompressed');
-            instance = new dmp.diff_match_patch();
+            try {
+                var dmpModuleName = 'diff_match_patch_uncompressed';
+                var dmp = require('../../public/external/' + dmpModuleName);
+                instance = new dmp.diff_match_patch();
+            } catch (err) {
+                instance = null;
+            }
         }
         if (!instance) {
             var error = new Error('text diff_match_patch library not found');

@@ -1,0 +1,16 @@
+{
+  "extends": "../jshintrc.json",
+  // Custom Globals
+  "predef"        : [
+    "mocha",
+    "describe",
+    "when",
+    "before",
+    "beforeEach",
+    "after",
+    "afterEach",
+    "it",
+    "expect",
+    "jsondiffpatch"
+  ]
+}

@@ -1,7 +1,7 @@
 {
   "name": "jsondiffpatch",
   "description": "Diff & Patch for Javascript objects",
-  "main": "public/build/jsondiffpatch.js",
+  "main": "jsondiffpatch.js",
   "license": "MIT",
   "authors": [
     "Benjamin Eidelman <beneidel@gmail.com>"

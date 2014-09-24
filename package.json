@@ -1,6 +1,6 @@
 {
   "name": "jsondiffpatch",
-  "version": "0.1.8",
+  "version": "0.1.9",
   "author": "Benjamin Eidelman <beneidel@gmail.com>",
   "description": "Diff & Patch for Javascript objects",
   "contributors": [
@@ -10,7 +10,11 @@
     "jsondiffpatch": "./bin/jsondiffpatch"
   },
   "scripts": {
-    "test": "npm install && ./node_modules/.bin/gulp test test-browser"
+    "test": "gulp test && gulp test-browser",
+    "bump": "gulp bump",
+    "cover": "istanbul cover --root src gulp test",
+    "cover-report": "open coverage/lcov-report/index.html",
+    "cover-publish": "istanbul cover _mocha --report lcovonly && codeclimate < coverage/lcov.info"
   },
   "main": "./src/main",
   "repository": {
@@ -24,29 +28,11 @@
   ],
   "devDependencies": {
     "expect.js": "~0.3.1",
-    "gulp": "~3.5.2",
-    "gulp-browserify": "~0.4.4",
-    "gulp-clean": "~0.2.4",
-    "gulp-jshint": "~1.5.0",
-    "gulp-karma": "0.0.4",
-    "gulp-load-plugins": "~0.3.0",
-    "gulp-mocha": "~0.4.1",
-    "gulp-plumber": "~0.5.6",
-    "gulp-rename": "~1.1.0",
-    "gulp-replace": "~0.2.0",
-    "gulp-uglify": "~0.2.1",
-    "gulp-util": "~2.2.14",
-    "jshint-stylish": "~0.1.5",
-    "karma": "~0.12.16",
-    "karma-chrome-launcher": "~0.1.2",
-    "karma-firefox-launcher": "~0.1.3",
-    "karma-growler-reporter": "~0.0.1",
-    "karma-html2js-preprocessor": "~0.1.0",
-    "karma-mocha": "~0.1.4",
-    "karma-phantomjs-launcher": "~0.1.2",
-    "karma-script-launcher": "~0.1.0",
-    "karma-spec-reporter": "~0.0.10",
-    "mocha": "~1.17.1"
+    "gulp": "^3.8.8",
+    "bulk-require": "^0.2.1",
+    "codeclimate-test-reporter": "0.0.3",
+    "fiberglass": "~0.0.11",
+    "istanbul": "^0.3.2"
   },
   "bundleDependencies": [],
   "license": "MIT",
@@ -58,9 +44,9 @@
   },
   "testling": {
     "harness": "mocha",
-    "files": "test/*.js",
+    "files": "test/index.js",
     "scripts": [
-      "build/bundle.js",
+      "build/jsondiffpatch.js",
       "external/diff_match_patch_uncompressed.js"
     ],
     "browsers": [

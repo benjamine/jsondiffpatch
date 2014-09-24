@@ -38,13 +38,18 @@ exports.reverse = function() {
 	return defaultInstance.reverse.apply(defaultInstance, arguments);
 };
 
-var inNode = typeof process !== 'undefined' && typeof process.execPath === 'string';
-if (inNode) {
-	var formatters = require('./formatters' + '/index');
+if (process.browser) {
+	exports.homepage = '{{package-homepage}}';
+	exports.version = '{{package-version}}';
+} else {
+	var packageInfoModuleName = '../package.json';
+	var packageInfo = require(packageInfoModuleName);
+	exports.homepage = packageInfo.homepage;
+	exports.version = packageInfo.version;
+
+	var formatterModuleName = './formatters';
+	var formatters = require(formatterModuleName);
 	exports.formatters = formatters;
 	// shortcut for console
 	exports.console = formatters.console;
-} else {
-	exports.homepage = '{{package-homepage}}';
-	exports.version = '{{package-version}}';
 }
