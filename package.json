@@ -19,7 +19,7 @@
   "main": "./src/main",
   "repository": {
     "type": "git",
-    "url": "git://github.com/benjamine/jsondiffpatch.git"
+    "url": "https://github.com/benjamine/jsondiffpatch.git"
   },
   "keywords": [
     "json",
