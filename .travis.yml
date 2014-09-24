@@ -15,4 +15,4 @@ addons:
       # # get your token from https://codeclimate.com/github/benjamine/jsondiffpatch
       # gem install travis
       # travis encrypt <projecttoken>
-      secure: "K96BDvoXMY5IDbA49CnbOXoGzwXATVriUsXTPjLKivgEcw3I6kN/BS487TtYcmF3vGV8tNMQsiQPQtuMR4ZwOX11ivi+PZI8n9DgEwhdFMEtMERrb4HqXpZ5ZnkUz34P0K8h9k7W4ysq9Kfh7JrcVbW92LvS2VVY2p8LNE1Z3gY="
+      secure: "IZabDj3HrrCNOfhK0v+Q/am9AE5zYzF13IYB64q8wSUHcSxxhdrxSyLvjIiOfLe9W+h+MAW1+OuQkldUs/yd/fJjy44GE4ugUKY+9RP3TBm7hQRF4KEwIx2BMK4HVNazOkWz8nsnq4cfPy9pFEumcKb/O7TL2gK6RS6dIfNsKw0="
