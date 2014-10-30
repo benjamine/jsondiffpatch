@@ -73,9 +73,14 @@ BaseFormatter.prototype.finalize = function(context) {
 };
 
 BaseFormatter.prototype.recurse = function(context, delta, left, key, leftKey, movedFrom, isLast) {
+
+  var useMoveOriginHere = delta && movedFrom;
+  var leftValue = useMoveOriginHere ? movedFrom.value : left;
+
   if (typeof delta === 'undefined' && typeof key === 'undefined') {
     return undefined;
   }
+
   var type = this.getDeltaType(delta, movedFrom);
   var nodeType = type === 'node' ? (delta._t === 'a' ? 'array' : 'object') : '';
 
@@ -88,9 +93,9 @@ BaseFormatter.prototype.recurse = function(context, delta, left, key, leftKey, m
   var typeFormattter;
   try {
     typeFormattter = this['format_' + type] || this.typeFormattterNotFound(context, type);
-    typeFormattter.call(this, context, delta, left, key, leftKey, movedFrom);
+    typeFormattter.call(this, context, delta, leftValue, key, leftKey, movedFrom);
   } catch (err) {
-    this.typeFormattterErrorFormatter(context, err, delta, left, key, leftKey, movedFrom);
+    this.typeFormattterErrorFormatter(context, err, delta, leftValue, key, leftKey, movedFrom);
     if (typeof console !== 'undefined' && console.error) {
       console.error(err.stack);
     }
@@ -128,7 +133,10 @@ BaseFormatter.prototype.forEachDeltaKey = function(delta, left, fn) {
   for (name in delta) {
     var value = delta[name];
     if (isArray(value) && value[2] === 3) {
-      moveDestinations[value[1].toString()] = value[0];
+      moveDestinations[value[1].toString()] = {
+        key: name,
+        value: left[parseInt(name.substr(1))]
+      };
       if (this.includeMoveDestinations !== false) {
         if ((typeof left === 'undefined') &&
           (typeof delta[value[1]] === 'undefined')) {
