@@ -686,6 +686,21 @@ examples.objects = [{
       },
       c: [5]
     }
+  }, {
+    name: 'key removed',
+    left: {
+      a: 1,
+      b: 2
+    },
+    right: {
+      a: 1
+    },
+    delta: {
+      b: [2, 0, 0]
+    },
+    reverse: {
+      b: [2]
+    }
   },
   0
 ];
