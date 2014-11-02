@@ -58,12 +58,12 @@ var deepEqual = function(obj1, obj2) {
     }
     var name;
     for (name in obj2) {
-      if (typeof obj1[name] === 'undefined') {
+      if (!obj1.hasOwnProperty(name)) {
         return false;
       }
     }
     for (name in obj1) {
-      if (!deepEqual(obj1[name], obj2[name])) {
+      if (!obj2.hasOwnProperty(name) || !deepEqual(obj1[name], obj2[name])) {
         return false;
       }
     }

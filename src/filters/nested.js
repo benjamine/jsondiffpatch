@@ -76,7 +76,9 @@ var collectChildrenPatchFilter = function collectChildrenPatchFilter(context) {
   var child;
   for (var index = 0; index < length; index++) {
     child = context.children[index];
-    if (context.left[child.childName] !== child.result) {
+    if (context.left.hasOwnProperty(child.childName) && child.result === undefined) {
+      delete context.left[child.childName];
+    } else if (context.left[child.childName] !== child.result) {
       context.left[child.childName] = child.result;
     }
   }
