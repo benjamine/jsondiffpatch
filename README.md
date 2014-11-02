@@ -272,7 +272,7 @@ npm install -g jsondiffpatch
 jsondiffpatch ./demo/left.json ./demo/right.json
 ```
 
-![console_demo!](demo/consoledemo.png)
+![console_demo!](public/demo/consoledemo.png)
 
 Plugins
 -------
