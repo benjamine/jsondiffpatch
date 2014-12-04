@@ -137,7 +137,7 @@
         return obj._id;
       }
       if (typeof obj.id !== 'undefined') {
-        return obj._id;
+        return obj.id;
       }
       if (typeof obj.name !== 'undefined') {
         return obj.name;
