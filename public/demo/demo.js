@@ -133,7 +133,16 @@
   /* global jsondiffpatch */
   var instance = jsondiffpatch.create({
     objectHash: function(obj) {
-      return obj._id || obj.id || obj.name || JSON.stringify(obj);
+      if (typeof obj._id !== 'undefined') {
+        return obj._id;
+      }
+      if (typeof obj.id !== 'undefined') {
+        return obj._id;
+      }
+      if (typeof obj.name !== 'undefined') {
+        return obj.name;
+      }
+      return JSON.stringify(obj);
     }
   });
 
