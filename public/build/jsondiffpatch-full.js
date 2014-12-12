@@ -3325,7 +3325,7 @@ exports.reverse = function() {
 
 if (process.browser) {
 	exports.homepage = 'https://github.com/benjamine/jsondiffpatch';
-	exports.version = '0.1.22';
+	exports.version = '0.1.23';
 } else {
 	var packageInfoModuleName = '../package.json';
 	var packageInfo = require(packageInfoModuleName);
