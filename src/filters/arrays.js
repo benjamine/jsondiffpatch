@@ -345,6 +345,7 @@ reverseFilter.filterName = 'arrays';
 
 var reverseArrayDeltaIndex = function(delta, index, itemDelta) {
   var newIndex = index;
+  var newIndex2;
   if (typeof index === 'string' && index[0] === '_') {
     newIndex = parseInt(index.substr(1), 10);
   } else {
@@ -352,11 +353,28 @@ var reverseArrayDeltaIndex = function(delta, index, itemDelta) {
     if (isArray(itemDelta) && itemDelta[2] === 0) {
       newIndex = uindex;
     } else {
+      var indexShift = 0;
       for (var index2 in delta) {
         var itemDelta2 = delta[index2];
-        if (isArray(itemDelta2) && itemDelta2[2] === ARRAY_MOVE && itemDelta2[1].toString() === index) {
-          newIndex = index2.substr(1);
+        if (isArray(itemDelta2)) {
+          if (itemDelta2[2] === ARRAY_MOVE) {
+            if (itemDelta2[1].toString() === index) {
+              indexShift = 0;
+              newIndex = index2.substr(1);
+              break;
+            }
+          } else if (itemDelta2[2] === 0 && typeof index2 === 'string') {
+            newIndex2 = parseInt(index2.substr(1), 10);
+            if (newIndex2 <= newIndex) {
+              newIndex++;
+            }
+          } else if (itemDelta2.length === 1 && index2 <= newIndex) {
+            newIndex--;
+          }
         }
+      }
+      if (indexShift !== 0) {
+        newIndex += indexShift;
       }
     }
   }

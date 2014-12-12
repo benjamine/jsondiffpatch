@@ -819,25 +819,25 @@ examples.arrays = [{
       }
     },
     left: [1, 2, 4, {
-        id: 'five',
-        width: 4
-      },
-      6, 7, 8, {
-        id: 4,
-        width: 10,
-        height: 3
-      },
-      9, 10
+      id: 'five',
+      width: 4
+    },
+    6, 7, 8, {
+      id: 4,
+      width: 10,
+      height: 3
+    },
+    9, 10
     ],
     right: [1, 2, {
-        id: 4,
-        width: 12
-      },
-      4, {
-        id: 'five',
-        width: 4
-      },
-      6, 7, 8, 9, 10
+      id: 4,
+      width: 12
+    },
+    4, {
+      id: 'five',
+      width: 4
+    },
+    6, 7, 8, 9, 10
     ],
     delta: {
       _t: 'a',
@@ -854,6 +854,103 @@ examples.arrays = [{
         height: [3]
       },
       _2: ['', 7, 3]
+    }
+  }, {
+    name: 'nested changes among array insertions and deletions',
+    options: {
+      objectHash: function(obj) {
+        if (obj && obj.id) {
+          return obj.id;
+        }
+      }
+    },
+    left: [
+      {
+        id: 1
+      },
+      {
+        id: 2
+      },
+      {
+        id: 4
+      },
+      {
+        id: 5
+      },
+      {
+        id: 6,
+        inner: {
+          property: 'abc'
+        }
+      },
+      {
+        id: 7
+      },
+      {
+        id: 8
+      },
+      {
+        id: 10
+      },
+      {
+        id: 11
+      },
+      {
+        id: 12
+      }
+      ],
+    right: [
+      {
+        id: 3
+      },
+      {
+        id: 4
+      },
+      {
+        id: 6,
+        inner: {
+          property: 'abcd'
+        }
+      },
+      {
+        id: 9
+      }
+    ],
+    delta: {
+      _t: 'a',
+      0: [ { id: 3 } ],
+      2: {
+        inner: {
+          property: [ 'abc', 'abcd' ]
+        }
+      },
+      3: [ { id: 9 } ],
+      _0: [ { id: 1 }, 0, 0 ],
+      _1: [ { id: 2 }, 0, 0 ],
+      _3: [ { id: 5 }, 0, 0 ],
+      _5: [ { id: 7 }, 0, 0 ],
+      _6: [ { id: 8 }, 0, 0 ],
+      _7: [ { id: 10 }, 0, 0 ],
+      _8: [ { id: 11 }, 0, 0 ],
+      _9: [ { id: 12 }, 0, 0 ]
+    },
+    reverse: {
+      _t: 'a',
+      0: [ { id: 1 } ],
+      1: [ { id: 2 } ],
+      3: [ { id: 5 } ],
+      4: {
+        inner: {
+          property: [ 'abcd', 'abc' ]
+        }
+      },
+      5: [ { id: 7 } ],
+      6: [ { id: 8 } ],
+      7: [ { id: 10 } ],
+      8: [ { id: 11 } ],
+      9: [ { id: 12 } ],
+      _0: [ { id: 3 }, 0, 0 ],
+      _3: [ { id: 9 }, 0, 0 ]
     }
   }, {
     name: 'nested with movements using custom objectHash',
