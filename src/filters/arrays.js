@@ -353,13 +353,11 @@ var reverseArrayDeltaIndex = function(delta, index, itemDelta) {
     if (isArray(itemDelta) && itemDelta[2] === 0) {
       newIndex = uindex;
     } else {
-      var indexShift = 0;
       for (var index2 in delta) {
         var itemDelta2 = delta[index2];
         if (isArray(itemDelta2)) {
           if (itemDelta2[2] === ARRAY_MOVE) {
             if (itemDelta2[1].toString() === index) {
-              indexShift = 0;
               newIndex = index2.substr(1);
               break;
             }
@@ -372,9 +370,6 @@ var reverseArrayDeltaIndex = function(delta, index, itemDelta) {
             newIndex--;
           }
         }
-      }
-      if (indexShift !== 0) {
-        newIndex += indexShift;
       }
     }
   }
