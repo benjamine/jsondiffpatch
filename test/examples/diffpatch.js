@@ -953,6 +953,196 @@ examples.arrays = [{
       _3: [ { id: 9 }, 0, 0 ]
     }
   }, {
+    name: 'nested change with item moved above',
+    options: {
+      objectHash: function(obj) {
+        if (obj && obj.id) {
+          return obj.id;
+        }
+      }
+    },
+    left: [
+      {
+        id: 1
+      },
+      {
+        id: 2
+      },
+      {
+        id: 3,
+        inner: {
+          property: 'abc'
+        }
+      },
+      {
+        id: 4
+      },
+      {
+        id: 5
+      },
+      {
+        id: 6
+      }
+    ],
+    right: [
+      {
+        id: 1
+      },
+      {
+        id: 2
+      },
+      {
+        id: 6
+      },
+      {
+        id: 3,
+        inner: {
+          property: 'abcd'
+        }
+      },
+      {
+        id: 4
+      },
+      {
+        id: 5
+      }
+    ],
+    delta: {
+      _t: 'a',
+      3: {
+        inner:{
+          property:[ 'abc', 'abcd' ]
+        }
+      },
+      _5:['', 2, 3 ]
+    },
+    reverse: {
+      _t: 'a',
+      2: {
+        inner:{
+          property:[ 'abcd', 'abc' ]
+        }
+      },
+      _2:['', 5, 3 ]
+    }
+  }, {
+    name: 'nested change with item moved right above',
+    options: {
+      objectHash: function(obj) {
+        if (obj && obj.id) {
+          return obj.id;
+        }
+      }
+    },
+    left: [
+      {
+        id: 1
+      },
+      {
+        id: 2,
+        inner: {
+          property: 'abc'
+        }
+      },
+      {
+        id: 3
+      }
+    ],
+    right: [
+      {
+        id: 1
+      },
+      {
+        id: 3
+      },
+      {
+        id: 2,
+        inner: {
+          property: 'abcd'
+        }
+      }
+    ],
+    delta: {
+      _t: 'a',
+      2: {
+        inner:{
+          property:[ 'abc', 'abcd' ]
+        }
+      },
+      _2:['', 1, 3 ]
+    },
+    reverse: {
+      _t: 'a',
+      1: {
+        inner:{
+          property:[ 'abcd', 'abc' ]
+        }
+      },
+      _2:['', 1, 3 ]
+    },
+    exactReverse: false
+  }, {
+    name: 'nested change with item moved right below',
+    options: {
+      objectHash: function(obj) {
+        if (obj && obj.id) {
+          return obj.id;
+        }
+      }
+    },
+    left: [
+      {
+        id: 1
+      },
+      {
+        id: 2
+      },
+      {
+        id: 3,
+        inner: {
+          property: 'abc'
+        }
+      },
+      {
+        id: 4
+      }
+    ],
+    right: [
+      {
+        id: 2
+      },
+      {
+        id: 3,
+        inner: {
+          property: 'abcd'
+        }
+      },
+      {
+        id: 1
+      },
+      {
+        id: 4
+      }
+    ],
+    delta: {
+      _t: 'a',
+      1: {
+        inner:{
+          property:[ 'abc', 'abcd' ]
+        }
+      },
+      _0:['', 2, 3 ]
+    },
+    reverse: {
+      _t: 'a',
+      2: {
+        inner:{
+          property:[ 'abcd', 'abc' ]
+        }
+      },
+      _2:['', 0, 3 ]
+    }
+  }, {
     name: 'nested with movements using custom objectHash',
     options: {
       objectHash: function(obj) {
