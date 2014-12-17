@@ -121,14 +121,6 @@ BaseFormatter.prototype.forEachDeltaKey = function(delta, left, fn) {
   var arrayKeys = delta._t === 'a';
   var moveDestinations = {};
   var name;
-  if (typeof left !== 'undefined') {
-    for (name in left) {
-      if (typeof delta[name] === 'undefined' &&
-        ((!arrayKeys) || typeof delta['_' + name] === 'undefined')) {
-        keys.push(name);
-      }
-    }
-  }
   // look for move destinations
   for (name in delta) {
     var value = delta[name];
@@ -142,6 +134,16 @@ BaseFormatter.prototype.forEachDeltaKey = function(delta, left, fn) {
           (typeof delta[value[1]] === 'undefined')) {
           keys.push(value[1].toString());
         }
+      }
+    } else if (isArray(value) && isArray(left) && value.length === 1) {
+      left.splice(name, 0, value);
+    }
+  }
+  if (typeof left !== 'undefined') {
+    for (name in left) {
+      if (typeof delta[name] === 'undefined' &&
+        ((!arrayKeys) || typeof delta['_' + name] === 'undefined')) {
+        keys.push(name);
       }
     }
   }
