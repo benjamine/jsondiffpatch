@@ -16,7 +16,7 @@ Diff & patch JavaScript objects
 -----
 
 - min+gzipped < 6KB
-- browser (```/build/bundle.js```) and server (eg. node.js)
+- browser (```/public/build/jsondiffpatch.js```) and server (eg. node.js)
 - includes [google-diff-match-patch](http://code.google.com/p/google-diff-match-patch/) for long text diffs (diff at character level)
 - smart array diffing using [LCS](http://en.wikipedia.org/wiki/Longest_common_subsequence_problem), ***IMPORTANT NOTE:*** to match objects inside an array you ***must*** provide an ```objectHash``` function, check [Array diff documentation](docs/arrays.md)
 - reverse a delta
@@ -194,12 +194,12 @@ var jsondiffpatch = require('jsondiffpatch').create(options);
 bower install jsondiffpatch
 ```
 
-browser bundles are in the ```/build``` folder (run ```make``` or ```gulp``` to generate these):
-- ```bundle.js``` main bundle
-- ```bundle.full.js``` main bundle + [google-diff-match-patch](http://code.google.com/p/google-diff-match-patch/) library for text diffs
-- ```formatters.js``` builtin formatters (only those useful in a browser)
+browser bundles are in the ```/public/build``` folder (you can re-generate these using ```make``` or ```gulp```, `npm test` will do that too):
+- ```jsondiffpatch.js``` main bundle
+- ```jsondiffpatch.full.js``` main bundle + [google-diff-match-patch](http://code.google.com/p/google-diff-match-patch/) library for text diffs
+- ```jsondiffpatch-formatters.js``` builtin formatters (only those useful in a browser)
 
-(all these come in minified versions: ```.min.js```)
+All these come in minified versions (```.min.js```), and separate sourcemap files.
 
 Options
 -------
@@ -231,10 +231,10 @@ Visual Diff
 <!DOCTYPE html>
 <html>
     <head>
-        <script type="text/javascript" src="build/bundle.min.js"></script>
-        <script type="text/javascript" src="build/formatters.min.js"></script>
-        <link rel="stylesheet" href="src/formatters/html.css" type="text/css" />
-        <link rel="stylesheet" href="src/formatters/annotated.css" type="text/css" />
+        <script type="text/javascript" src="public/build/jsondiffpatch.min.js"></script>
+        <script type="text/javascript" src="public/build/jsondiffpatch-formatters.min.js"></script>
+        <link rel="stylesheet" href="public/formatters-styles/html.css" type="text/css" />
+        <link rel="stylesheet" href="public/formatters-styles/annotated.css" type="text/css" />
     </head>
     <body>
         <div id="visual"></div>
