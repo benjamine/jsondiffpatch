@@ -3263,7 +3263,7 @@ exports.reverse = function() {
 
 if (environment.isBrowser) {
 	exports.homepage = 'https://github.com/benjamine/jsondiffpatch';
-	exports.version = '0.1.25';
+	exports.version = '0.1.26';
 } else {
 	var packageInfoModuleName = '../package.json';
 	var packageInfo = require(packageInfoModuleName);
