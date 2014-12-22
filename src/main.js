@@ -1,4 +1,6 @@
 
+var environment = require('./environment');
+
 var DiffPatcher = require('./diffpatcher').DiffPatcher;
 exports.DiffPatcher = DiffPatcher;
 
@@ -38,7 +40,7 @@ exports.reverse = function() {
 	return defaultInstance.reverse.apply(defaultInstance, arguments);
 };
 
-if (process.browser) {
+if (environment.isBrowser) {
 	exports.homepage = '{{package-homepage}}';
 	exports.version = '{{package-version}}';
 } else {
