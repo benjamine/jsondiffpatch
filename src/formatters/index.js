@@ -1,8 +1,9 @@
+var isBrowser = require('../helper').isBrowser;
 
 exports.html = require('./html');
 exports.annotated = require('./annotated');
 
-if (!process.browser) {
+if (!isBrowser()) {
 	var consoleModuleName = './console';
 	exports.console = require(consoleModuleName);
 }
