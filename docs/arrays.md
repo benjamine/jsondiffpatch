@@ -13,32 +13,21 @@ for LCS to work, it needs a way to match items between previous/original (or lef
 In traditional text diff tools this is trivial, as two lines of text are compared char by char.
 
 By default the ```===``` operator is used, which is good enough to match all JavaScript value types (number, string, bool), and object references (in case you kept references between left/right states).
-But when objects are found on both sides, if they are not equal by reference (ie. the same object) both objects are  considered different values, as there is no trivial solution to compare two arbritrary objects in JavaScript.
 
-At first, you might be surprised by this...
+But when no matches by reference or value are found, array diffing fallbacks to a dumb behavior: **matching items by position**.
 
-### Counter-intuitive result
-``` javascript
-var delta = jsondiffpatch.diff({ name: 'tito' }, { name: 'tito' });
+Matching by position is not the most efficient option (eg. if an item is added at the first position, all the items below will be considered modified), but it produces expected results in most trivial cases. This is good enough as soon as movements/insertions/deletions only happen near the bottom of the array.
 
-assertSame(delta, {
-  _0: [{ name: 'tito' }, 0, 0],
-  0: [{ name: 'tito' }]
-});
-// reads as: remove { name: 'tito' } at 0,
-//           insert { name: 'tito' } at 0
-```
+This is because if 2 objects are not equal by reference (ie. the same object) both objects are  considered different values, as there is no trivial solution to compare two arbitrary objects in JavaScript.
 
-That's because two objects aren't ```===``` equal, unless they are really the same object (by reference).
+To improve the results leveraging the power of LCS (and position move detection) you need to provide a way to compare 2 objects, an `objectHash` function:
 
-But you can make this work as you need by providing a function to hash objects in an array (so hashes are compared instead), here is...
-
-### An example of solution
+### An example using objectHash
 ``` javascript
 var delta = jsondiffpatch.create({
-    objectHash: function(obj) {
-      // try to find an id property, otherwise serialize it all
-      return obj.name || obj.id || obj._id || obj._id || JSON.stringify(obj);
+    objectHash: function(obj, index) {
+      // try to find an id property, otherwise just use the index in the array
+      return obj.name || obj.id || obj._id || obj._id || '$$index:' + index;
     }
   }).diff({ name: 'tito' }, { name: 'tito' });
 

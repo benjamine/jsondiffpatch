@@ -27,57 +27,75 @@ var arrayIndexOf = typeof Array.prototype.indexOf === 'function' ?
     return -1;
   };
 
+function arraysHaveMatchByRef(array1, array2, len1, len2) {
+  for (var index1 = 0; index1 < len1; index1++) {
+    var val1 = array1[index1];
+    for (var index2 = 0; index2 < len2; index2++) {
+      var val2 = array2[index2];
+      if (val1 === val2) {
+        return true;
+      }
+    }
+  }
+}
+
+function matchItems(array1, array2, index1, index2, context) {
+  var value1 = array1[index1];
+  var value2 = array2[index2];
+  if (value1 === value2) {
+    return true;
+  }
+  if (typeof value1 !== 'object' || typeof value2 !== 'object') {
+    return false;
+  }
+  var objectHash = context.objectHash;
+  if (!objectHash) {
+    // no way to match objects was provided, try match by position
+    return context.matchByPosition && index1 === index2;
+  }
+  var hash1;
+  var hash2;
+  if (typeof index1 === 'number') {
+    context.hashCache1 = context.hashCache1 || [];
+    hash1 = context.hashCache1[index1];
+    if (typeof hash1 === 'undefined') {
+      context.hashCache1[index1] = hash1 = objectHash(value1, index1);
+    }
+  } else {
+    hash1 = objectHash(value1);
+  }
+  if (typeof hash1 === 'undefined') {
+    return false;
+  }
+  if (typeof index2 === 'number') {
+    context.hashCache2 = context.hashCache2 || [];
+    hash2 = context.hashCache2[index2];
+    if (typeof hash2 === 'undefined') {
+      context.hashCache2[index2] = hash2 = objectHash(value2, index2);
+    }
+  } else {
+    hash2 = objectHash(value2);
+  }
+  if (typeof hash2 === 'undefined') {
+    return false;
+  }
+  return hash1 === hash2;
+}
+
 var diffFilter = function arraysDiffFilter(context) {
   if (!context.leftIsArray) {
     return;
   }
 
-  var objectHash = context.options && context.options.objectHash;
-
-  var match = function(array1, array2, index1, index2, context) {
-    var value1 = array1[index1];
-    var value2 = array2[index2];
-    if (value1 === value2) {
-      return true;
-    }
-    if (typeof value1 !== 'object' || typeof value2 !== 'object') {
-      return false;
-    }
-    if (!objectHash) {
-      return false;
-    }
-    var hash1, hash2;
-    if (typeof index1 === 'number') {
-      context.hashCache1 = context.hashCache1 || [];
-      hash1 = context.hashCache1[index1];
-      if (typeof hash1 === 'undefined') {
-        context.hashCache1[index1] = hash1 = objectHash(value1, index1);
-      }
-    } else {
-      hash1 = objectHash(value1);
-    }
-    if (typeof hash1 === 'undefined') {
-      return false;
-    }
-    if (typeof index2 === 'number') {
-      context.hashCache2 = context.hashCache2 || [];
-      hash2 = context.hashCache2[index2];
-      if (typeof hash2 === 'undefined') {
-        context.hashCache2[index2] = hash2 = objectHash(value2, index2);
-      }
-    } else {
-      hash2 = objectHash(value2);
-    }
-    if (typeof hash2 === 'undefined') {
-      return false;
-    }
-    return hash1 === hash2;
+  var matchContext = {
+    objectHash: context.options && context.options.objectHash,
+    matchByPosition: context.options && context.options.matchByPosition
   };
-
-  var matchContext = {};
-  var commonHead = 0,
-    commonTail = 0,
-    index, index1, index2;
+  var commonHead = 0;
+  var commonTail = 0;
+  var index;
+  var index1;
+  var index2;
   var array1 = context.left;
   var array2 = context.right;
   var len1 = array1.length;
@@ -85,9 +103,14 @@ var diffFilter = function arraysDiffFilter(context) {
 
   var child;
 
+  if (len1 > 0 && len2 > 0 && !matchContext.objectHash &&
+    typeof matchContext.matchByPosition !== 'boolean') {
+    matchContext.matchByPosition = !arraysHaveMatchByRef(array1, array2, len1, len2);
+  }
+
   // separate common head
   while (commonHead < len1 && commonHead < len2 &&
-    match(array1, array2, commonHead, commonHead, matchContext)) {
+    matchItems(array1, array2, commonHead, commonHead, matchContext)) {
     index = commonHead;
     child = new DiffContext(context.left[index], context.right[index]);
     context.push(child, index);
@@ -95,7 +118,7 @@ var diffFilter = function arraysDiffFilter(context) {
   }
   // separate common tail
   while (commonTail + commonHead < len1 && commonTail + commonHead < len2 &&
-    match(array1, array2, len1 - 1 - commonTail, len2 - 1 - commonTail, matchContext)) {
+    matchItems(array1, array2, len1 - 1 - commonTail, len2 - 1 - commonTail, matchContext)) {
     index1 = len1 - 1 - commonTail;
     index2 = len2 - 1 - commonTail;
     child = new DiffContext(context.left[index1], context.right[index2]);
@@ -131,13 +154,15 @@ var diffFilter = function arraysDiffFilter(context) {
     return;
   }
   // reset hash cache
-  matchContext = {};
+  delete matchContext.hashCache1;
+  delete matchContext.hashCache2;
+
   // diff is not trivial, find the LCS (Longest Common Subsequence)
   var trimmed1 = array1.slice(commonHead, len1 - commonTail);
   var trimmed2 = array2.slice(commonHead, len2 - commonTail);
   var seq = lcs.get(
     trimmed1, trimmed2,
-    match,
+    matchItems,
     matchContext
   );
   var removedItems = [];
@@ -170,7 +195,7 @@ var diffFilter = function arraysDiffFilter(context) {
       if (detectMove && removedItemsLength > 0) {
         for (var removeItemIndex1 = 0; removeItemIndex1 < removedItemsLength; removeItemIndex1++) {
           index1 = removedItems[removeItemIndex1];
-          if (match(trimmed1, trimmed2, index1 - commonHead,
+          if (matchItems(trimmed1, trimmed2, index1 - commonHead,
             index - commonHead, matchContext)) {
             // store position move as: [originalValue, newPosition, ARRAY_MOVE]
             result['_' + index1].splice(1, 2, index, ARRAY_MOVE);

@@ -132,7 +132,7 @@
 
   /* global jsondiffpatch */
   var instance = jsondiffpatch.create({
-    objectHash: function(obj) {
+    objectHash: function(obj, index) {
       if (typeof obj._id !== 'undefined') {
         return obj._id;
       }
@@ -142,7 +142,7 @@
       if (typeof obj.name !== 'undefined') {
         return obj.name;
       }
-      return JSON.stringify(obj);
+      return '$$index:' + index;
     }
   });
 
