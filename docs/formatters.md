@@ -42,7 +42,7 @@ Console
 Node.js colored output (thanks to [chalk](https://github.com/sindresorhus/chalk)!).
 It's used by the CLI:
 
-![console_demo!](../demo/consoledemo.png)
+![console_demo!](../public/demo/consoledemo.png)
 
 but you can use it programmatically too:
 
