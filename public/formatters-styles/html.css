@@ -24,7 +24,7 @@ ul.jsondiffpatch-delta {
 }
 .jsondiffpatch-added .jsondiffpatch-property-name,
 .jsondiffpatch-added .jsondiffpatch-value pre,
-.jsondiffpatch-modified .jsondiffpatch-right-value,
+.jsondiffpatch-modified .jsondiffpatch-right-value pre,
 .jsondiffpatch-textdiff-added {
   background: #bbffbb;
 }
