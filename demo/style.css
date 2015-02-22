@@ -1,0 +1,144 @@
+body {
+    font-family: Georgia, serif;
+    min-width: 600px;
+}
+
+h1 {
+    margin: 4px;
+}
+
+header > * {
+    display: inline-block;
+}
+
+#description {
+    margin-left: 10px;
+    font-size: x-large;
+}
+
+#external-link {
+    font-size: smaller;
+    vertical-align: top;
+    margin-top: 10px;
+}
+
+h2 {
+    display: inline-block;
+    margin: 5px 0;
+}
+
+
+a#fork_me {
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+
+.json-input > div {
+    float: left;
+    width: 50%;
+}
+
+.json-input > div
+{
+    text-align: center;
+}
+
+.CodeMirror
+{
+    text-align: initial;
+    border: 1px solid #ccc;
+}
+
+.json-input > div > textarea {
+    width: 95%;
+    height: 200px;
+}
+
+.prettyfy {
+    font-weight: bold;
+    font-size: smaller;
+    margin-left: 5px;
+}
+
+.buttons {
+    width: 100%;
+    text-align:center;
+    height: 1px;
+}
+
+.buttons > div
+{
+    margin: 0 auto;
+}
+
+.json-error {
+    background: #ffdfdf;
+    -webkit-transition: all 1s;
+    transition: all 1s;
+}
+
+.error-message {
+    font-weight: bold;
+    color: red;
+    font-size: smaller;
+    min-height: 20px;
+    display: block;
+}
+
+.header-options {
+    font-weight: normal;
+    margin-left: 30px;
+    display: inline-block;
+}
+
+#delta-panel-visual {
+    width: 100%;
+    overflow: auto;
+}
+
+#visualdiff {
+    margin-top: 4px;
+}
+
+#json-delta {
+    font-family: 'Bitstream Vera Sans Mono', 'DejaVu Sans Mono', Monaco, Courier, monospace;
+    font-size: 12px;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 200px;
+}
+
+#delta-panel-json > p {
+    margin: 4px;
+}
+
+footer {
+    font-size: small;
+    text-align: center;
+    margin: 40px;
+}
+
+.credits {
+    font-size: smaller;
+}
+
+.credits a {
+    text-decoration: none;
+    color: black;
+}
+
+.credits a:hover {
+    text-decoration: underline;
+}
+
+.results {
+    margin-top: 20px;
+}
+
+.results > div {
+    vertical-align: top;
+    display: inline-block;
+}
+

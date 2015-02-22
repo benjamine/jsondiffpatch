@@ -1,0 +1,10 @@
+{
+	"name": "Pluto",
+	"orbital_speed_kms": 4.7,
+	"category": "dwarf planet",
+	"composition": [
+		"nitrogen",
+		"methane",
+		"carbon monoxide"
+	]
+}

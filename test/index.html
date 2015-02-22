@@ -1,0 +1,75 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>jsondiffpatch behavior</title>
+  <link rel="stylesheet" href="../build/test/mocha.css" />
+  <script src="../build/test/mocha.js"></script>
+  <script>window.mocha.setup('bdd');</script>
+  <script src="../build/jsondiffpatch.js"></script>
+  <script src="../external/diff_match_patch_uncompressed.js"></script>
+  <script src="../build/test-bundle.js"></script>
+  <style>
+    h1 {
+      margin: 0.5em;
+    }
+    body > div {
+      margin: 20px;
+    }
+    #mocha {
+      margin: 30px;
+    }
+    .on-fail, .on-success {
+      display: none;
+    }
+    body.fail {
+      background: #fbb;
+      transition: all 3s;
+    }
+    body.fail .on-fail {
+      display: inline-block;
+    }
+    body.success {
+      background: #cfc;
+      transition: all 3s;
+    }
+    body.success .on-success {
+      display: inline-block;
+    }
+    body.done .before-done {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <h1>jsondiffpatch behavior</h1>
+  <div id="links">
+
+    <a href="git://github.com/benjamine/jsondiffpatch.git">repository<a/>
+
+
+    <a href="https://github.com/benjamine/jsondiffpatch">homepage<a/>
+
+  </div>
+  <div id="mocha"></div>
+  <script>
+    function done(result) {
+      var classes = (document.body.getAttribute('class') || '')
+        .replace(/ (done|fail|success)/g, '') +
+        ' done ' + result;
+      document.body.setAttribute('class', classes);
+    }
+    try {
+      window.mocha.checkLeaks();
+      var runner = window.mocha.run();
+      runner.on('end', function(){
+        done(runner.failures ? 'fail' : 'success');
+      });
+    } catch(err) {
+      console.log('error on mocha setup');
+      console.log(err);
+      done('fail');
+    }
+  </script>
+</body>
+</html>

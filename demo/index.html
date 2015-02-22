@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>JsonDiffPatch</title>
+  <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+  <meta content="utf-8" http-equiv="encoding">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <link rel="stylesheet" href="style.css" type="text/css" media="screen" />
+  <link rel="stylesheet" href="../formatters-styles/html.css" type="text/css" media="screen" />
+  <link rel="stylesheet" href="../formatters-styles/annotated.css" type="text/css" media="screen" />
+  <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/codemirror/3.21.0/codemirror.min.css" type="text/css" media="screen" />
+  <script type='text/javascript' src='../build/jsondiffpatch.min.js'>
+  </script>
+  <script type='text/javascript' src='../build/jsondiffpatch-formatters.min.js'>
+  </script>
+  <script type='text/javascript' src='../external/diff_match_patch_uncompressed.js'>
+  </script>
+  <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/codemirror/3.21.0/codemirror.js"></script>
+  <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/codemirror/3.21.0/mode/javascript/javascript.min.js"></script>
+</head>
+
+<body>
+  <a href='https://github.com/benjamine/jsondiffpatch' id='fork_me'>
+    <img alt='Fork me on GitHub' src='http://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png'>
+  </a>
+  <header>
+    <h1>Js<span class="jsondiffpatch-textdiff-deleted"><span>on</span></span><span class="jsondiffpatch-textdiff-added"><span>Diff</span></span>Patch</h1>
+    <span id="description"></span>
+    <a id="external-link" style="display: none;">source</a>
+  </header>
+  <div class="buttons">
+    <div>
+      <input id="swap" type="button" value="Swap">
+      <input id="clear" type="button" value="Clear">
+      <select id="examples">
+        <option value="" disabled selected>examples</option>
+        <option value="default">default</option>
+        <option value="text">text</option>
+        <option value="moving">moving around</option>
+        <option value="gist">from a gist</option>
+        <option value="query">query params</option>
+        <option value="urls">raw urls</option>
+      </select>
+    </div>
+  </div>
+  <div class="json-input">
+    <div id="json-panel-left">
+      <label for="json-input-left">
+        <h2>JSON Left</h2>
+      </label>
+      <button class="prettyfy" type="button" title="Pretty print">{ }</button>
+      <textarea id="json-input-left">
+        loading...
+      </textarea>
+      <span class="error-message"></span>
+    </div>
+    <div id="json-panel-right">
+      <label for="json-input-right">
+        <h2>JSON Right</h2>
+      </label>
+      <button class="prettyfy" type="button" title="Pretty print">{ }</button>
+      <textarea id="json-input-right">
+        loading...
+      </textarea>
+      <span class="error-message"></span>
+    </div>
+  </div>
+  <div id="results">
+    <h2>Delta</h2>
+    <label>
+      <input id="show-delta-type-visual" type="radio" name="delta-type" checked>Visual
+    </label>
+    <label>
+      <input id="show-delta-type-json" type="radio" name="delta-type">JSON
+    </label>
+    <label>
+      <input id="show-delta-type-annotated" type="radio" name="delta-type">JSON (Annotated)
+    </label>
+    <div id="delta-panel-visual">
+      <div class="header-options">
+        <input id="showunchanged" type="checkbox">
+        <label for="showunchanged">
+          Show unchanged values
+        </label>
+      </div>
+      <p id="visualdiff">
+      </p>
+    </div>
+    <div id="delta-panel-annotated" style="display: none;">
+      <p id="annotateddiff">
+      </p>
+    </div>
+    <div id="delta-panel-json" style="display: none;">
+      <p>
+        (<span id="jsondifflength"></span>
+        KB)
+      </p>
+      <textarea id="json-delta" readonly>
+      </textarea>
+      <span class="error-message"></span>
+    </div>
+  </div>
+  <footer>
+    <a href="https://github.com/benjamine/jsondiffpatch">Get JsonDiffPatch</a>
+    <br>
+    <p class="credits">JsonDiffPatch was developed by <a href="http://twitter.com/beneidel">Benjam�n Eidelman</a>
+    </p>
+  </footer>
+  <script type="text/javascript" src="demo.js"></script>
+</body>
+
+</html>
