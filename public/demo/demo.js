@@ -432,7 +432,9 @@
     jsondiffpatch.formatters.html.showUnchanged(document.getElementById('showunchanged').checked, null, 800);
   });
 
-  dom.ready(setTimeout(compare));
+  dom.ready(function(){
+    setTimeout(compare);
+  }, 1);
 
   var load = {};
 
