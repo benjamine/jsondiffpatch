@@ -26,6 +26,9 @@
     "diff",
     "patch"
   ],
+  "dependencies": {
+    "chalk": "^0.5.1"
+  },
   "devDependencies": {
     "bulk-require": "^0.2.1",
     "codeclimate-test-reporter": "0.0.3",
@@ -39,9 +42,6 @@
   "license": "MIT",
   "engine": {
     "node": ">=0.10"
-  },
-  "dependencies": {
-    "chalk": "^0.5.1"
   },
   "testling": {
     "harness": "mocha",
