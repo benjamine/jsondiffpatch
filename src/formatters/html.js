@@ -1,16 +1,24 @@
 var base = require('./base');
 var BaseFormatter = base.BaseFormatter;
+var htmlEscape = function(str) {
+    return String(str)
+            .replace(/&/g, '&amp;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;');
+};
 
 var HtmlFormatter = function HtmlFormatter() {};
 
 HtmlFormatter.prototype = new BaseFormatter();
 
 HtmlFormatter.prototype.typeFormattterErrorFormatter = function(context, err) {
-  context.out('<pre class="jsondiffpatch-error">' + err + '</pre>');
+  context.out('<pre class="jsondiffpatch-error">' + htmlEscape(err) + '</pre>');
 };
 
 HtmlFormatter.prototype.formatValue = function(context, value) {
-  context.out('<pre>' + JSON.stringify(value, null, 2) + '</pre>');
+  context.out('<pre>' + htmlEscape(JSON.stringify(value, null, 2)) + '</pre>');
 };
 
 HtmlFormatter.prototype.formatTextDiffString = function(context, value) {
