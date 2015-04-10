@@ -11,6 +11,14 @@
   margin: 0;
   padding: 0;
   display: inline-block;
+  border-radius: 0;
+  border: none;
+  color: inherit;
+  overflow: inherit;
+  background-color: inherit;
+  word-wrap: inherit;
+  word-break: inherit;
+  line-height: inherit;
 }
 ul.jsondiffpatch-delta {
   list-style-type: none;
