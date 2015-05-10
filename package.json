@@ -27,7 +27,8 @@
     "patch"
   ],
   "dependencies": {
-    "chalk": "^0.5.1"
+    "chalk": "^0.5.1",
+    "diff-match-patch": "^1.0.0"
   },
   "devDependencies": {
     "bulk-require": "^0.2.1",

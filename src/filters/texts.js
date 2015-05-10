@@ -14,11 +14,16 @@ var getDiffMatchPatch = function() {
         new diff_match_patch() : new diff_match_patch.diff_match_patch();
     } else if (typeof require === 'function') {
       try {
-        var dmpModuleName = 'diff_match_patch_uncompressed';
-        var dmp = require('../../public/external/' + dmpModuleName);
+        var dmp = require('diff-match-patch');
         instance = new dmp.diff_match_patch();
       } catch (err) {
-        instance = null;
+        try {
+          var dmpModuleName = 'diff_match_patch_uncompressed';
+          var dmp = require('../../public/external/' + dmpModuleName);
+          instance = new dmp.diff_match_patch();
+        } catch (err) {
+          instance = null;
+        }
       }
     }
     if (!instance) {
