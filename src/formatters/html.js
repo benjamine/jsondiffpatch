@@ -1,3 +1,6 @@
+var Entities = require('html-entities').XmlEntities;
+entities = new Entities();
+
 var base = require('./base');
 var BaseFormatter = base.BaseFormatter;
 
@@ -10,7 +13,7 @@ HtmlFormatter.prototype.typeFormattterErrorFormatter = function(context, err) {
 };
 
 HtmlFormatter.prototype.formatValue = function(context, value) {
-  context.out('<pre>' + JSON.stringify(value, null, 2) + '</pre>');
+  context.out('<pre>' + JSON.stringify(entities.encode(String(value))) + '</pre>');
 };
 
 HtmlFormatter.prototype.formatTextDiffString = function(context, value) {
@@ -32,7 +35,7 @@ HtmlFormatter.prototype.formatTextDiffString = function(context, value) {
     for (var pieceIndex = 0, piecesLength = pieces.length; pieceIndex < piecesLength; pieceIndex++) {
       var piece = pieces[pieceIndex];
       context.out('<span class="jsondiffpatch-textdiff-' + piece.type + '">' +
-        piece.text + '</span>');
+        entities.encode(unescape(piece.text)) + '</span>');
     }
     context.out('</div></li>');
   }
