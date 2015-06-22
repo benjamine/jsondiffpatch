@@ -135,7 +135,7 @@ BaseFormatter.prototype.forEachDeltaKey = function(delta, left, fn) {
     if (isArray(value) && value[2] === 3) {
       moveDestinations[value[1].toString()] = {
         key: name,
-        value: left[parseInt(name.substr(1))]
+        value: left && left[parseInt(name.substr(1))]
       };
       if (this.includeMoveDestinations !== false) {
         if ((typeof left === 'undefined') &&
