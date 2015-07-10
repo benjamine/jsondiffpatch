@@ -37,7 +37,7 @@ Supported platforms
 
 And you can test your current browser visiting the [test page](http://benjamine.github.com/jsondiffpatch/test/index.html).
 
-* Node.js [![Build Status](https://secure.travis-ci.org/benjamine/jsondiffpatch.png)](http://travis-ci.org/benjamine/jsondiffpatch)
+* Node.js [![Build Status](https://secure.travis-ci.org/benjamine/jsondiffpatch.svg)](http://travis-ci.org/benjamine/jsondiffpatch)
 
 If you want to run tests locally:
 ``` sh
