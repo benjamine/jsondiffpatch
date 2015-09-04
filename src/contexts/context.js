@@ -28,7 +28,7 @@ Context.prototype.switchTo = function(next, pipe) {
 };
 
 Context.prototype.push = function(child, name) {
-	if(this.options.excludeProperties && this.options.excludeProperties.indexOf(name) !== -1) {
+	if(this.options && this.options.excludeProperties && this.options.excludeProperties.indexOf(name) !== -1) {
 		return;
 	}
 	
