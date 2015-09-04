@@ -43,7 +43,7 @@ exports.reverse = function() {
 
 if (environment.isBrowser) {
 	exports.homepage = 'https://github.com/benjamine/jsondiffpatch';
-	exports.version = '0.1.33';
+	exports.version = '0.1.34';
 } else {
 	var packageInfoModuleName = '../package.json';
 	var packageInfo = require(packageInfoModuleName);
