@@ -5,6 +5,21 @@ var HtmlFormatter = function HtmlFormatter() {};
 
 HtmlFormatter.prototype = new BaseFormatter();
 
+function htmlEscape(text) {
+  var html = text;
+  var replacements = [
+    [/&/g, '&amp;'],
+    [/</g, '&lt;'],
+    [/>/g, '&gt;'],
+    [/'/g, '&apos;'],
+    [/"/g, '&quot;']
+  ];
+  for (var i = 0; i < replacements.length; i++) {
+    html = html.replace(replacements[i][0], replacements[i][1]);
+  }
+  return html;
+}
+
 HtmlFormatter.prototype.typeFormattterErrorFormatter = function(context, err) {
   context.out('<pre class="jsondiffpatch-error">' + err + '</pre>');
 };
@@ -38,21 +53,6 @@ HtmlFormatter.prototype.formatTextDiffString = function(context, value) {
   }
   context.out('</ul>');
 };
-
-function htmlEscape(text) {
-  var html = text;
-  var replacements = [
-    [/&/g, '&amp;'],
-    [/</g, '&lt;'],
-    [/>/g, '&gt;'],
-    [/'/g, '&apos;'],
-    [/"/g, '&quot;']
-  ];
-  for (var i = 0; i < replacements.length; i++) {
-    html = html.replace(replacements[i][0], replacements[i][1]);
-  }
-  return html;
-}
 
 var adjustArrows = function jsondiffpatchHtmlFormatterAdjustArrows(node) {
   node = node || document;
