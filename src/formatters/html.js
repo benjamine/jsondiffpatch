@@ -45,9 +45,10 @@ HtmlFormatter.prototype.formatTextDiffString = function(context, value) {
       '<div class="jsondiffpatch-textdiff-line">');
     var pieces = line.pieces;
     for (var pieceIndex = 0, piecesLength = pieces.length; pieceIndex < piecesLength; pieceIndex++) {
+      /* global unescape */
       var piece = pieces[pieceIndex];
       context.out('<span class="jsondiffpatch-textdiff-' + piece.type + '">' +
-        htmlEscape(piece.text) + '</span>');
+        htmlEscape(unescape(piece.text)) + '</span>');
     }
     context.out('</div></li>');
   }
