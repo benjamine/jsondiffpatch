@@ -186,6 +186,7 @@ describe('DiffPatcher', function() {
             }
           });
           it('can unpatch', function() {
+            this.instance.unpatch(clone(example.right), example.delta);
             var left = this.instance.unpatch(clone(example.right), example.delta);
             expect(left).to.be.deepEqual(example.left);
           });

@@ -49,8 +49,9 @@ var diffFilter = function textsDiffFilter(context) {
   if (context.leftType !== 'string') {
     return;
   }
-  var minLength = (context.options && context.options.textDiff &&
-    context.options.textDiff.minLength) || DEFAULT_MIN_LENGTH;
+  var minLength = context.options && context.options.textDiff &&
+    context.options.textDiff.minLength;
+  minLength = minLength === undefined ? DEFAULT_MIN_LENGTH : minLength;
   if (context.left.length < minLength ||
     context.right.length < minLength) {
     context.setResult([context.left, context.right]).exit();
@@ -78,7 +79,7 @@ patchFilter.filterName = 'texts';
 
 var textDeltaReverse = function(delta) {
   var i, l, lines, line, lineTmp, header = null,
-    headerRegex = /^@@ +\-(\d+),(\d+) +\+(\d+),(\d+) +@@$/,
+    headerRegex = /^@@ +\-(\d+)(?:,(\d+))? +\+(\d+)(?:,(\d+))? +@@$/,
     lineHeader, lineAdd, lineRemove;
   lines = delta.split('\n');
   for (i = 0, l = lines.length; i < l; i++) {
@@ -90,8 +91,13 @@ var textDeltaReverse = function(delta) {
       lineAdd = null;
       lineRemove = null;
 
+      lines[lineHeader] = '@@ -' + header[3];
+
+      if (header[4] !== undefined) {
+        lines[lineHeader] += ',' + header[4];
+      }
       // fix header
-      lines[lineHeader] = '@@ -' + header[3] + ',' + header[4] + ' +' + header[1] + ',' + header[2] + ' @@';
+      lines[lineHeader] += ' +' + header[1] + ',' + header[2] + ' @@';
     } else if (lineStart === '+') {
       lineAdd = i;
       lines[i] = '-' + lines[i].slice(1);

@@ -533,6 +533,19 @@ examples.text = [{
     reverse: ['-Padre,\ncua', '-Madre,\nc'],
     exactReverse: false
   },
+  {
+    name: 'zero min length',
+    options: {
+      textDiff: {
+        minLength: 0
+      }
+    },
+    left: '',
+    right: 'x',
+    delta: ['@@ -0,0 +1 @@\n+x\n', 0, 2],
+    reverse: ['@@ -1 +0,0 @@\n-x\n', 0, 2],
+    exactReverse: false
+  },
   0
 ];
 
