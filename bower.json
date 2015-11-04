@@ -10,6 +10,9 @@
     "type": "git",
     "url": "git://github.com/benjamine/jsondiffpatch.git"
   },
+  "dependencies": {
+    "chalk": "~1.1.1"
+  },
   "keywords": [
     "json",
 		"diff",
