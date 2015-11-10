@@ -1,6 +1,7 @@
 var DiffContext = require('../contexts/diff').DiffContext;
 var PatchContext = require('../contexts/patch').PatchContext;
 var ReverseContext = require('../contexts/reverse').ReverseContext;
+var Immutable = require('immutable');
 
 var lcs = require('./lcs');
 
@@ -50,8 +51,9 @@ function matchItems(array1, array2, index1, index2, context) {
   }
   var objectHash = context.objectHash;
   if (!objectHash) {
-    // no way to match objects was provided, try match by position
-    return context.matchByPosition && index1 === index2;
+    var ivalue1 = Immutable.Map(value1);
+    var ivalue2 = Immutable.Map(value2);
+    return Immutable.is(ivalue1, ivalue2);
   }
   var hash1;
   var hash2;

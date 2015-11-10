@@ -27,7 +27,8 @@
     "patch"
   ],
   "dependencies": {
-    "chalk": "^0.5.1"
+    "chalk": "^0.5.1",
+    "immutable": "^3.7.5"
   },
   "devDependencies": {
     "bulk-require": "^0.2.1",
