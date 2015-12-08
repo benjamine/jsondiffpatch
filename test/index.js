@@ -193,4 +193,97 @@ describe('DiffPatcher', function() {
       });
     });
   });
+
+  describe('Formatting', function () {
+    var instance;
+    var formatter;
+
+    before(function () {
+      instance = new DiffPatcher();
+      formatter = jsondiffpatch.formatters.jsonpatch;
+    });
+
+    var expectFormat = function (oldObject, newObject, expected) {
+      var diff = instance.diff(oldObject, newObject);
+      var format = formatter.format(diff);
+      expect(format).to.be.eql(expected);
+    };
+
+    var removeOp = function (path) {
+      return {op: 'remove', path: path};
+    };
+
+    var addOp = function (path, value) {
+      return {op: 'add', path: path, value: value};
+    };
+
+    var replaceOp = function (path, value) {
+      return {op: 'replace', path: path, value: value};
+    };
+
+
+    it('should return empty format for empty diff', function () {
+      expectFormat([], [], []);
+    });
+
+    it('should format an add operation for array insertion', function () {
+      expectFormat([1, 2, 3], [1, 2, 3, 4], [addOp('/3', 4)]);
+    });
+
+    it('should format an add operation for object insertion', function () {
+      expectFormat({a: 'a', b: 'b'}, {a: 'a', b: 'b', c: 'c'},
+        [addOp('/c', 'c')]);
+    });
+
+    it('should format for deletion of array', function () {
+      expectFormat([1, 2, 3, 4], [1, 2, 3], [removeOp('/3')]);
+    });
+
+    it('should format for deletion of object', function () {
+      expectFormat({a: 'a', b: 'b', c: 'c'}, {a: 'a', b: 'b'}, [removeOp('/c')]);
+    });
+
+    it('should format for replace of object', function () {
+      expectFormat({a: 'a', b: 'b'}, {a: 'a', b: 'c'}, [replaceOp('/b', 'c')]);
+    });
+
+    it('should put add/remove for array with simple items', function () {
+      expectFormat([1, 2, 3], [1, 2, 4], [removeOp('/2'), addOp('/2', 4)]);
+    });
+
+    it('should sort remove by desc order', function () {
+      expectFormat([1, 2, 3], [1], [removeOp('/2'), removeOp('/1')]);
+    });
+
+    describe('patcher with compartor', function () {
+      before(function () {
+        instance = new DiffPatcher({
+          objectHash: function (obj) {
+            if (obj && obj.id) {
+              return obj.id;
+            }
+          }
+        });
+      });
+
+      var objId = function (id) {
+        return {id: id};
+      };
+
+      it('should remove higher level first', function () {
+        var oldObject = [
+          objId('removed'),
+          {
+            id: 'remaining_outer',
+            items: [objId('removed_inner'), objId('remaining_inner')]
+          }];
+        var newObject = [{
+          id: 'remaining_outer',
+          items: [objId('remaining_inner')]
+        }];
+        var expected = [removeOp('/0'), removeOp('/0/items/0')];
+        expectFormat(oldObject, newObject, expected);
+      });
+    });
+  });
 });
