@@ -3,7 +3,7 @@ var TEXT_DIFF = 2;
 var DEFAULT_MIN_LENGTH = 60;
 var cachedDiffPatch = null;
 
-var getDiffMatchPatch = function() {
+var getDiffMatchPatch = function(required) {
   /*jshint camelcase: false */
 
   if (!cachedDiffPatch) {
@@ -22,6 +22,9 @@ var getDiffMatchPatch = function() {
       }
     }
     if (!instance) {
+      if (!required) {
+        return null;
+      }
       var error = new Error('text diff_match_patch library not found');
       error.diff_match_patch_not_found = true;
       throw error;
@@ -56,8 +59,14 @@ var diffFilter = function textsDiffFilter(context) {
     context.setResult([context.left, context.right]).exit();
     return;
   }
-  // large text, use a text-diff algorithm
-  var diff = getDiffMatchPatch().diff;
+  // large text, try to use a text-diff algorithm
+  var diffMatchPatch = getDiffMatchPatch();
+  if (!diffMatchPatch) {
+    // diff-match-patch library not available, fallback to regular string replace
+    context.setResult([context.left, context.right]).exit();
+    return;
+  }
+  var diff = diffMatchPatch.diff;
   context.setResult([diff(context.left, context.right), 0, TEXT_DIFF]).exit();
 };
 diffFilter.filterName = 'texts';
@@ -71,7 +80,7 @@ var patchFilter = function textsPatchFilter(context) {
   }
 
   // text-diff, use a text-patch algorithm
-  var patch = getDiffMatchPatch().patch;
+  var patch = getDiffMatchPatch(true).patch;
   context.setResult(patch(context.left, context.delta[0])).exit();
 };
 patchFilter.filterName = 'texts';

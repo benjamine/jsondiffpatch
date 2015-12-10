@@ -33,7 +33,7 @@
     "bulk-require": "^0.2.1",
     "codeclimate-test-reporter": "0.0.3",
     "expect.js": "~0.3.1",
-    "fiberglass": "~0.0.11",
+    "fiberglass": "0.0.22",
     "gulp": "^3.8.8",
     "istanbul": "^0.3.2",
     "mocha": "^1.21.4"
