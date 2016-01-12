@@ -93,7 +93,7 @@ delta = [ '', destinationIndex, 3]
 Text Diffs
 ----------
 
-If two strigns are compared and they are different, you will see as you expect:
+If two strings are compared and they are different, you will see as you expect:
 ``` javascript
 delta = [ "some text", "some text modified" ]
 ```
