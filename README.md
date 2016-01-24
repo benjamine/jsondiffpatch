@@ -180,8 +180,10 @@ npm install jsondiffpatch
 ```
 
 ```js
-var jsondiffpatch = require('jsondiffpatch').create(options);
+var jsondiffpatch = require('jsondiffpatch');
+var jsondiffpatchInstance = jsondiffpatch.create(options);
 ```
+Some properties are available only from static main module (e.g. formatters, console), so we need to keep the reference to it if we want to use them.
 
 ### browser
 
@@ -190,7 +192,7 @@ In a browser, you could load directly a bundle in `/dist`, eg. `/dist/jsondiffpa
 ## Options
 
 ```javascript
-var jsondiffpatch = require('jsondiffpatch').create({
+var jsondiffpatchInst = require('jsondiffpatch').create({
   // used to match objects when diffing arrays, by default only === operator is used
   objectHash: function (obj) {
     // this function is used only to when objects are not equal by ref
