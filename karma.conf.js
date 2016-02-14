@@ -4,6 +4,7 @@ module.exports = function(config) {
     frameworks: ['mocha'],
     files: [
       'public/build/jsondiffpatch.js',
+      'public/build/jsondiffpatch-formatters.js',
       'public/external/diff_match_patch_uncompressed.js',
       'public/build/test-bundle.js'
     ],
