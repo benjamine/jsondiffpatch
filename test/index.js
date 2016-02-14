@@ -196,6 +196,33 @@ describe('DiffPatcher', function() {
     });
   });
 
+  describe('using cloneDiffValues', function(){
+    before(function() {
+      this.instance = new DiffPatcher({
+        cloneDiffValues: true
+      });
+    });
+    it('ensures deltas don\'t reference original objects', function(){
+      var left = {
+        oldProp: {
+          value: 3
+        }
+      };
+      var right = {
+        newProp: {
+          value: 5
+        }
+      };
+      var delta = this.instance.diff(left, right);
+      left.oldProp.value = 1;
+      right.newProp.value = 8;
+      expect(delta).to.be.deepEqual({
+        oldProp: [{ value: 3 }, 0, 0],
+        newProp: [{ value: 5}]
+      });
+    });
+  });
+
   describe('static shortcuts', function(){
     it('diff', function(){
       var delta = jsondiffpatch.diff(4, 5);

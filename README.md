@@ -228,7 +228,12 @@ var jsondiffpatch = require('jsondiffpatch').create({
         context: the diff context (has context.left and context.right objects)
       */
       return name.slice(0, 1) !== '$';
-    }
+    },
+    cloneDiffValues: false /* default false. if true, values in the obtained delta will be cloned,
+      to ensure delta keeps no references to left or right objects. this becomes useful
+      if you're diffing and patching the same objects multiple times without serializing deltas.
+      instead of true, a function can be specified here to provide a custom clone(value)
+      */
 });
 ```
 
