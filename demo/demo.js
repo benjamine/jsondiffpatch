@@ -467,7 +467,6 @@
   };
 
   load.gist = function(id) {
-    id = /\d+/.exec(id + '')[0];
     dom.getJson('https://api.github.com/gists/' + id, function(error, data) {
       if (error) {
         var message = error + ((data && data.message) ? data.message : '');
@@ -559,7 +558,7 @@
 
   load.key = function(key) {
     var matchers = {
-      gist: /^(?:https?:\/\/)?(?:gist\.github\.com\/)?(?:[\w0-9\-]+\/)?(\d+)$/i,
+      gist: /^(?:https?:\/\/)?(?:gist\.github\.com\/)?(?:[\w0-9\-a-f]+\/)?([0-9a-f]+)$/i,
       leftright: /^(?:desc=(.*)?&)?left=(.*)&right=(.*)&?$/i,
     };
     for (var loader in matchers) {
