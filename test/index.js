@@ -171,7 +171,7 @@ describe('DiffPatcher', function() {
           });
           it('can patch', function() {
             var right = this.instance.patch(clone(example.left), example.delta);
-            expect(right).to.be.deepEqual(example.right);
+            expect(right).to.be.deepEqual(example.patched || example.right);
           });
           it('can reverse delta', function() {
             var reverse = this.instance.reverse(example.delta);
@@ -187,7 +187,7 @@ describe('DiffPatcher', function() {
           });
           it('can unpatch', function() {
             var left = this.instance.unpatch(clone(example.right), example.delta);
-            expect(left).to.be.deepEqual(example.left);
+            expect(left).to.be.deepEqual(example.unpatched || example.left);
           });
         });
       });

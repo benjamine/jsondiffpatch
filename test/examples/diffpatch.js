@@ -1188,6 +1188,70 @@ examples.arrays = [{
       },
       _2: ['', 7, 3]
     }
+  }, {
+    name: 'nested with movements using custom objectHash and excludeProperties',
+    options: {
+      objectHash: function(obj) {
+        if (obj && obj.item_key) {
+          return obj.item_key;
+        }
+      },
+      excludeProperties: ['width']
+    },
+    left: [1, 2, 4, {
+        item_key: 'five',
+        width: 4
+      },
+      6, 7, 8, {
+        item_key: 4,
+        width: 10,
+        height: 3
+      },
+      9, 10
+    ],
+    right: [1, 2, {
+        item_key: 4,
+        width: 12
+      },
+      4, {
+        item_key: 'five',
+        width: 4
+      },
+      6, 7, 8, 9, 10
+    ],
+    delta: {
+      _t: 'a',
+      2: {
+        height: [3, 0, 0]
+      },
+      _7: ['', 2, 3]
+    },
+    reverse: {
+      _t: 'a',
+      7: {
+        height: [3]
+      },
+      _2: ['', 7, 3]
+    },
+    patched: [ 1, 2, { 
+        item_key: 4, 
+        width: 10 
+      },
+      4, { 
+        item_key: 'five', 
+        width: 4 
+      }, 6, 7, 8, 9, 10 
+    ],
+    unpatched: [ 1, 2, 4, { 
+        item_key: 'five', 
+        width: 4 
+      },
+      6, 7, 8, { 
+        item_key: 4, 
+        width: 12,
+        height: 3
+      }, 9, 10 
+    ]
   },
   0
 ];

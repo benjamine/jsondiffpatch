@@ -28,6 +28,10 @@ Context.prototype.switchTo = function(next, pipe) {
 };
 
 Context.prototype.push = function(child, name) {
+	if(this.options && this.options.excludeProperties && this.options.excludeProperties.indexOf(name) !== -1) {
+		return;
+	}
+	
 	child.parent = this;
 	if (typeof name !== 'undefined') {
 		child.childName = name;
