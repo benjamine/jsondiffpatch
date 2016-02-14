@@ -169,29 +169,121 @@ describe('DiffPatcher', function() {
             var reverse = this.instance.diff(example.right, example.left);
             expect(reverse).to.be.deepEqual(example.reverse);
           });
-          it('can patch', function() {
-            var right = this.instance.patch(clone(example.left), example.delta);
-            expect(right).to.be.deepEqual(example.right);
-          });
-          it('can reverse delta', function() {
-            var reverse = this.instance.reverse(example.delta);
-            if (example.exactReverse !== false) {
-              expect(reverse).to.be.deepEqual(example.reverse);
-            } else {
-              // reversed delta and the swapped-diff delta are not always equal,
-              // to verify they're equivalent, patch and compare the results
-              expect(this.instance.patch(clone(example.right), reverse)).to.be.deepEqual(example.left);
-              reverse = this.instance.diff(example.right, example.left);
-              expect(this.instance.patch(clone(example.right), reverse)).to.be.deepEqual(example.left);
-            }
-          });
-          it('can unpatch', function() {
-            var left = this.instance.unpatch(clone(example.right), example.delta);
-            expect(left).to.be.deepEqual(example.left);
-          });
+          if (!example.noPatch) {
+            it('can patch', function() {
+              var right = this.instance.patch(clone(example.left), example.delta);
+              expect(right).to.be.deepEqual(example.right);
+            });
+            it('can reverse delta', function() {
+              var reverse = this.instance.reverse(example.delta);
+              if (example.exactReverse !== false) {
+                expect(reverse).to.be.deepEqual(example.reverse);
+              } else {
+                // reversed delta and the swapped-diff delta are not always equal,
+                // to verify they're equivalent, patch and compare the results
+                expect(this.instance.patch(clone(example.right), reverse)).to.be.deepEqual(example.left);
+                reverse = this.instance.diff(example.right, example.left);
+                expect(this.instance.patch(clone(example.right), reverse)).to.be.deepEqual(example.left);
+              }
+            });
+            it('can unpatch', function() {
+              var left = this.instance.unpatch(clone(example.right), example.delta);
+              expect(left).to.be.deepEqual(example.left);
+            });
+          }
         });
       });
     });
+  });
+
+  describe('static shortcuts', function(){
+    it('diff', function(){
+      var delta = jsondiffpatch.diff(4, 5);
+      expect(delta).to.be.deepEqual([4, 5]);
+    });
+    it('patch', function(){
+      var right = jsondiffpatch.patch(4, [4, 5]);
+      expect(right).to.be(5);
+    });
+    it('unpatch', function(){
+      var left = jsondiffpatch.unpatch(5, [4, 5]);
+      expect(left).to.be(4);
+    });
+    it('reverse', function(){
+      var reverseDelta = jsondiffpatch.reverse([4, 5]);
+      expect(reverseDelta).to.be.deepEqual([5, 4]);
+    });
+  });
+
+  describe('plugins', function() {
+    before(function() {
+      this.instance = new DiffPatcher();
+    });
+
+    describe('getting pipe filter list', function(){
+      it('returns builtin filters', function(){
+        expect(this.instance.processor.pipes.diff.list()).to.be.deepEqual([
+          'collectChildren', 'trivial', 'dates', 'texts', 'objects', 'arrays'
+        ]);
+      });
+    });
+
+    describe('supporting numeric deltas', function(){
+
+      var NUMERIC_DIFFERENCE = -8;
+
+      it('diff', function() {
+        // a constant to identify the custom delta type
+        function numericDiffFilter(context) {
+          if (typeof context.left === 'number' && typeof context.right === 'number') {
+            // store number delta, eg. useful for distributed counters
+            context.setResult([0, context.right - context.left, NUMERIC_DIFFERENCE]).exit();
+          }
+        }
+        // a filterName is useful if I want to allow other filters to be inserted before/after this one
+        numericDiffFilter.filterName = 'numeric';
+
+        // insert new filter, right before trivial one
+        this.instance.processor.pipes.diff.before('trivial', numericDiffFilter);
+
+        var delta = this.instance.diff({ population: 400 }, { population: 403 });
+        expect(delta).to.be.deepEqual({ population: [0, 3, NUMERIC_DIFFERENCE] });
+      });
+
+      it('patch', function() {
+        function numericPatchFilter(context) {
+          if (context.delta && Array.isArray(context.delta) && context.delta[2] === NUMERIC_DIFFERENCE) {
+            context.setResult(context.left + context.delta[1]).exit();
+          }
+        }
+        numericPatchFilter.filterName = 'numeric';
+        this.instance.processor.pipes.patch.before('trivial', numericPatchFilter);
+
+        var delta = { population: [0, 3, NUMERIC_DIFFERENCE] };
+        var right = this.instance.patch({ population: 600 }, delta);
+        expect(right).to.be.deepEqual({ population: 603 });
+      });
+
+      it('unpatch', function() {
+        function numericReverseFilter(context) {
+          if (context.nested) { return; }
+          if (context.delta && Array.isArray(context.delta) && context.delta[2] === NUMERIC_DIFFERENCE) {
+            context.setResult([0, -context.delta[1], NUMERIC_DIFFERENCE]).exit();
+          }
+        }
+        numericReverseFilter.filterName = 'numeric';
+        this.instance.processor.pipes.reverse.after('trivial', numericReverseFilter);
+
+        var delta = { population: [0, 3, NUMERIC_DIFFERENCE] };
+        var reverseDelta = this.instance.reverse(delta);
+        expect(reverseDelta).to.be.deepEqual({ population: [0, -3, NUMERIC_DIFFERENCE] });
+        var right = { population: 703 };
+        this.instance.unpatch(right, delta);
+        expect(right).to.be.deepEqual({ population: 700 });
+      });
+
+    });
+
   });
 
   describe('formatters', function () {

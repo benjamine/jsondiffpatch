@@ -1189,6 +1189,39 @@ examples.arrays = [{
       _2: ['', 7, 3]
     }
   },
+  {
+    name: 'using property filter',
+    options: {
+      propertyFilter: function(name/*, context */) {
+        return name.slice(0, 1) !== '$';
+      }
+    },
+    left: {
+      inner: {
+        $volatileData: 345,
+        $oldVolatileData: 422,
+        nonVolatile: 432
+      }
+    },
+    right: {
+      inner: {
+        $volatileData: 346,
+        $newVolatileData: 32,
+        nonVolatile: 431
+      }
+    },
+    delta: {
+      inner: {
+        nonVolatile: [432, 431]
+      }
+    },
+    reverse: {
+      inner: {
+        nonVolatile: [431, 432]
+      }
+    },
+    noPatch: true
+  },
   0
 ];
 

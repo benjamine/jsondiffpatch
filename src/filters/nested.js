@@ -29,12 +29,24 @@ var objectsDiffFilter = function objectsDiffFilter(context) {
     return;
   }
 
-  var name, child;
+  var name, child, propertyFilter = context.options.propertyFilter;
   for (name in context.left) {
+    if (!context.left.hasOwnProperty(name)) {
+      continue;
+    }
+    if (propertyFilter && !propertyFilter(name, context)) {
+      continue;
+    }
     child = new DiffContext(context.left[name], context.right[name]);
     context.push(child, name);
   }
   for (name in context.right) {
+    if (!context.right.hasOwnProperty(name)) {
+      continue;
+    }
+    if (propertyFilter && !propertyFilter(name, context)) {
+      continue;
+    }
     if (typeof context.left[name] === 'undefined') {
       child = new DiffContext(undefined, context.right[name]);
       context.push(child, name);

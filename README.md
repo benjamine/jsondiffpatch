@@ -220,6 +220,14 @@ var jsondiffpatch = require('jsondiffpatch').create({
     textDiff: {
         // default 60, minimum string length (left and right sides) to use text diff algorythm: google-diff-match-patch
         minLength: 60
+    },
+    propertyFilter: function(name, context) {
+      /*
+       this optional function can be specified to ignore object properties (eg. volatile data)
+        name: property name, present in either context.left or context.right objects
+        context: the diff context (has context.left and context.right objects)
+      */
+      return name.slice(0, 1) !== '$';
     }
 });
 ```
