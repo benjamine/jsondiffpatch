@@ -31,7 +31,7 @@ var objectsDiffFilter = function objectsDiffFilter(context) {
 
   var name, child, propertyFilter = context.options.propertyFilter;
   for (name in context.left) {
-    if (!context.left.hasOwnProperty(name)) {
+    if (!Object.prototype.hasOwnProperty.call(context.left, name)) {
       continue;
     }
     if (propertyFilter && !propertyFilter(name, context)) {
@@ -41,7 +41,7 @@ var objectsDiffFilter = function objectsDiffFilter(context) {
     context.push(child, name);
   }
   for (name in context.right) {
-    if (!context.right.hasOwnProperty(name)) {
+    if (!Object.prototype.hasOwnProperty.call(context.right, name)) {
       continue;
     }
     if (propertyFilter && !propertyFilter(name, context)) {
@@ -88,7 +88,7 @@ var collectChildrenPatchFilter = function collectChildrenPatchFilter(context) {
   var child;
   for (var index = 0; index < length; index++) {
     child = context.children[index];
-    if (context.left.hasOwnProperty(child.childName) && child.result === undefined) {
+    if (Object.prototype.hasOwnProperty.call(context.left, child.childName) && child.result === undefined) {
       delete context.left[child.childName];
     } else if (context.left[child.childName] !== child.result) {
       context.left[child.childName] = child.result;

@@ -58,12 +58,12 @@ var deepEqual = function(obj1, obj2) {
     }
     var name;
     for (name in obj2) {
-      if (!obj1.hasOwnProperty(name)) {
+      if (!Object.prototype.hasOwnProperty.call(obj1, name)) {
         return false;
       }
     }
     for (name in obj1) {
-      if (!obj2.hasOwnProperty(name) || !deepEqual(obj1[name], obj2[name])) {
+      if (!Object.prototype.hasOwnProperty.call(obj2, name) || !deepEqual(obj1[name], obj2[name])) {
         return false;
       }
     }
@@ -120,7 +120,7 @@ var objectKeys = (typeof Object.keys === 'function') ?
   function(obj) {
     var keys = [];
     for (var key in obj) {
-      if (obj.hasOwnProperty(key)) {
+      if (Object.prototype.hasOwnProperty.call(obj, key)) {
         keys.push(key);
       }
     }

@@ -701,6 +701,16 @@ examples.objects = [{
     reverse: {
       b: [2]
     }
+  }, {
+    name: 'hasOwnProperty',
+    /* jshint ignore:start */
+    left: {
+      hasOwnProperty: true,
+    },
+    right: {
+      hasOwnProperty: true,
+    },
+    /* jshint ignore:end */
   },
   0
 ];
