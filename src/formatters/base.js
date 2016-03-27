@@ -12,7 +12,7 @@ var getObjectKeys = typeof Object.keys === 'function' ?
   } : function(obj) {
     var names = [];
     for (var property in obj) {
-      if (obj.hasOwnProperty(property)) {
+      if (Object.prototype.hasOwnProperty.call(obj, property)) {
         names.push(property);
       }
     }
