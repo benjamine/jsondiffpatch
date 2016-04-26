@@ -99,7 +99,7 @@ var explicitDiffFilter = function explicitDiffFilter (context) {
   var match;
 
   var removedItems = [];
-  var addedItems = []
+  var addedItems = [];
 
   if (len1 > 0 && len2 > 0 && !matchContext.objectHash &&
     typeof matchContext.matchByPosition !== 'boolean') {
@@ -107,7 +107,7 @@ var explicitDiffFilter = function explicitDiffFilter (context) {
   }
 
   while (index < len1 || index < len2) {
-    match = matchItems(array1, array2, index, index, matchContext)
+    match = matchItems(array1, array2, index, index, matchContext);
     if (match) {
       child = new DiffContext(context.left[index], context.right[index]);
       context.push(child, index);
@@ -116,14 +116,14 @@ var explicitDiffFilter = function explicitDiffFilter (context) {
         removedItems.push({
           item : array1[index],
           index: index,
-        })  
+        });
       }
       
       if (index < len2) {
         addedItems.push({
           item: array2[index],
           index: index,
-        })  
+        });
       }
       
     }
@@ -131,7 +131,7 @@ var explicitDiffFilter = function explicitDiffFilter (context) {
     index++;
   }
 
-  if (removedItems.length == 0 && addedItems.length == 0) {
+  if (removedItems.length === 0 && addedItems.length === 0) {
     context.setResult(undefined).exit();
     return;
   }
@@ -192,11 +192,11 @@ var explicitDiffFilter = function explicitDiffFilter (context) {
     if (addedItem.isMove) {
       continue;
     }
-    result[addedItem.index] = [addedItem.item]
+    result[addedItem.index] = [addedItem.item];
   }
 
   context.setResult(result).exit();
-}
+};
 
 var diffFilter = function arraysDiffFilter(context) {
   if (!context.leftIsArray) {
