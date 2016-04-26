@@ -82,9 +82,134 @@ function matchItems(array1, array2, index1, index2, context) {
   return hash1 === hash2;
 }
 
+
+
+var explicitDiffFilter = function explicitDiffFilter (context) {
+  var matchContext = {
+    objectHash: context.options && context.options.objectHash,
+    matchByPosition: context.options && context.options.matchByPosition
+  };
+  var array1 = context.left;
+  var array2 = context.right;
+  var len1 = array1.length;
+  var len2 = array2.length;
+  var index = 0;
+
+  var child;
+  var match;
+
+  var removedItems = [];
+  var addedItems = []
+
+  if (len1 > 0 && len2 > 0 && !matchContext.objectHash &&
+    typeof matchContext.matchByPosition !== 'boolean') {
+    matchContext.matchByPosition = !arraysHaveMatchByRef(array1, array2, len1, len2);
+  }
+
+  while (index < len1 || index < len2) {
+    match = matchItems(array1, array2, index, index, matchContext)
+    if (match) {
+      child = new DiffContext(context.left[index], context.right[index]);
+      context.push(child, index);
+    } else {
+      if (index < len1) {
+        removedItems.push({
+          item : array1[index],
+          index: index,
+        })  
+      }
+      
+      if (index < len2) {
+        addedItems.push({
+          item: array2[index],
+          index: index,
+        })  
+      }
+      
+    }
+    
+    index++;
+  }
+
+  if (removedItems.length == 0 && addedItems.length == 0) {
+    context.setResult(undefined).exit();
+    return;
+  }
+
+  var detectMove = true;
+  if (context.options && context.options.arrays && context.options.arrays.detectMove === false) {
+    detectMove = false;
+  }
+  var includeValueOnMove = false;
+  if (context.options && context.options.arrays && context.options.arrays.includeValueOnMove) {
+    includeValueOnMove = true;
+  }
+
+  var result = {
+    _t: 'a'
+  };
+
+
+  var removedItem;
+  var addedItem;
+  var isMove;
+  for (index = 0; index < removedItems.length; index++) {
+    removedItem = removedItems[index];
+    if (detectMove) {
+      isMove = false;
+      for (var i = 0; i < addedItems.length; i++) {
+        addedItem = addedItems[i];
+        if (addedItem.isMove) {
+          continue;
+        }
+
+        if (matchItems(array1, array2, removedItem.index, addedItem.index, matchContext)) {
+          addedItem.isMove = true;
+          isMove = true;
+          result['_' + removedItem.index] = [removedItem.item, addedItem.index, ARRAY_MOVE];  
+          if (!includeValueOnMove) {
+            // don't include moved value on diff, to save bytes
+            result['_' + removedItem.index][0] = '';
+          }
+
+          child = new DiffContext(context.left[removedItem.index], context.right[addedItem.index]);
+          context.push(child, addedItem.index);
+          break;
+        }
+      }
+      if (!isMove) {
+        result['_' + removedItem.index] = [removedItem.item, 0, 0];    
+      }
+    } else {
+      result['_' + removedItem.index] = [removedItem.item, 0, 0];  
+    }
+    
+  }
+
+
+  for (index = 0; index < addedItems.length; index++) {
+    addedItem = addedItems[index];
+    if (addedItem.isMove) {
+      continue;
+    }
+    result[addedItem.index] = [addedItem.item]
+  }
+
+  context.setResult(result).exit();
+}
+
 var diffFilter = function arraysDiffFilter(context) {
   if (!context.leftIsArray) {
     return;
+  }
+
+  var explicitMove = false;
+  if (context.options && context.options.arrays && context.options.arrays.explicitMove) {
+    explicitMove = true;
+  }
+
+  if (explicitMove) {
+    return explicitDiffFilter(context);
   }
 
   var matchContext = {

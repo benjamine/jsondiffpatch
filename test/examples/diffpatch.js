@@ -779,6 +779,54 @@ examples.arrays = [{
     },
     exactReverse: false
   }, {
+    name: 'explicit movements',
+    options : {
+      arrays : {
+        explicitMove : true
+      }
+    },
+    left: [1, 2, 3, 4],
+    right: [2, 4, 1, 3],
+    delta: {
+      _t: 'a',
+      _0: ['', 2, 3],
+      _1: ['', 0, 3],
+      _2: ['', 3, 3],
+      _3: ['', 1, 3]
+    },
+    reverse: {
+      _t: 'a',
+      _2: ['', 0, 3],
+      _0: ['', 1, 3],
+      _3: ['', 2, 3],
+      _1: ['', 3, 3]
+    }
+  }, {
+    name: 'explicit movements on insert',
+    options : {
+      arrays : {
+        explicitMove : true
+      }
+    },
+    left: [1, 2, 3, 4],
+    right: [0, 1, 2, 3, 4],
+    delta: {
+      _t: 'a',
+      0: [0],
+      _0: ['', 1, 3],
+      _1: ['', 2, 3],
+      _2: ['', 3, 3],
+      _3: ['', 4, 3]
+    },
+    reverse: {
+      _t: 'a',
+      _0: [0, 0, 0],
+      _1: ['', 0, 3],
+      _2: ['', 1, 3],
+      _3: ['', 2, 3],
+      _4: ['', 3, 3]
+    }
+  }, {
     name: 'nested',
     options: {
       objectHash: function(obj) {
@@ -818,6 +866,45 @@ examples.arrays = [{
       2: {
         width: [12, 10]
       }
+    }
+  }, {
+    name: 'nested with explicit movement',
+    options: {
+      objectHash: function(obj) {
+        if (obj && obj.id) {
+          return obj.id;
+        }
+      },
+      arrays : {
+        explicitMove : true
+      }
+    },
+    left: [1, 2, {
+      id: 'three',
+      width: 4
+    },
+    4
+    ],
+    right: [1, 2, 4, {
+      id: 'three',
+      width: 5
+    },
+    ],
+    delta: {
+      _t: 'a',
+      3 : {
+        'width':[4,5]
+      },
+      _2 : ['', 3, 3],
+      _3 : ['', 2, 3],
+    },
+    reverse: {
+      _t: 'a',
+      2 : {
+        'width':[5,4]
+      },
+      _2 : ['', 3, 3],
+      _3 : ['', 2, 3],
     }
   }, {
     name: 'nested with movement',
