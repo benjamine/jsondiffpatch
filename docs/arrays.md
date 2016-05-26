@@ -27,7 +27,7 @@ To improve the results leveraging the power of LCS (and position move detection)
 var delta = jsondiffpatch.create({
     objectHash: function(obj, index) {
       // try to find an id property, otherwise just use the index in the array
-      return obj.name || obj.id || obj._id || obj._id || '$$index:' + index;
+      return obj.name || obj.id || obj._id || '$$index:' + index;
     }
   }).diff({ name: 'tito' }, { name: 'tito' });
 
