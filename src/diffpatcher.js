@@ -4,6 +4,8 @@ var DiffContext = require('./contexts/diff').DiffContext;
 var PatchContext = require('./contexts/patch').PatchContext;
 var ReverseContext = require('./contexts/reverse').ReverseContext;
 
+var clone = require('./clone');
+
 var trivial = require('./filters/trivial');
 var nested = require('./filters/nested');
 var arrays = require('./filters/arrays');
@@ -56,6 +58,10 @@ DiffPatcher.prototype.reverse = function(delta) {
 
 DiffPatcher.prototype.unpatch = function(right, delta) {
   return this.patch(right, this.reverse(delta));
+};
+
+DiffPatcher.prototype.clone = function(value) {
+  return clone(value);
 };
 
 exports.DiffPatcher = DiffPatcher;

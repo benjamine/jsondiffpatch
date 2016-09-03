@@ -21,8 +21,6 @@ var isArray = (typeof Array.isArray === 'function') ?
     return typeof a === 'object' && a instanceof Array;
   };
 
-var dateReviver = jsondiffpatch.dateReviver;
-
 var deepEqual = function(obj1, obj2) {
   if (obj1 === obj2) {
     return true;
@@ -94,6 +92,9 @@ var valueDescription = function(value) {
   if (value instanceof Date) {
     return 'Date';
   }
+  if (value instanceof RegExp) {
+    return 'RegExp';
+  }
   if (isArray(value)) {
     return 'array';
   }
@@ -103,13 +104,6 @@ var valueDescription = function(value) {
     }
   }
   return typeof value;
-};
-
-var clone = function(obj) {
-  if (typeof obj === 'undefined') {
-    return undefined;
-  }
-  return JSON.parse(JSON.stringify(obj), dateReviver);
 };
 
 // Object.keys polyfill
@@ -171,7 +165,7 @@ describe('DiffPatcher', function() {
           });
           if (!example.noPatch) {
             it('can patch', function() {
-              var right = this.instance.patch(clone(example.left), example.delta);
+              var right = this.instance.patch(jsondiffpatch.clone(example.left), example.delta);
               expect(right).to.be.deepEqual(example.right);
             });
             it('can reverse delta', function() {
@@ -181,17 +175,46 @@ describe('DiffPatcher', function() {
               } else {
                 // reversed delta and the swapped-diff delta are not always equal,
                 // to verify they're equivalent, patch and compare the results
-                expect(this.instance.patch(clone(example.right), reverse)).to.be.deepEqual(example.left);
+                expect(this.instance.patch(jsondiffpatch.clone(example.right), reverse)).to.be.deepEqual(example.left);
                 reverse = this.instance.diff(example.right, example.left);
-                expect(this.instance.patch(clone(example.right), reverse)).to.be.deepEqual(example.left);
+                expect(this.instance.patch(jsondiffpatch.clone(example.right), reverse)).to.be.deepEqual(example.left);
               }
             });
             it('can unpatch', function() {
-              var left = this.instance.unpatch(clone(example.right), example.delta);
+              var left = this.instance.unpatch(jsondiffpatch.clone(example.right), example.delta);
               expect(left).to.be.deepEqual(example.left);
             });
           }
         });
+      });
+    });
+  });
+
+  describe('.clone', function() {
+    it('clones complex objects', function() {
+      var obj = {
+        name: 'a string',
+        nested: {
+          attributes: [
+            { name: 'one', value: 345, since: new Date(1934, 1, 1) }
+          ],
+          another: 'property',
+          enabled: true,
+          nested2: {
+            name: 'another string'
+          }
+        }
+      };
+      var cloned = jsondiffpatch.clone(obj);
+      expect(cloned).to.be.deepEqual(obj);
+    });
+    it('clones RegExp', function() {
+      var obj = {
+        pattern: /expr/gim
+      };
+      var cloned = jsondiffpatch.clone(obj);
+      expect(cloned).to.be.deepEqual({
+        pattern: /expr/gim
       });
     });
   });

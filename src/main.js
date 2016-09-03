@@ -40,6 +40,14 @@ exports.reverse = function() {
   return defaultInstance.reverse.apply(defaultInstance, arguments);
 };
 
+exports.clone = function() {
+  if (!defaultInstance) {
+    defaultInstance = new DiffPatcher();
+  }
+  return defaultInstance.clone.apply(defaultInstance, arguments);
+};
+
+
 if (environment.isBrowser) {
   exports.homepage = '{{package-homepage}}';
   exports.version = '{{package-version}}';

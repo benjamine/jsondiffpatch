@@ -27,6 +27,7 @@ Diff & patch JavaScript objects
     - annotated json (html), makes the JSON delta format self-explained
     - console (colored), try running ```./node_modules/.bin/jsondiffpatch left.json right.json```
     - write your own! check [Formatters documentation](docs/formatters.md)
+- BONUS: `jsondiffpatch.clone(obj)` (deep clone)
 
 Supported platforms
 ----------------
@@ -229,9 +230,8 @@ var jsondiffpatch = require('jsondiffpatch').create({
       */
       return name.slice(0, 1) !== '$';
     },
-    cloneDiffValues: false /* default false. if true, values in the obtained delta will be cloned,
-      to ensure delta keeps no references to left or right objects. this becomes useful
-      if you're diffing and patching the same objects multiple times without serializing deltas.
+    cloneDiffValues: false /* default false. if true, values in the obtained delta will be cloned
+      (using jsondiffpatch.clone by default), to ensure delta keeps no references to left or right objects. this becomes useful if you're diffing and patching the same objects multiple times without serializing deltas.
       instead of true, a function can be specified here to provide a custom clone(value)
       */
 });
