@@ -32,7 +32,7 @@ function arraysHaveMatchByRef(array1, array2, len1, len2) {
     var val1 = array1[index1];
     for (var index2 = 0; index2 < len2; index2++) {
       var val2 = array2[index2];
-      if (val1 === val2) {
+      if (index1 !== index2 && val1 === val2) {
         return true;
       }
     }
