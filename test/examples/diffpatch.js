@@ -337,14 +337,7 @@ examples.atomic_values = [
     reverse: [
       [1, 2, 3], 'some text'
     ]
-  }, {
-    left: 'some text',
-    right: function(x) {
-      return x * x;
-    },
-    error: /not supported/,
   },
-
 
   // Date
   {
@@ -388,6 +381,26 @@ examples.atomic_values = [
     },
     error: /not supported/,
   },
+
+  // Function
+  {
+    name: 'string -> Function',
+    left: 'some text',
+    right: function(x) {
+      return x * x;
+    },
+    error: /not supported/,
+  },
+
+  // RegExp
+  {
+    name: 'RegExp -> RegExp',
+    left: /regex/g,
+    right: /another regex/gi,
+    delta: ['/regex/g', '/another regex/gi'],
+    reverse: ['/another regex/gi', '/regex/g']
+  },
+
 
   // object
   {

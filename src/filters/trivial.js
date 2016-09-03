@@ -45,6 +45,15 @@ var diffFilter = function trivialMatchesDiffFilter(context) {
     context.setResult([context.left, context.right]).exit();
     return;
   }
+
+  if (context.left instanceof RegExp) {
+    if (context.right instanceof RegExp) {
+      context.setResult([context.left.toString(), context.right.toString()]).exit();
+    } else {
+      context.setResult([context.left, context.right]).exit();
+      return;
+    }
+  }
 };
 diffFilter.filterName = 'trivial';
 
@@ -62,6 +71,13 @@ var patchFilter = function trivialMatchesPatchFilter(context) {
     return;
   }
   if (context.delta.length === 2) {
+    if (context.left instanceof RegExp) {
+      var regexArgs = /^\/(.*)\/([gimyu]+)$/.exec(context.delta[1]);
+      if (regexArgs) {
+        context.setResult(new RegExp(regexArgs[1], regexArgs[2])).exit();
+        return;
+      }
+    }
     context.setResult(context.delta[1]).exit();
     return;
   }
