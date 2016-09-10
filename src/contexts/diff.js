@@ -10,7 +10,7 @@ var DiffContext = function DiffContext(left, right) {
 DiffContext.prototype = new Context();
 
 DiffContext.prototype.setResult = function(result) {
-  if (this.options.cloneDiffValues) {
+  if (this.options.cloneDiffValues && typeof result === 'object') {
     var clone = typeof this.options.cloneDiffValues === 'function' ?
       this.options.cloneDiffValues : defaultClone;
     if (typeof result[0] === 'object') {
