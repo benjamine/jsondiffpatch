@@ -123,24 +123,28 @@ BaseFormatter.prototype.forEachDeltaKey = function(delta, left, fn) {
   var name;
   if (typeof left !== 'undefined') {
     for (name in left) {
-      if (typeof delta[name] === 'undefined' &&
-        ((!arrayKeys) || typeof delta['_' + name] === 'undefined')) {
-        keys.push(name);
+      if (Object.prototype.hasOwnProperty.call(left, name)) {
+        if (typeof delta[name] === 'undefined' &&
+          ((!arrayKeys) || typeof delta['_' + name] === 'undefined')) {
+          keys.push(name);
+        }
       }
     }
   }
   // look for move destinations
   for (name in delta) {
-    var value = delta[name];
-    if (isArray(value) && value[2] === 3) {
-      moveDestinations[value[1].toString()] = {
-        key: name,
-        value: left && left[parseInt(name.substr(1))]
-      };
-      if (this.includeMoveDestinations !== false) {
-        if ((typeof left === 'undefined') &&
-          (typeof delta[value[1]] === 'undefined')) {
-          keys.push(value[1].toString());
+    if (Object.prototype.hasOwnProperty.call(delta, name)) {
+      var value = delta[name];
+      if (isArray(value) && value[2] === 3) {
+        moveDestinations[value[1].toString()] = {
+          key: name,
+          value: left && left[parseInt(name.substr(1))]
+        };
+        if (this.includeMoveDestinations !== false) {
+          if ((typeof left === 'undefined') &&
+            (typeof delta[value[1]] === 'undefined')) {
+            keys.push(value[1].toString());
+          }
         }
       }
     }
