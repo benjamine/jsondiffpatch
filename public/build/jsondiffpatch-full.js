@@ -3396,7 +3396,7 @@ exports.clone = function() {
 
 if (environment.isBrowser) {
   exports.homepage = 'https://github.com/benjamine/jsondiffpatch';
-  exports.version = '0.2.3';
+  exports.version = '0.2.4';
 } else {
   var packageInfoModuleName = '../package.json';
   var packageInfo = require(packageInfoModuleName);
