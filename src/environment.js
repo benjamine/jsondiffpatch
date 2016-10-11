@@ -1,2 +1,1 @@
-
-exports.isBrowser = typeof window !== 'undefined';
+exports.isBrowser = process.browser;
