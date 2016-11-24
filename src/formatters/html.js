@@ -1,5 +1,13 @@
 var base = require('./base');
 var BaseFormatter = base.BaseFormatter;
+var htmlEscape = function(str) {
+    return String(str)
+            .replace(/&/g, '&amp;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;');
+};
 
 var HtmlFormatter = function HtmlFormatter() {};
 
@@ -21,7 +29,7 @@ function htmlEscape(text) {
 }
 
 HtmlFormatter.prototype.typeFormattterErrorFormatter = function(context, err) {
-  context.out('<pre class="jsondiffpatch-error">' + err + '</pre>');
+  context.out('<pre class="jsondiffpatch-error">' + htmlEscape(err) + '</pre>');
 };
 
 HtmlFormatter.prototype.formatValue = function(context, value) {
