@@ -20,6 +20,10 @@ function htmlEscape(text) {
   return html;
 }
 
+HtmlFormatter.prototype.prepareContext = function(context) {
+  BaseFormatter.prototype.prepareContext.call(this, context);
+};
+
 HtmlFormatter.prototype.typeFormattterErrorFormatter = function(context, err) {
   context.out('<pre class="jsondiffpatch-error">' + err + '</pre>');
 };
