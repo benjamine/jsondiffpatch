@@ -37,34 +37,37 @@ var lengthMatrix = function(array1, array2, match, context) {
   return matrix;
 };
 
-var backtrack = function(matrix, array1, array2, index1, index2, context) {
-  if (index1 === 0 || index2 === 0) {
-    return {
-      sequence: [],
-      indices1: [],
-      indices2: []
-    };
+var backtrack = function(matrix, array1, array2, context) {
+  var index1 = array1.length;
+  var index2 = array2.length;
+
+  var subsequence = {
+    sequence: [],
+    indices1: [],
+    indices2: []
+  };
+
+  while (0 < index1  && 0 < index2) {
+    if (matrix.match(array1, array2, index1-1, index2-1, context)) {
+      subsequence.sequence.push(array1[index1-1]);
+      subsequence.indices1.push(index1-1);
+      subsequence.indices2.push(index2-1);
+      index1--;
+      index2--;
+    } else if (matrix[index1][index2-1] > matrix[index1-1][index2]) {
+      index2--;
+    } else {
+      index1--;
+    }
   }
 
-  if (matrix.match(array1, array2, index1 - 1, index2 - 1, context)) {
-    var subsequence = backtrack(matrix, array1, array2, index1 - 1, index2 - 1, context);
-    subsequence.sequence.push(array1[index1 - 1]);
-    subsequence.indices1.push(index1 - 1);
-    subsequence.indices2.push(index2 - 1);
-    return subsequence;
-  }
-
-  if (matrix[index1][index2 - 1] > matrix[index1 - 1][index2]) {
-    return backtrack(matrix, array1, array2, index1, index2 - 1, context);
-  } else {
-    return backtrack(matrix, array1, array2, index1 - 1, index2, context);
-  }
+  return subsequence;
 };
 
 var get = function(array1, array2, match, context) {
   context = context || {};
   var matrix = lengthMatrix(array1, array2, match || defaultMatch, context);
-  var result = backtrack(matrix, array1, array2, array1.length, array2.length, context);
+  var result = backtrack(matrix, array1, array2, context);
   if (typeof array1 === 'string' && typeof array2 === 'string') {
     result.sequence = result.sequence.join('');
   }
