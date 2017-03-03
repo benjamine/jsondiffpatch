@@ -338,21 +338,24 @@ describe('DiffPatcher', function() {
 
   describe('formatters', function () {
 
+    var instance;
+    var formatter;
+
+    before(function () {
+      instance = new DiffPatcher();
+    });
+
+    var expectFormat = function (oldObject, newObject, expected) {
+      var diff = instance.diff(oldObject, newObject);
+      var format = formatter.format(diff);
+      expect(format).to.be.eql(expected);
+    };
+
     describe('jsonpatch', function(){
 
-      var instance;
-      var formatter;
-
       before(function () {
-        instance = new DiffPatcher();
         formatter = jsondiffpatch.formatters.jsonpatch;
       });
-
-      var expectFormat = function (oldObject, newObject, expected) {
-        var diff = instance.diff(oldObject, newObject);
-        var format = formatter.format(diff);
-        expect(format).to.be.eql(expected);
-      };
 
       var removeOp = function (path) {
         return {op: 'remove', path: path};
@@ -428,6 +431,57 @@ describe('DiffPatcher', function() {
           var expected = [removeOp('/0'), removeOp('/0/items/0')];
           expectFormat(oldObject, newObject, expected);
         });
+      });
+    });
+
+    describe('html', function() {
+      before(function() {
+        formatter = jsondiffpatch.formatters.html;
+      });
+
+      var expectedHtml = function(expectation) {
+        var result = [];
+
+        result.push('<div class="jsondiffpatch-delta jsondiffpatch-textdiff">');
+        result.push('<div class="jsondiffpatch-value">');
+        result.push('<ul class="jsondiffpatch-textdiff">');
+
+        arrayForEach(expectation, function(line) {
+          result.push('<li>');
+          result.push('<div class="jsondiffpatch-textdiff-location">');
+          result.push('<span class="jsondiffpatch-textdiff-line-number">' + line.location.line + '</span>');
+          result.push('<span class="jsondiffpatch-textdiff-char">' + line.location.chr + '</span>');
+          result.push('</div>');
+          result.push('<div class="jsondiffpatch-textdiff-line">');
+
+          arrayForEach(line.pieces, function(piece) {
+            result.push('<span class="jsondiffpatch-textdiff-' + piece.type + '">' + piece.text + '</span>');
+          });
+        });
+
+        result.push('</div></li></ul></div></div>');
+
+        return result.join('');
+      };
+
+      it('should properly format cyrillic characters', function() {
+        var oldString = 'Здесь ты всегда можешь посмотреть подсказки, чтобы играьт было еще веселее и интереснее!';
+        var newString = 'Здесь ты всегда можешь посмотреть подсказки, чтобы играть было еще веселее и интереснее!';
+        var expect = [{
+          location: {
+            chr: '10',
+            line: '52'
+          },
+          pieces: [
+            { text: 'игра', type: 'context' },
+            { text: 'ь', type: 'deleted' },
+            { text: 'т', type: 'context' },
+            { text: 'ь', type: 'added' },
+            { text: ' был', type: 'context' }
+          ]
+        }];
+
+        expectFormat(oldString, newString, expectedHtml(expect));
       });
     });
   });
