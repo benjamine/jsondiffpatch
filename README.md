@@ -68,6 +68,8 @@ Usage
     country2.population = 41324992;
     delete country2.capital;
 
+    // if 'country' equals 'country2' the delta will be return 'undefined'
+    // then you may need to show some text like 'They are the same data!'
     var delta = jsondiffpatch.diff(country, country2);
 
     assertSame(delta, {
