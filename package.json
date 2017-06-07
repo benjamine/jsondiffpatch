@@ -17,7 +17,7 @@
     "cover-publish": "istanbul cover _mocha --report lcovonly && codeclimate < coverage/lcov.info"
   },
   "main": "./src/main",
-  "types": "./src/main"
+  "types": "./src/main",
   "repository": {
     "type": "git",
     "url": "https://github.com/benjamine/jsondiffpatch.git"
