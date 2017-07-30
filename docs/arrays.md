@@ -1,7 +1,7 @@
 Array Diffing
 ===========
 
-Array diffing is implemented using [LCS](http://en.wikipedia.org/wiki/Longest_common_subsequence_problem), which is the classic algorythm used by text diff tools (here using array items instead of text lines).
+Array diffing is implemented using [LCS](http://en.wikipedia.org/wiki/Longest_common_subsequence_problem), which is the classic algorithm used by text diff tools (here using array items instead of text lines).
 
 This means array deltas are pretty smart about items added and removed to a sequence (array).
 But there's a big gotcha here, ***by default, objects inside arrays will always be considered different, even if they "look" equal to you***, to fix that you need...
