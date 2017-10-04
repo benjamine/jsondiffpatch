@@ -53,7 +53,7 @@ Here's an example combining what we have:
 ```
 delta = {
   property1: [ newValue1 ], // obj[property1] = newValue1
-  property2: [ oldValue2, newValue2 ] // obj[property2] = newValue2 (and previous value was oldValue2)
+  property2: [ oldValue2, newValue2 ], // obj[property2] = newValue2 (and previous value was oldValue2)
   property5: [ oldValue5, 0, 0 ] // delete obj[property5] (and previous value was oldValue5)
 }
 ```
