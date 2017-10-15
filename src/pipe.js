@@ -84,6 +84,23 @@ Pipe.prototype.before = function(filterName) {
   return this;
 };
 
+Pipe.prototype.replace = function(filterName) {
+  var index = this.indexOf(filterName);
+  var params = Array.prototype.slice.call(arguments, 1);
+  if (!params.length) {
+    throw new Error('a filter is required');
+  }
+  params.unshift(index, 1);
+  Array.prototype.splice.apply(this.filters, params);
+  return this;
+};
+
+Pipe.prototype.remove = function(filterName) {
+  var index = this.indexOf(filterName);
+  this.filters.splice(index, 1);
+  return this;
+};
+
 Pipe.prototype.clear = function() {
   this.filters.length = 0;
   return this;

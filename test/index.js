@@ -334,6 +334,32 @@ describe('DiffPatcher', function() {
 
     });
 
+    describe('removing and replacing pipe filters', function(){
+      it('removes specified filter', function(){
+        expect(this.instance.processor.pipes.diff.list()).to.be.deepEqual([
+          'collectChildren', 'numeric', 'trivial', 'dates', 'texts', 'objects', 'arrays'
+        ]);
+        this.instance.processor.pipes.diff.remove('dates');
+        expect(this.instance.processor.pipes.diff.list()).to.be.deepEqual([
+          'collectChildren', 'numeric', 'trivial', 'texts', 'objects', 'arrays'
+        ]);
+      });
+
+      it('replaces specified filter', function(){
+        function fooFilter(context) {
+          context.setResult(['foo']).exit();
+        }
+        fooFilter.filterName = 'foo';
+        expect(this.instance.processor.pipes.diff.list()).to.be.deepEqual([
+          'collectChildren', 'numeric', 'trivial', 'texts', 'objects', 'arrays'
+        ]);
+        this.instance.processor.pipes.diff.replace('trivial', fooFilter);
+        expect(this.instance.processor.pipes.diff.list()).to.be.deepEqual([
+          'collectChildren', 'numeric', 'foo', 'texts', 'objects', 'arrays'
+        ]);
+      });
+    });
+
   });
 
   describe('formatters', function () {

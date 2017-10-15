@@ -94,3 +94,16 @@ To complete the plugin, let's add the reverse filter, so numeric deltas can be r
   assertSame(right, { population: 400 });
 ```
 
+Pipe API
+------
+
+The following methods are offered to manipulate filters in a pipe.
+
+- `append(filter1, filter2, ...)` - Append one or more filters to the existing list
+- `prepend(filter1, filter2, ...)` - Prepend one or more filters to the existing list
+- `after(filterName, filter1, filter2, ...)` - Add one ore more filters after the specified filter
+- `before(filterName, filter1, filter2, ...)` - Add one ore more filters before the specified filter
+- `replace(filterName, filter1, filter2, ...)` - Replace the specified filter with one ore more filters
+- `remove(filterName)` - Remove the filter with the specified name
+- `clear()` - Remove all filters from this pipe
+- `list()` - Return array of ordered filter names for this pipe
