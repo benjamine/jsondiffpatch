@@ -1,7 +1,12 @@
 {
   "name": "jsondiffpatch",
   "description": "Diff & Patch for Javascript objects",
-  "main": "public/build/jsondiffpatch.js",
+  "main": [
+    "public/build/jsondiffpatch.js",
+    "public/build/jsondiffpatch-formatters.js",
+    "public/formatters-styles/annotated.css",
+    "public/formatters-styles/html.css"
+  ],
   "license": "MIT",
   "authors": [
     "Benjamin Eidelman <beneidel@gmail.com>"
