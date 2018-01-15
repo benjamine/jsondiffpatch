@@ -6,6 +6,5 @@ exports.annotated = require('./annotated');
 exports.jsonpatch = require('./jsonpatch');
 
 if (!environment.isBrowser) {
-  var consoleModuleName = './console';
-  exports.console = require(consoleModuleName);
+  exports.console = require('./console');
 }
