@@ -1,18 +1,12 @@
-
-var isArray = (typeof Array.isArray === 'function') ?
-  // use native function
-  Array.isArray :
-  // use instanceof operator
-  function(a) {
-    return a instanceof Array;
-  };
+const isArray =
+  typeof Array.isArray === 'function' ? Array.isArray : a => a instanceof Array;
 
 function cloneRegExp(re) {
-  var regexMatch = /^\/(.*)\/([gimyu]*)$/.exec(re.toString());
+  let regexMatch = /^\/(.*)\/([gimyu]*)$/.exec(re.toString());
   return new RegExp(regexMatch[1], regexMatch[2]);
 }
 
-function clone(arg) {
+export default function clone(arg) {
   if (typeof arg !== 'object') {
     return arg;
   }
@@ -28,13 +22,11 @@ function clone(arg) {
   if (arg instanceof RegExp) {
     return cloneRegExp(arg);
   }
-  var cloned = {};
-  for (var name in arg) {
+  let cloned = {};
+  for (let name in arg) {
     if (Object.prototype.hasOwnProperty.call(arg, name)) {
       cloned[name] = clone(arg[name]);
     }
   }
   return cloned;
 }
-
-module.exports = clone;

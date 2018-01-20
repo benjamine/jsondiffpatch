@@ -1,4 +1,4 @@
-var jsondiffpatch = require('../src/main');
+var jsondiffpatch = require('../../dist/jsondiffpatch.cjs.js');
 
 var instance = jsondiffpatch.create({
   objectHash: function(obj) {
@@ -119,5 +119,4 @@ data.demographics.population += 2342;
 
 var right = data;
 var delta = instance.diff(left, right);
-
 jsondiffpatch.console.log(delta);

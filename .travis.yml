@@ -1,6 +1,8 @@
 language: node_js
 node_js:
-  - "0.10"
+  - "4"
+  - "8"
+  - "9"
 
 before_install:
   - "export BROWSERS=Firefox"
@@ -8,7 +10,7 @@ before_install:
   - "sh -e /etc/init.d/xvfb start"
 
 after_success:
-  - npm run cover-publish
+  - yarn cover-publish
 addons:
   code_climate:
     repo_token:

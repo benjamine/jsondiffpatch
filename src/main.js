@@ -1,65 +1,49 @@
+import DiffPatcher from './diffpatcher';
+export DiffPatcher from './diffpatcher';
 
-var environment = require('./environment');
+export * as formatters from './formatters/index';
 
-var DiffPatcher = require('./diffpatcher').DiffPatcher;
-exports.DiffPatcher = DiffPatcher;
+export * as console from './formatters/console';
 
-exports.create = function(options){
+export function create(options) {
   return new DiffPatcher(options);
-};
+}
 
-exports.dateReviver = require('./date-reviver');
+export dateReviver from './date-reviver';
 
-var defaultInstance;
+let defaultInstance;
 
-exports.diff = function() {
+export function diff() {
   if (!defaultInstance) {
     defaultInstance = new DiffPatcher();
   }
   return defaultInstance.diff.apply(defaultInstance, arguments);
-};
+}
 
-exports.patch = function() {
+export function patch() {
   if (!defaultInstance) {
     defaultInstance = new DiffPatcher();
   }
   return defaultInstance.patch.apply(defaultInstance, arguments);
-};
+}
 
-exports.unpatch = function() {
+export function unpatch() {
   if (!defaultInstance) {
     defaultInstance = new DiffPatcher();
   }
   return defaultInstance.unpatch.apply(defaultInstance, arguments);
-};
+}
 
-exports.reverse = function() {
+export function reverse() {
   if (!defaultInstance) {
     defaultInstance = new DiffPatcher();
   }
   return defaultInstance.reverse.apply(defaultInstance, arguments);
-};
+}
 
-exports.clone = function() {
+export function clone() {
   if (!defaultInstance) {
     defaultInstance = new DiffPatcher();
   }
   return defaultInstance.clone.apply(defaultInstance, arguments);
-};
-
-
-if (environment.isBrowser) {
-  exports.homepage = '{{package-homepage}}';
-  exports.version = '{{package-version}}';
-} else {
-  var packageInfoModuleName = '../package.json';
-  var packageInfo = require(packageInfoModuleName);
-  exports.homepage = packageInfo.homepage;
-  exports.version = packageInfo.version;
-
-  var formatterModuleName = './formatters';
-  var formatters = require(formatterModuleName);
-  exports.formatters = formatters;
-  // shortcut for console
-  exports.console = formatters.console;
 }

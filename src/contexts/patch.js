@@ -1,11 +1,12 @@
-var Context = require('./context').Context;
+import Context from './context';
 
-var PatchContext = function PatchContext(left, delta) {
-  this.left = left;
-  this.delta = delta;
-  this.pipe = 'patch';
-};
+class PatchContext extends Context {
+  constructor(left, delta) {
+    super();
+    this.left = left;
+    this.delta = delta;
+    this.pipe = 'patch';
+  }
+}
 
-PatchContext.prototype = new Context();
-
-exports.PatchContext = PatchContext;
+export default PatchContext;

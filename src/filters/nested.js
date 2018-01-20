@@ -1,15 +1,15 @@
-var DiffContext = require('../contexts/diff').DiffContext;
-var PatchContext = require('../contexts/patch').PatchContext;
-var ReverseContext = require('../contexts/reverse').ReverseContext;
+import DiffContext from '../contexts/diff';
+import PatchContext from '../contexts/patch';
+import ReverseContext from '../contexts/reverse';
 
-var collectChildrenDiffFilter = function collectChildrenDiffFilter(context) {
+export function collectChildrenDiffFilter(context) {
   if (!context || !context.children) {
     return;
   }
-  var length = context.children.length;
-  var child;
-  var result = context.result;
-  for (var index = 0; index < length; index++) {
+  const length = context.children.length;
+  let child;
+  let result = context.result;
+  for (let index = 0; index < length; index++) {
     child = context.children[index];
     if (typeof child.result === 'undefined') {
       continue;
@@ -21,15 +21,17 @@ var collectChildrenDiffFilter = function collectChildrenDiffFilter(context) {
     result._t = 'a';
   }
   context.setResult(result).exit();
-};
+}
 collectChildrenDiffFilter.filterName = 'collectChildren';
 
-var objectsDiffFilter = function objectsDiffFilter(context) {
+export function objectsDiffFilter(context) {
   if (context.leftIsArray || context.leftType !== 'object') {
     return;
   }
 
-  var name, child, propertyFilter = context.options.propertyFilter;
+  let name;
+  let child;
+  const propertyFilter = context.options.propertyFilter;
   for (name in context.left) {
     if (!Object.prototype.hasOwnProperty.call(context.left, name)) {
       continue;
@@ -58,17 +60,18 @@ var objectsDiffFilter = function objectsDiffFilter(context) {
     return;
   }
   context.exit();
-};
+}
 objectsDiffFilter.filterName = 'objects';
 
-var patchFilter = function nestedPatchFilter(context) {
+export const patchFilter = function nestedPatchFilter(context) {
   if (!context.nested) {
     return;
   }
   if (context.delta._t) {
     return;
   }
-  var name, child;
+  let name;
+  let child;
   for (name in context.delta) {
     child = new PatchContext(context.left[name], context.delta[name]);
     context.push(child, name);
@@ -77,18 +80,23 @@ var patchFilter = function nestedPatchFilter(context) {
 };
 patchFilter.filterName = 'objects';
 
-var collectChildrenPatchFilter = function collectChildrenPatchFilter(context) {
+export const collectChildrenPatchFilter = function collectChildrenPatchFilter(
+  context
+) {
   if (!context || !context.children) {
     return;
   }
   if (context.delta._t) {
     return;
   }
-  var length = context.children.length;
-  var child;
-  for (var index = 0; index < length; index++) {
+  let length = context.children.length;
+  let child;
+  for (let index = 0; index < length; index++) {
     child = context.children[index];
-    if (Object.prototype.hasOwnProperty.call(context.left, child.childName) && child.result === undefined) {
+    if (
+      Object.prototype.hasOwnProperty.call(context.left, child.childName) &&
+      child.result === undefined
+    ) {
       delete context.left[child.childName];
     } else if (context.left[child.childName] !== child.result) {
       context.left[child.childName] = child.result;
@@ -98,14 +106,15 @@ var collectChildrenPatchFilter = function collectChildrenPatchFilter(context) {
 };
 collectChildrenPatchFilter.filterName = 'collectChildren';
 
-var reverseFilter = function nestedReverseFilter(context) {
+export const reverseFilter = function nestedReverseFilter(context) {
   if (!context.nested) {
     return;
   }
   if (context.delta._t) {
     return;
   }
-  var name, child;
+  let name;
+  let child;
   for (name in context.delta) {
     child = new ReverseContext(context.delta[name]);
     context.push(child, name);
@@ -114,29 +123,22 @@ var reverseFilter = function nestedReverseFilter(context) {
 };
 reverseFilter.filterName = 'objects';
 
-var collectChildrenReverseFilter = function collectChildrenReverseFilter(context) {
+export function collectChildrenReverseFilter(context) {
   if (!context || !context.children) {
     return;
   }
   if (context.delta._t) {
     return;
   }
-  var length = context.children.length;
-  var child;
-  var delta = {};
-  for (var index = 0; index < length; index++) {
+  let length = context.children.length;
+  let child;
+  let delta = {};
+  for (let index = 0; index < length; index++) {
     child = context.children[index];
     if (delta[child.childName] !== child.result) {
       delta[child.childName] = child.result;
     }
   }
   context.setResult(delta).exit();
-};
+}
 collectChildrenReverseFilter.filterName = 'collectChildren';
-
-exports.collectChildrenDiffFilter = collectChildrenDiffFilter;
-exports.objectsDiffFilter = objectsDiffFilter;
-exports.patchFilter = patchFilter;
-exports.collectChildrenPatchFilter = collectChildrenPatchFilter;
-exports.reverseFilter = reverseFilter;
-exports.collectChildrenReverseFilter = collectChildrenReverseFilter;
