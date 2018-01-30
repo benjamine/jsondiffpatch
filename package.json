@@ -17,6 +17,7 @@
     "cover-publish": "istanbul cover _mocha --report lcovonly && codeclimate < coverage/lcov.info"
   },
   "main": "./src/main",
+  "browser": "./src/main-browser.js",
   "types": "./src/index",
   "repository": {
     "type": "git",
