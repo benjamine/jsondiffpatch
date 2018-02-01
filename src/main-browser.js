@@ -1,5 +1,5 @@
 
-module.exports = require('./main-common');
+module.exports = exports = require('./main-common');
 
 exports.homepage = '{{package-homepage}}';
 exports.version = '{{package-version}}';

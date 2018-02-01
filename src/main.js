@@ -1,5 +1,5 @@
 
-module.exports = require('./main-common');
+module.exports = exports = require('./main-common');
 
 var environment = require('./environment');
 
