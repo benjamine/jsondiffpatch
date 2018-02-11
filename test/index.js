@@ -2,87 +2,26 @@
  * mocha's bdd syntax is inspired in RSpec
  *   please read: http://betterspecs.org/
  */
-require('./util/globals');
+import * as jsondiffpatch from '../dist/jsondiffpatch.esm';
+import examples from './examples/diffpatch';
+import chai from 'chai';
+let expect = chai.expect;
 
-describe('jsondiffpatch', function() {
-  before(function() {});
-  it('has a semver version', function() {
-    expect(jsondiffpatch.version).to.match(/^\d+\.\d+\.\d+(-.*)?$/);
+describe('jsondiffpatch', () => {
+  before(() => {});
+  it('has a diff method', () => {
+    expect(jsondiffpatch.diff).to.be.a('function');
   });
 });
 
-var DiffPatcher = jsondiffpatch.DiffPatcher;
+const DiffPatcher = jsondiffpatch.DiffPatcher;
 
-var isArray = (typeof Array.isArray === 'function') ?
-  // use native function
-  Array.isArray :
-  // use instanceof operator
-  function(a) {
-    return typeof a === 'object' && a instanceof Array;
-  };
+const isArray =
+  typeof Array.isArray === 'function'
+    ? Array.isArray
+    : a => typeof a === 'object' && a instanceof Array;
 
-var deepEqual = function(obj1, obj2) {
-  if (obj1 === obj2) {
-    return true;
-  }
-  if (obj1 === null || obj2 === null) {
-    return false;
-  }
-  if ((typeof obj1 === 'object') && (typeof obj2 === 'object')) {
-    if (obj1 instanceof Date) {
-      if (!(obj2 instanceof Date)) {
-        return false;
-      }
-      return obj1.toString() === obj2.toString();
-    }
-    if (isArray(obj1)) {
-      if (!isArray(obj2)) {
-        return false;
-      }
-      if (obj1.length !== obj2.length) {
-        return false;
-      }
-      var length = obj1.length;
-      for (var i = 0; i < length; i++) {
-        if (!deepEqual(obj1[i], obj2[i])) {
-          return false;
-        }
-      }
-      return true;
-    } else {
-      if (isArray(obj2)) {
-        return false;
-      }
-    }
-    var name;
-    for (name in obj2) {
-      if (!Object.prototype.hasOwnProperty.call(obj1, name)) {
-        return false;
-      }
-    }
-    for (name in obj1) {
-      if (!Object.prototype.hasOwnProperty.call(obj2, name) || !deepEqual(obj1[name], obj2[name])) {
-        return false;
-      }
-    }
-    return true;
-  }
-  return false;
-};
-
-expect.Assertion.prototype.deepEqual = function(obj) {
-  this.assert(
-    deepEqual(this.obj, obj),
-    function() {
-      return 'expected ' + JSON.stringify(this.obj) + ' to be ' + JSON.stringify(obj);
-    },
-    function() {
-      return 'expected ' + JSON.stringify(this.obj) + ' not to be ' + JSON.stringify(obj);
-    });
-  return this;
-};
-
-var valueDescription = function(value) {
+let valueDescription = value => {
   if (value === null) {
     return 'null';
   }
@@ -107,82 +46,100 @@ var valueDescription = function(value) {
 };
 
 // Object.keys polyfill
-var objectKeys = (typeof Object.keys === 'function') ?
-  function(obj) {
-    return Object.keys(obj);
-  } :
-  function(obj) {
-    var keys = [];
-    for (var key in obj) {
-      if (Object.prototype.hasOwnProperty.call(obj, key)) {
-        keys.push(key);
+let objectKeys =
+  typeof Object.keys === 'function'
+    ? obj => Object.keys(obj)
+    : obj => {
+      let keys = [];
+      for (let key in obj) {
+        if (Object.prototype.hasOwnProperty.call(obj, key)) {
+          keys.push(key);
+        }
       }
-    }
-    return keys;
-  };
+      return keys;
+    };
 
 // Array.prototype.forEach polyfill
-var arrayForEach = (typeof Array.prototype.forEach === 'function') ?
-  function(array, fn) {
-    return array.forEach(fn);
-  } :
-  function(array, fn) {
-    for (var index = 0, length = array.length; index < length; index++) {
-      fn(array[index], index, array);
-    }
-  };
+let arrayForEach =
+  typeof Array.prototype.forEach === 'function'
+    ? (array, fn) => array.forEach(fn)
+    : (array, fn) => {
+      for (let index = 0, length = array.length; index < length; index++) {
+        fn(array[index], index, array);
+      }
+    };
 
-describe('DiffPatcher', function() {
-  var examples = require('./examples/diffpatch');
-  arrayForEach(objectKeys(examples), function(groupName) {
-    var group = examples[groupName];
-    describe(groupName, function() {
-      arrayForEach(group, function(example) {
+describe('DiffPatcher', () => {
+  arrayForEach(objectKeys(examples), groupName => {
+    let group = examples[groupName];
+    describe(groupName, () => {
+      arrayForEach(group, example => {
         if (!example) {
           return;
         }
-        var name = example.name || valueDescription(example.left) + ' -> ' + valueDescription(example.right);
-        describe(name, function() {
+        let name =
+          example.name ||
+          `${valueDescription(example.left)} -> ${valueDescription(
+            example.right
+          )}`;
+        describe(name, () => {
           before(function() {
             this.instance = new DiffPatcher(example.options);
           });
           if (example.error) {
-            it('diff should fail with: ' + example.error, function() {
-              var instance = this.instance;
-              expect(function() {
+            it(`diff should fail with: ${example.error}`, function() {
+              let instance = this.instance;
+              expect(() => {
                 instance.diff(example.left, example.right);
-              }).to.throwException(example.error);
+              }).to.throw(example.error);
             });
             return;
           }
           it('can diff', function() {
-            var delta = this.instance.diff(example.left, example.right);
-            expect(delta).to.be.deepEqual(example.delta);
+            let delta = this.instance.diff(example.left, example.right);
+            expect(delta).to.deep.equal(example.delta);
           });
           it('can diff backwards', function() {
-            var reverse = this.instance.diff(example.right, example.left);
-            expect(reverse).to.be.deepEqual(example.reverse);
+            let reverse = this.instance.diff(example.right, example.left);
+            expect(reverse).to.deep.equal(example.reverse);
           });
           if (!example.noPatch) {
             it('can patch', function() {
-              var right = this.instance.patch(jsondiffpatch.clone(example.left), example.delta);
-              expect(right).to.be.deepEqual(example.right);
+              let right = this.instance.patch(
+                jsondiffpatch.clone(example.left),
+                example.delta
+              );
+              expect(right).to.deep.equal(example.right);
             });
             it('can reverse delta', function() {
-              var reverse = this.instance.reverse(example.delta);
+              let reverse = this.instance.reverse(example.delta);
               if (example.exactReverse !== false) {
-                expect(reverse).to.be.deepEqual(example.reverse);
+                expect(reverse).to.deep.equal(example.reverse);
               } else {
-                // reversed delta and the swapped-diff delta are not always equal,
-                // to verify they're equivalent, patch and compare the results
-                expect(this.instance.patch(jsondiffpatch.clone(example.right), reverse)).to.be.deepEqual(example.left);
+                // reversed delta and the swapped-diff delta are
+                // not always equal, to verify they're equivalent,
+                // patch and compare the results
+                expect(
+                  this.instance.patch(
+                    jsondiffpatch.clone(example.right),
+                    reverse
+                  )
+                ).to.deep.equal(example.left);
                 reverse = this.instance.diff(example.right, example.left);
-                expect(this.instance.patch(jsondiffpatch.clone(example.right), reverse)).to.be.deepEqual(example.left);
+                expect(
+                  this.instance.patch(
+                    jsondiffpatch.clone(example.right),
+                    reverse
+                  )
+                ).to.deep.equal(example.left);
               }
             });
             it('can unpatch', function() {
-              var left = this.instance.unpatch(jsondiffpatch.clone(example.right), example.delta);
-              expect(left).to.be.deepEqual(example.left);
+              let left = this.instance.unpatch(
+                jsondiffpatch.clone(example.right),
+                example.delta
+              );
+              expect(left).to.deep.equal(example.left);
             });
           }
         });
@@ -190,268 +147,331 @@ describe('DiffPatcher', function() {
     });
   });
 
-  describe('.clone', function() {
-    it('clones complex objects', function() {
-      var obj = {
+  describe('.clone', () => {
+    it('clones complex objects', () => {
+      let obj = {
         name: 'a string',
         nested: {
           attributes: [
-            { name: 'one', value: 345, since: new Date(1934, 1, 1) }
+            { name: 'one', value: 345, since: new Date(1934, 1, 1) },
           ],
           another: 'property',
           enabled: true,
           nested2: {
-            name: 'another string'
-          }
-        }
+            name: 'another string',
+          },
+        },
       };
-      var cloned = jsondiffpatch.clone(obj);
-      expect(cloned).to.be.deepEqual(obj);
+      let cloned = jsondiffpatch.clone(obj);
+      expect(cloned).to.deep.equal(obj);
     });
-    it('clones RegExp', function() {
-      var obj = {
-        pattern: /expr/gim
+    it('clones RegExp', () => {
+      let obj = {
+        pattern: /expr/gim,
       };
-      var cloned = jsondiffpatch.clone(obj);
-      expect(cloned).to.be.deepEqual({
-        pattern: /expr/gim
+      let cloned = jsondiffpatch.clone(obj);
+      expect(cloned).to.deep.equal({
+        pattern: /expr/gim,
       });
     });
   });
 
-  describe('using cloneDiffValues', function(){
+  describe('using cloneDiffValues', () => {
     before(function() {
       this.instance = new DiffPatcher({
-        cloneDiffValues: true
+        cloneDiffValues: true,
       });
     });
-    it('ensures deltas don\'t reference original objects', function(){
-      var left = {
+    it("ensures deltas don't reference original objects", function() {
+      let left = {
         oldProp: {
-          value: 3
-        }
+          value: 3,
+        },
       };
-      var right = {
+      let right = {
         newProp: {
-          value: 5
-        }
+          value: 5,
+        },
       };
-      var delta = this.instance.diff(left, right);
+      let delta = this.instance.diff(left, right);
       left.oldProp.value = 1;
       right.newProp.value = 8;
-      expect(delta).to.be.deepEqual({
+      expect(delta).to.deep.equal({
         oldProp: [{ value: 3 }, 0, 0],
-        newProp: [{ value: 5}]
+        newProp: [{ value: 5 }],
       });
     });
   });
 
-  describe('static shortcuts', function(){
-    it('diff', function(){
-      var delta = jsondiffpatch.diff(4, 5);
-      expect(delta).to.be.deepEqual([4, 5]);
+  describe('static shortcuts', () => {
+    it('diff', () => {
+      let delta = jsondiffpatch.diff(4, 5);
+      expect(delta).to.deep.equal([4, 5]);
     });
-    it('patch', function(){
-      var right = jsondiffpatch.patch(4, [4, 5]);
-      expect(right).to.be(5);
+    it('patch', () => {
+      let right = jsondiffpatch.patch(4, [4, 5]);
+      expect(right).to.eql(5);
     });
-    it('unpatch', function(){
-      var left = jsondiffpatch.unpatch(5, [4, 5]);
-      expect(left).to.be(4);
+    it('unpatch', () => {
+      let left = jsondiffpatch.unpatch(5, [4, 5]);
+      expect(left).to.eql(4);
     });
-    it('reverse', function(){
-      var reverseDelta = jsondiffpatch.reverse([4, 5]);
-      expect(reverseDelta).to.be.deepEqual([5, 4]);
+    it('reverse', () => {
+      let reverseDelta = jsondiffpatch.reverse([4, 5]);
+      expect(reverseDelta).to.deep.equal([5, 4]);
     });
   });
 
-  describe('plugins', function() {
+  describe('plugins', () => {
     before(function() {
       this.instance = new DiffPatcher();
     });
 
-    describe('getting pipe filter list', function(){
-      it('returns builtin filters', function(){
-        expect(this.instance.processor.pipes.diff.list()).to.be.deepEqual([
-          'collectChildren', 'trivial', 'dates', 'texts', 'objects', 'arrays'
+    describe('getting pipe filter list', () => {
+      it('returns builtin filters', function() {
+        expect(this.instance.processor.pipes.diff.list()).to.deep.equal([
+          'collectChildren',
+          'trivial',
+          'dates',
+          'texts',
+          'objects',
+          'arrays',
         ]);
       });
     });
 
-    describe('supporting numeric deltas', function(){
-
-      var NUMERIC_DIFFERENCE = -8;
+    describe('supporting numeric deltas', () => {
+      let NUMERIC_DIFFERENCE = -8;
 
       it('diff', function() {
         // a constant to identify the custom delta type
         function numericDiffFilter(context) {
-          if (typeof context.left === 'number' && typeof context.right === 'number') {
+          if (
+            typeof context.left === 'number' &&
+            typeof context.right === 'number'
+          ) {
             // store number delta, eg. useful for distributed counters
-            context.setResult([0, context.right - context.left, NUMERIC_DIFFERENCE]).exit();
+            context
+              .setResult([0, context.right - context.left, NUMERIC_DIFFERENCE])
+              .exit();
           }
         }
-        // a filterName is useful if I want to allow other filters to be inserted before/after this one
+        // a filterName is useful if I want to allow other filters to
+        // be inserted before/after this one
         numericDiffFilter.filterName = 'numeric';
 
         // insert new filter, right before trivial one
         this.instance.processor.pipes.diff.before('trivial', numericDiffFilter);
 
-        var delta = this.instance.diff({ population: 400 }, { population: 403 });
-        expect(delta).to.be.deepEqual({ population: [0, 3, NUMERIC_DIFFERENCE] });
+        let delta = this.instance.diff(
+          { population: 400 },
+          { population: 403 }
+        );
+        expect(delta).to.deep.equal({ population: [0, 3, NUMERIC_DIFFERENCE] });
       });
 
       it('patch', function() {
         function numericPatchFilter(context) {
-          if (context.delta && Array.isArray(context.delta) && context.delta[2] === NUMERIC_DIFFERENCE) {
+          if (
+            context.delta &&
+            Array.isArray(context.delta) &&
+            context.delta[2] === NUMERIC_DIFFERENCE
+          ) {
             context.setResult(context.left + context.delta[1]).exit();
           }
         }
         numericPatchFilter.filterName = 'numeric';
-        this.instance.processor.pipes.patch.before('trivial', numericPatchFilter);
+        this.instance.processor.pipes.patch.before(
+          'trivial',
+          numericPatchFilter
+        );
 
-        var delta = { population: [0, 3, NUMERIC_DIFFERENCE] };
-        var right = this.instance.patch({ population: 600 }, delta);
-        expect(right).to.be.deepEqual({ population: 603 });
+        let delta = { population: [0, 3, NUMERIC_DIFFERENCE] };
+        let right = this.instance.patch({ population: 600 }, delta);
+        expect(right).to.deep.equal({ population: 603 });
       });
 
       it('unpatch', function() {
         function numericReverseFilter(context) {
-          if (context.nested) { return; }
-          if (context.delta && Array.isArray(context.delta) && context.delta[2] === NUMERIC_DIFFERENCE) {
-            context.setResult([0, -context.delta[1], NUMERIC_DIFFERENCE]).exit();
+          if (context.nested) {
+            return;
+          }
+          if (
+            context.delta &&
+            Array.isArray(context.delta) &&
+            context.delta[2] === NUMERIC_DIFFERENCE
+          ) {
+            context
+              .setResult([0, -context.delta[1], NUMERIC_DIFFERENCE])
+              .exit();
           }
         }
         numericReverseFilter.filterName = 'numeric';
-        this.instance.processor.pipes.reverse.after('trivial', numericReverseFilter);
+        this.instance.processor.pipes.reverse.after(
+          'trivial',
+          numericReverseFilter
+        );
 
-        var delta = { population: [0, 3, NUMERIC_DIFFERENCE] };
-        var reverseDelta = this.instance.reverse(delta);
-        expect(reverseDelta).to.be.deepEqual({ population: [0, -3, NUMERIC_DIFFERENCE] });
-        var right = { population: 703 };
+        let delta = { population: [0, 3, NUMERIC_DIFFERENCE] };
+        let reverseDelta = this.instance.reverse(delta);
+        expect(reverseDelta).to.deep.equal({
+          population: [0, -3, NUMERIC_DIFFERENCE],
+        });
+        let right = { population: 703 };
         this.instance.unpatch(right, delta);
-        expect(right).to.be.deepEqual({ population: 700 });
+        expect(right).to.deep.equal({ population: 700 });
       });
-
     });
 
-    describe('removing and replacing pipe filters', function(){
-      it('removes specified filter', function(){
-        expect(this.instance.processor.pipes.diff.list()).to.be.deepEqual([
-          'collectChildren', 'numeric', 'trivial', 'dates', 'texts', 'objects', 'arrays'
+    describe('removing and replacing pipe filters', () => {
+      it('removes specified filter', function() {
+        expect(this.instance.processor.pipes.diff.list()).to.deep.equal([
+          'collectChildren',
+          'numeric',
+          'trivial',
+          'dates',
+          'texts',
+          'objects',
+          'arrays',
         ]);
         this.instance.processor.pipes.diff.remove('dates');
-        expect(this.instance.processor.pipes.diff.list()).to.be.deepEqual([
-          'collectChildren', 'numeric', 'trivial', 'texts', 'objects', 'arrays'
+        expect(this.instance.processor.pipes.diff.list()).to.deep.equal([
+          'collectChildren',
+          'numeric',
+          'trivial',
+          'texts',
+          'objects',
+          'arrays',
         ]);
       });
 
-      it('replaces specified filter', function(){
+      it('replaces specified filter', function() {
         function fooFilter(context) {
           context.setResult(['foo']).exit();
         }
         fooFilter.filterName = 'foo';
-        expect(this.instance.processor.pipes.diff.list()).to.be.deepEqual([
-          'collectChildren', 'numeric', 'trivial', 'texts', 'objects', 'arrays'
+        expect(this.instance.processor.pipes.diff.list()).to.deep.equal([
+          'collectChildren',
+          'numeric',
+          'trivial',
+          'texts',
+          'objects',
+          'arrays',
         ]);
         this.instance.processor.pipes.diff.replace('trivial', fooFilter);
-        expect(this.instance.processor.pipes.diff.list()).to.be.deepEqual([
-          'collectChildren', 'numeric', 'foo', 'texts', 'objects', 'arrays'
+        expect(this.instance.processor.pipes.diff.list()).to.deep.equal([
+          'collectChildren',
+          'numeric',
+          'foo',
+          'texts',
+          'objects',
+          'arrays',
         ]);
       });
     });
-
   });
 
-  describe('formatters', function () {
+  describe('formatters', () => {
+    describe('jsonpatch', () => {
+      let instance;
+      let formatter;
 
-    describe('jsonpatch', function(){
-
-      var instance;
-      var formatter;
-
-      before(function () {
+      before(() => {
         instance = new DiffPatcher();
         formatter = jsondiffpatch.formatters.jsonpatch;
       });
 
-      var expectFormat = function (oldObject, newObject, expected) {
-        var diff = instance.diff(oldObject, newObject);
-        var format = formatter.format(diff);
+      let expectFormat = (oldObject, newObject, expected) => {
+        let diff = instance.diff(oldObject, newObject);
+        let format = formatter.format(diff);
         expect(format).to.be.eql(expected);
       };
 
-      var removeOp = function (path) {
-        return {op: 'remove', path: path};
-      };
+      let removeOp = path => ({
+        op: 'remove',
+        path,
+      });
 
-      var addOp = function (path, value) {
-        return {op: 'add', path: path, value: value};
-      };
+      let addOp = (path, value) => ({
+        op: 'add',
+        path,
+        value,
+      });
 
-      var replaceOp = function (path, value) {
-        return {op: 'replace', path: path, value: value};
-      };
+      let replaceOp = (path, value) => ({
+        op: 'replace',
+        path,
+        value,
+      });
 
-      it('should return empty format for empty diff', function () {
+      it('should return empty format for empty diff', () => {
         expectFormat([], [], []);
       });
 
-      it('should format an add operation for array insertion', function () {
+      it('should format an add operation for array insertion', () => {
         expectFormat([1, 2, 3], [1, 2, 3, 4], [addOp('/3', 4)]);
       });
 
-      it('should format an add operation for object insertion', function () {
-        expectFormat({a: 'a', b: 'b'}, {a: 'a', b: 'b', c: 'c'},
-          [addOp('/c', 'c')]);
+      it('should format an add operation for object insertion', () => {
+        expectFormat({ a: 'a', b: 'b' }, { a: 'a', b: 'b', c: 'c' }, [
+          addOp('/c', 'c'),
+        ]);
       });
 
-      it('should format for deletion of array', function () {
+      it('should format for deletion of array', () => {
         expectFormat([1, 2, 3, 4], [1, 2, 3], [removeOp('/3')]);
       });
 
-      it('should format for deletion of object', function () {
-        expectFormat({a: 'a', b: 'b', c: 'c'}, {a: 'a', b: 'b'}, [removeOp('/c')]);
+      it('should format for deletion of object', () => {
+        expectFormat({ a: 'a', b: 'b', c: 'c' }, { a: 'a', b: 'b' }, [
+          removeOp('/c'),
+        ]);
       });
 
-      it('should format for replace of object', function () {
-        expectFormat({a: 'a', b: 'b'}, {a: 'a', b: 'c'}, [replaceOp('/b', 'c')]);
+      it('should format for replace of object', () => {
+        expectFormat({ a: 'a', b: 'b' }, { a: 'a', b: 'c' }, [
+          replaceOp('/b', 'c'),
+        ]);
       });
 
-      it('should put add/remove for array with simple items', function () {
+      it('should put add/remove for array with simple items', () => {
         expectFormat([1, 2, 3], [1, 2, 4], [removeOp('/2'), addOp('/2', 4)]);
       });
 
-      it('should sort remove by desc order', function () {
+      it('should sort remove by desc order', () => {
         expectFormat([1, 2, 3], [1], [removeOp('/2'), removeOp('/1')]);
       });
 
-      describe('patcher with compartor', function () {
-        before(function () {
+      describe('patcher with compartor', () => {
+        before(() => {
           instance = new DiffPatcher({
-            objectHash: function (obj) {
+            objectHash(obj) {
               if (obj && obj.id) {
                 return obj.id;
               }
-            }
+            },
           });
         });
 
-        var objId = function (id) {
-          return {id: id};
-        };
+        let objId = id => ({
+          id,
+        });
 
-        it('should remove higher level first', function () {
-          var oldObject = [
+        it('should remove higher level first', () => {
+          let oldObject = [
             objId('removed'),
             {
               id: 'remaining_outer',
-              items: [objId('removed_inner'), objId('remaining_inner')]
-            }];
-          var newObject = [{
-            id: 'remaining_outer',
-            items: [objId('remaining_inner')]
-          }];
-          var expected = [removeOp('/0'), removeOp('/0/items/0')];
+              items: [objId('removed_inner'), objId('remaining_inner')],
+            },
+          ];
+          let newObject = [
+            {
+              id: 'remaining_outer',
+              items: [objId('remaining_inner')],
+            },
+          ];
+          let expected = [removeOp('/0'), removeOp('/0/items/0')];
           expectFormat(oldObject, newObject, expected);
         });
       });

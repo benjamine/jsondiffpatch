@@ -6,17 +6,17 @@ reference: http://en.wikipedia.org/wiki/Longest_common_subsequence_problem
 
 */
 
-var defaultMatch = function(array1, array2, index1, index2) {
+const defaultMatch = function(array1, array2, index1, index2) {
   return array1[index1] === array2[index2];
 };
 
-var lengthMatrix = function(array1, array2, match, context) {
-  var len1 = array1.length;
-  var len2 = array2.length;
-  var x, y;
+const lengthMatrix = function(array1, array2, match, context) {
+  const len1 = array1.length;
+  const len2 = array2.length;
+  let x, y;
 
   // initialize empty matrix of len1+1 x len2+1
-  var matrix = [len1 + 1];
+  let matrix = [len1 + 1];
   for (x = 0; x < len1 + 1; x++) {
     matrix[x] = [len2 + 1];
     for (y = 0; y < len2 + 1; y++) {
@@ -37,17 +37,24 @@ var lengthMatrix = function(array1, array2, match, context) {
   return matrix;
 };
 
-var backtrack = function(matrix, array1, array2, index1, index2, context) {
+const backtrack = function(matrix, array1, array2, index1, index2, context) {
   if (index1 === 0 || index2 === 0) {
     return {
       sequence: [],
       indices1: [],
-      indices2: []
+      indices2: [],
     };
   }
 
   if (matrix.match(array1, array2, index1 - 1, index2 - 1, context)) {
-    var subsequence = backtrack(matrix, array1, array2, index1 - 1, index2 - 1, context);
+    const subsequence = backtrack(
+      matrix,
+      array1,
+      array2,
+      index1 - 1,
+      index2 - 1,
+      context
+    );
     subsequence.sequence.push(array1[index1 - 1]);
     subsequence.indices1.push(index1 - 1);
     subsequence.indices2.push(index2 - 1);
@@ -61,14 +68,28 @@ var backtrack = function(matrix, array1, array2, index1, index2, context) {
   }
 };
 
-var get = function(array1, array2, match, context) {
-  context = context || {};
-  var matrix = lengthMatrix(array1, array2, match || defaultMatch, context);
-  var result = backtrack(matrix, array1, array2, array1.length, array2.length, context);
+const get = function(array1, array2, match, context) {
+  const innerContext = context || {};
+  const matrix = lengthMatrix(
+    array1,
+    array2,
+    match || defaultMatch,
+    innerContext
+  );
+  const result = backtrack(
+    matrix,
+    array1,
+    array2,
+    array1.length,
+    array2.length,
+    innerContext
+  );
   if (typeof array1 === 'string' && typeof array2 === 'string') {
     result.sequence = result.sequence.join('');
   }
   return result;
 };
 
-exports.get = get;
+export default {
+  get: get,
+};

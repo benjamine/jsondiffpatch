@@ -1,23 +1,30 @@
 {
   "name": "jsondiffpatch",
-  "version": "0.2.5",
+  "version": "0.3.1",
   "author": "Benjamin Eidelman <beneidel@gmail.com>",
   "description": "Diff & Patch for Javascript objects",
   "contributors": [
     "Benjamin Eidelman <beneidel@gmail.com>"
   ],
+  "browser": "dist/jsondiffpatch.umd.js",
+  "main": "dist/jsondiffpatch.cjs.js",
+  "module": "dist/jsondiffpatch.esm.js",
+  "types": "./src/index",
+  "files": [
+    "dist"
+  ],
   "bin": {
     "jsondiffpatch": "./bin/jsondiffpatch"
   },
   "scripts": {
-    "test": "gulp test && gulp test-browser",
+    "build": "rollup -c",
+    "test-browser": "gulp test-browser",
     "bump": "gulp bump",
-    "cover": "istanbul cover --root src gulp test",
+    "test": "nyc mocha",
+    "prepublish": "rollup -c",
     "cover-report": "open coverage/lcov-report/index.html",
-    "cover-publish": "istanbul cover _mocha --report lcovonly && codeclimate < coverage/lcov.info"
+    "cover-publish": "nyc mocha && codeclimate < coverage/lcov.info"
   },
-  "main": "./src/main",
-  "types": "./src/index",
   "repository": {
     "type": "git",
     "url": "https://github.com/benjamine/jsondiffpatch.git"
@@ -28,42 +35,45 @@
     "patch"
   ],
   "dependencies": {
-    "chalk": "^0.5.1"
+    "chalk": "^2.3.0",
+    "diff-match-patch": "^1.0.0"
   },
   "devDependencies": {
-    "bulk-require": "^0.2.1",
+    "@istanbuljs/nyc-config-babel": "^1.2.2",
+    "babel-core": "^6.26.0",
+    "babel-eslint": "^8.2.1",
+    "babel-plugin-external-helpers": "^6.22.0",
+    "babel-plugin-istanbul": "^4.1.5",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "babel-polyfill": "^6.26.0",
+    "babel-preset-env": "^1.6.1",
+    "babel-preset-stage-0": "^6.24.1",
+    "babel-preset-stage-1": "^6.24.1",
+    "babel-preset-stage-2": "^6.24.1",
+    "chai": "^4.1.2",
     "codeclimate-test-reporter": "0.0.3",
-    "expect.js": "~0.3.1",
-    "fiberglass": "0.0.22",
-    "gulp": "^3.8.8",
-    "istanbul": "^0.3.2",
-    "mocha": "^1.21.4"
+    "eslint": "^4.16.0",
+    "eslint-config-standard": "^11.0.0-beta.0",
+    "eslint-plugin-import": "^2.8.0",
+    "eslint-plugin-node": "^5.2.1",
+    "eslint-plugin-promise": "^3.6.0",
+    "eslint-plugin-standard": "^3.0.1",
+    "istanbul": "^0.4.5",
+    "mocha": "^5.0.0",
+    "nyc": "^11.4.1",
+    "prettier": "^1.10.2",
+    "rollup": "^0.54.1",
+    "rollup-plugin-babel": "^3.0.3",
+    "rollup-plugin-commonjs": "^8.2.6",
+    "rollup-plugin-istanbul": "^2.0.0",
+    "rollup-plugin-node-resolve": "^3.0.2",
+    "rollup-plugin-replace": "^2.0.0",
+    "rollup-plugin-visualizer": "^0.3.1"
   },
   "bundleDependencies": [],
   "license": "MIT",
-  "engine": {
-    "node": ">=0.10"
-  },
-  "testling": {
-    "harness": "mocha",
-    "files": "test/index.js",
-    "scripts": [
-      "build/jsondiffpatch.js",
-      "external/diff_match_patch_uncompressed.js"
-    ],
-    "browsers": [
-      "ie/8..latest",
-      "chrome/27..latest",
-      "firefox/22..latest",
-      "safari/5.1..latest",
-      "opera/12..latest",
-      "iphone/6..latest",
-      "ipad/6..latest",
-      "android-browser/4.2..latest"
-    ]
-  },
   "engines": {
-    "node": "*"
+    "node": ">=4.8.0"
   },
   "homepage": "https://github.com/benjamine/jsondiffpatch"
 }

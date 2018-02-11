@@ -1,10 +1,11 @@
-var Context = require('./context').Context;
+import Context from './context';
 
-var ReverseContext = function ReverseContext(delta) {
-  this.delta = delta;
-  this.pipe = 'reverse';
-};
+class ReverseContext extends Context {
+  constructor(delta) {
+    super();
+    this.delta = delta;
+    this.pipe = 'reverse';
+  }
+}
 
-ReverseContext.prototype = new Context();
-
-exports.ReverseContext = ReverseContext;
+export default ReverseContext;

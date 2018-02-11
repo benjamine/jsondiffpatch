@@ -7,7 +7,6 @@ jsondiffpatch
 [![Test Coverage](https://codeclimate.com/github/benjamine/jsondiffpatch/badges/coverage.svg)](https://codeclimate.com/github/benjamine/jsondiffpatch)
 [![NPM version](https://badge.fury.io/js/jsondiffpatch.svg)](http://badge.fury.io/js/jsondiffpatch)
 [![NPM dependencies](https://david-dm.org/benjamine/jsondiffpatch.svg)](https://david-dm.org/benjamine/jsondiffpatch)
-[![Bower version](https://badge.fury.io/bo/jsondiffpatch.svg)](http://badge.fury.io/bo/jsondiffpatch)
 
 Diff & patch JavaScript objects
 
@@ -15,9 +14,9 @@ Diff & patch JavaScript objects
 **[Live Demo](http://benjamine.github.com/jsondiffpatch/demo/index.html)**
 -----
 
-- min+gzipped < 6KB
-- browser (```/public/build/jsondiffpatch.js```) and server (eg. node.js)
-- includes [google-diff-match-patch](http://code.google.com/p/google-diff-match-patch/) for long text diffs (diff at character level)
+- min+gzipped ~ 16KB
+- browser and server (`/dist` folder with bundles for UMD, commonjs, or ES modules)
+- (optionally) uses [google-diff-match-patch](http://code.google.com/p/google-diff-match-patch/) for long text diffs (diff at character level)
 - smart array diffing using [LCS](http://en.wikipedia.org/wiki/Longest_common_subsequence_problem), ***IMPORTANT NOTE:*** to match objects inside an array you must provide an ```objectHash``` function (this is how objects are matched, otherwise a dumb match by position is used). For more details, check [Array diff documentation](docs/arrays.md)
 - reverse a delta
 - unpatch (eg. revert object to its original state using a delta)
@@ -38,16 +37,8 @@ Supported platforms
 
 And you can test your current browser visiting the [test page](http://benjamine.github.com/jsondiffpatch/test/index.html).
 
-* Node.js [![Build Status](https://secure.travis-ci.org/benjamine/jsondiffpatch.svg)](http://travis-ci.org/benjamine/jsondiffpatch)
+* Node.js [![Build Status](https://secure.travis-ci.org/benjamine/jsondiffpatch.svg)](http://travis-ci.org/benjamine/jsondiffpatch) v4.8+
 
-If you want to run tests locally:
-``` sh
-npm i
-# will test in node.js and phantomjs (headless browser)
-npm test
-# or test on specific browsers (using karma.js)
-BROWSERS=chrome,phantomjs npm test
-```
 Usage
 -----
 
@@ -179,7 +170,9 @@ If you want to understand deltas, see [delta format documentation](docs/deltas.m
 Installing
 ---------------
 
-### npm (node.js)
+### NPM
+
+This works for node, or in browsers if you already do bundling on your app
 
 ``` sh
 npm install jsondiffpatch
@@ -189,18 +182,9 @@ npm install jsondiffpatch
 var jsondiffpatch = require('jsondiffpatch').create(options);
 ```
 
-### bower (browser)
+### browser
 
-``` sh
-bower install jsondiffpatch
-```
-
-browser bundles are in the ```/public/build``` folder (you can re-generate these using ```make``` or ```gulp```, `npm test` will do that too):
-- ```jsondiffpatch.js``` main bundle
-- ```jsondiffpatch.full.js``` main bundle + [google-diff-match-patch](http://code.google.com/p/google-diff-match-patch/) library for text diffs
-- ```jsondiffpatch-formatters.js``` builtin formatters (only those useful in a browser)
-
-All these come in minified versions (```.min.js```), and separate sourcemap files.
+In a browser, you could load directly a bundle in `/dist`, eg. `/dist/jsondiffpatch.umd.js`.
 
 Options
 -------
@@ -238,7 +222,7 @@ var jsondiffpatch = require('jsondiffpatch').create({
 ```
 
 Visual Diff
-----------------
+-----------
 
 ``` html
 <!DOCTYPE html>

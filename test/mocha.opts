@@ -1,4 +1,4 @@
 --reporter spec
 --growl
 --ui bdd
-test/index.js
+dist/jsondiffpatch.cjs.test.js

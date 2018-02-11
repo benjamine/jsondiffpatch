@@ -1,11 +1,6 @@
-var environment = require('../environment');
 
-exports.base = require('./base');
-exports.html = require('./html');
-exports.annotated = require('./annotated');
-exports.jsonpatch = require('./jsonpatch');
-
-if (!environment.isBrowser) {
-  var consoleModuleName = './console';
-  exports.console = require(consoleModuleName);
-}
+export * as base from './base';
+export * as html from './html';
+export * as annotated from './annotated';
+export * as jsonpatch from './jsonpatch';
+export * as console from './console';

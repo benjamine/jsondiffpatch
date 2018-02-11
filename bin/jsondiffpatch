@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-var jsondiffpatch = require('../src/main');
+var jsondiffpatch = require('../dist/jsondiffpatch.cjs');
 
 var fs = require('fs');
 
