@@ -1,6 +1,7 @@
 import replace from 'rollup-plugin-replace';
 import resolve from 'rollup-plugin-node-resolve';
 import commonjs from 'rollup-plugin-commonjs';
+import copy from 'rollup-plugin-copy';
 import babel from 'rollup-plugin-babel';
 import istanbul from 'rollup-plugin-istanbul';
 import pkg from './package.json';
@@ -28,6 +29,9 @@ export default [
       }),
       resolve(), // so Rollup can find node modules
       commonjs(), // so Rollup can convert node modules to ES modules
+      copy({
+        "src/index.d.ts": "dist/index.d.ts",
+      }),
     ],
   },
 
@@ -55,6 +59,9 @@ export default [
       }),
       resolve(), // so Rollup can find node modules
       commonjs(), // so Rollup can convert node modules to ES modules
+      copy({
+        "src/index.d.ts": "dist/index.d.ts",
+      }),
     ],
   },
 
