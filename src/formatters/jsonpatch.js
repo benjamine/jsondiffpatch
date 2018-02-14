@@ -1,28 +1,25 @@
 import BaseFormatter from './base';
 
-let named = {
-  added: 'add',
-  deleted: 'remove',
-  modified: 'replace',
-  moved: 'moved',
-  movedestination: 'movedestination',
-  unchanged: 'unchanged',
-  error: 'error',
-  textDiffLine: 'textDiffLine',
+const OPERATIONS = {
+  add: 'add',
+  remove: 'remove',
+  replace: 'replace',
+  move: 'move',
 };
 
 class JSONFormatter extends BaseFormatter {
   constructor() {
     super();
-    this.includeMoveDestinations = false;
+    this.includeMoveDestinations = true;
   }
 
   prepareContext(context) {
     super.prepareContext(context);
     context.result = [];
     context.path = [];
-    context.pushCurrentOp = function(op, value) {
-      let val = {
+    context.pushCurrentOp = function(obj) {
+      const {op, value} = obj;
+      const val = {
         op,
         path: this.currentPath(),
       };
@@ -32,13 +29,19 @@ class JSONFormatter extends BaseFormatter {
       this.result.push(val);
     };
 
+    context.pushMoveOp = function(to) {
+      const finalTo = `/${to}`;
+      const from = this.currentPath();
+      this.result.push({op: OPERATIONS.move, from: from, path: finalTo});
+    };
+
     context.currentPath = function() {
       return `/${this.path.join('/')}`;
     };
   }
 
   typeFormattterErrorFormatter(context, err) {
-    context.out(`[ERROR]${err}`);
+    context.out(`[ERROR] ${err}`);
   }
 
   rootBegin() {}
@@ -55,38 +58,29 @@ class JSONFormatter extends BaseFormatter {
   /* jshint camelcase: false */
   /* eslint-disable camelcase */
 
-  format_unchanged(context, delta, left) {
-    if (typeof left === 'undefined') {
-      return;
-    }
-    context.pushCurrentOp(named.unchanged, left);
-  }
+  format_unchanged() {}
 
-  format_movedestination(context, delta, left) {
-    if (typeof left === 'undefined') {
-      return;
-    }
-    context.pushCurrentOp(named.movedestination, left);
-  }
+  format_movedestination() {}
 
   format_node(context, delta, left) {
     this.formatDeltaChildren(context, delta, left);
   }
 
   format_added(context, delta) {
-    context.pushCurrentOp(named.added, delta[0]);
+    context.pushCurrentOp({op: OPERATIONS.add, value: delta[0]});
   }
 
   format_modified(context, delta) {
-    context.pushCurrentOp(named.modified, delta[1]);
+    context.pushCurrentOp({op: OPERATIONS.replace, value: delta[1]});
   }
 
   format_deleted(context) {
-    context.pushCurrentOp(named.deleted);
+    context.pushCurrentOp({op: OPERATIONS.remove});
   }
 
   format_moved(context, delta) {
-    context.pushCurrentOp(named.moved, delta[1]);
+    const to = delta[1];
+    context.pushMoveOp(to);
   }
 
   format_textdiff() {
@@ -106,20 +100,16 @@ class JSONFormatter extends BaseFormatter {
 
 export default JSONFormatter;
 
-let defaultInstance;
+const last = arr => arr[arr.length - 1];
 
-function last(arr) {
-  return arr[arr.length - 1];
-}
-
-function sortBy(arr, pred) {
+const sortBy = (arr, pred) => {
   arr.sort(pred);
   return arr;
-}
+};
 
 const compareByIndexDesc = (indexA, indexB) => {
-  let lastA = parseInt(indexA, 10);
-  let lastB = parseInt(indexB, 10);
+  const lastA = parseInt(indexA, 10);
+  const lastB = parseInt(indexB, 10);
   if (!(isNaN(lastA) || isNaN(lastB))) {
     return lastB - lastA;
   } else {
@@ -127,40 +117,44 @@ const compareByIndexDesc = (indexA, indexB) => {
   }
 };
 
-function opsByDescendingOrder(removeOps) {
-  return sortBy(removeOps, (a, b) => {
-    let splitA = a.path.split('/');
-    let splitB = b.path.split('/');
-    if (splitA.length !== splitB.length) {
-      return splitA.length - splitB.length;
-    } else {
-      return compareByIndexDesc(last(splitA), last(splitB));
-    }
-  });
-}
+const opsByDescendingOrder = removeOps => sortBy(removeOps, (a, b) => {
+  const splitA = a.path.split('/');
+  const splitB = b.path.split('/');
+  if (splitA.length !== splitB.length) {
+    return splitA.length - splitB.length;
+  } else {
+    return compareByIndexDesc(last(splitA), last(splitB));
+  }
+});
 
-function partition(arr, pred) {
-  let left = [];
-  let right = [];
+const partition = (arr, pred) => {
+  const left = [];
+  const right = [];
 
   arr.forEach(el => {
-    let coll = pred(el) ? left : right;
+    const coll = pred(el) ? left : right;
     coll.push(el);
   });
   return [left, right];
-}
+};
 
-function reorderOps(jsonFormattedDiff) {
-  let removeOpsOtherOps = partition(
+const partitionRemovedOps = jsonFormattedDiff => {
+  const isRemoveOp = ({op}) => op === 'remove';
+  const removeOpsOtherOps = partition(
     jsonFormattedDiff,
-    ({ op }) => op === 'remove'
+    isRemoveOp
   );
-  let removeOps = removeOpsOtherOps[0];
-  let otherOps = removeOpsOtherOps[1];
+  return removeOpsOtherOps;
+};
 
-  let removeOpsReverse = opsByDescendingOrder(removeOps);
+const reorderOps = jsonFormattedDiff => {
+  const [removeOps, otherOps] = partitionRemovedOps(jsonFormattedDiff);
+
+  const removeOpsReverse = opsByDescendingOrder(removeOps);
   return removeOpsReverse.concat(otherOps);
-}
+};
+
+let defaultInstance;
 
 export const format = (delta, left) => {
   if (!defaultInstance) {
@@ -169,6 +163,6 @@ export const format = (delta, left) => {
   return reorderOps(defaultInstance.format(delta, left));
 };
 
-export function log(delta, left) {
+export const log = (delta, left) => {
   console.log(format(delta, left));
-}
+};

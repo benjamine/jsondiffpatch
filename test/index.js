@@ -381,24 +381,24 @@ describe('DiffPatcher', () => {
         formatter = jsondiffpatch.formatters.jsonpatch;
       });
 
-      let expectFormat = (oldObject, newObject, expected) => {
-        let diff = instance.diff(oldObject, newObject);
-        let format = formatter.format(diff);
+      const expectFormat = (before, after, expected) => {
+        const diff = instance.diff(before, after);
+        const format = formatter.format(diff);
         expect(format).to.be.eql(expected);
       };
 
-      let removeOp = path => ({
+      const removeOp = path => ({
         op: 'remove',
         path,
       });
 
-      let addOp = (path, value) => ({
+      const addOp = (path, value) => ({
         op: 'add',
         path,
         value,
       });
 
-      let replaceOp = (path, value) => ({
+      const replaceOp = (path, value) => ({
         op: 'replace',
         path,
         value,
@@ -434,7 +434,7 @@ describe('DiffPatcher', () => {
         ]);
       });
 
-      it('should put add/remove for array with simple items', () => {
+      it('should put add/remove for array with primitive items', () => {
         expectFormat([1, 2, 3], [1, 2, 4], [removeOp('/2'), addOp('/2', 4)]);
       });
 
@@ -442,7 +442,7 @@ describe('DiffPatcher', () => {
         expectFormat([1, 2, 3], [1], [removeOp('/2'), removeOp('/1')]);
       });
 
-      describe('patcher with compartor', () => {
+      describe('patcher with comparator', () => {
         before(() => {
           instance = new DiffPatcher({
             objectHash(obj) {
@@ -453,27 +453,34 @@ describe('DiffPatcher', () => {
           });
         });
 
-        let objId = id => ({
+        const anObjectWithId = id => ({
           id,
         });
 
         it('should remove higher level first', () => {
-          let oldObject = [
-            objId('removed'),
+          const before = [
+            anObjectWithId('removed'),
             {
               id: 'remaining_outer',
-              items: [objId('removed_inner'), objId('remaining_inner')],
+              items: [
+                anObjectWithId('removed_inner'),
+                anObjectWithId('remaining_inner'),
+              ],
             },
           ];
-          let newObject = [
+          const after = [
             {
               id: 'remaining_outer',
-              items: [objId('remaining_inner')],
+              items: [anObjectWithId('remaining_inner')],
             },
           ];
-          let expected = [removeOp('/0'), removeOp('/0/items/0')];
-          expectFormat(oldObject, newObject, expected);
+          const expectedDiff = [removeOp('/0'), removeOp('/0/items/0')];
+          expectFormat(before, after, expectedDiff);
         });
+      });
+
+      it('should annotate as moved op', () => {
+        expectFormat([1, 2], [2, 1], [{op: 'move', from: '/1', path: '/0'}]);
       });
     });
   });
