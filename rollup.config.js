@@ -1,3 +1,5 @@
+import fs from 'fs';
+import path from 'path';
 import replace from 'rollup-plugin-replace';
 import resolve from 'rollup-plugin-node-resolve';
 import commonjs from 'rollup-plugin-commonjs';
@@ -75,6 +77,7 @@ export default [
         include: ['src/**/*.js', 'src/formatters/*.js'],
         exclude: ['test/**/*.js', 'node_modules/**'],
       }),
+      copySrcFileToDist('index.d.ts'),
     ],
     output: [
       {
@@ -144,3 +147,20 @@ export default [
     },
   },
 ];
+
+function copySrcFileToDist(filename) {
+  let executed = false;
+  return {
+    ongenerate: () => {
+      if (executed) {
+        return;
+      }
+      fs.writeFileSync(
+        path.join(__dirname, 'dist', filename),
+        fs.readFileSync(path.join(__dirname, 'src', filename)),
+      );
+      console.log(`src/${filename} → dist/${filename} (copied)`);
+      executed = true;
+    },
+  };
+}
