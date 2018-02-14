@@ -55,6 +55,15 @@ console.log(delta);
 jsondiffpatch.console.log(delta);
 ```
 
+JSON PATCH (RFC 6902)
+-------
+``` javascript
+var delta = jsondiffpatch.diff(left, right);
+var output = jsondiffpatch.formatters.jsonpatch.format(delta);
+console.log(delta);
+```
+*Don't use with `textDiff` as it isn't suppported*
+
 Create one
 ----------
 
