@@ -8,7 +8,7 @@ import chai from 'chai';
 let expect = chai.expect;
 
 describe('jsondiffpatch', () => {
-  before(() => { });
+  before(() => {});
   it('has a diff method', () => {
     expect(jsondiffpatch.diff).to.be.a('function');
   });
@@ -83,11 +83,11 @@ describe('DiffPatcher', () => {
             example.right
           )}`;
         describe(name, () => {
-          before(function () {
+          before(function() {
             this.instance = new DiffPatcher(example.options);
           });
           if (example.error) {
-            it(`diff should fail with: ${example.error}`, function () {
+            it(`diff should fail with: ${example.error}`, function() {
               let instance = this.instance;
               expect(() => {
                 instance.diff(example.left, example.right);
@@ -95,23 +95,23 @@ describe('DiffPatcher', () => {
             });
             return;
           }
-          it('can diff', function () {
+          it('can diff', function() {
             let delta = this.instance.diff(example.left, example.right);
             expect(delta).to.deep.equal(example.delta);
           });
-          it('can diff backwards', function () {
+          it('can diff backwards', function() {
             let reverse = this.instance.diff(example.right, example.left);
             expect(reverse).to.deep.equal(example.reverse);
           });
           if (!example.noPatch) {
-            it('can patch', function () {
+            it('can patch', function() {
               let right = this.instance.patch(
                 jsondiffpatch.clone(example.left),
                 example.delta
               );
               expect(right).to.deep.equal(example.right);
             });
-            it('can reverse delta', function () {
+            it('can reverse delta', function() {
               let reverse = this.instance.reverse(example.delta);
               if (example.exactReverse !== false) {
                 expect(reverse).to.deep.equal(example.reverse);
@@ -134,7 +134,7 @@ describe('DiffPatcher', () => {
                 ).to.deep.equal(example.left);
               }
             });
-            it('can unpatch', function () {
+            it('can unpatch', function() {
               let left = this.instance.unpatch(
                 jsondiffpatch.clone(example.right),
                 example.delta
@@ -177,12 +177,12 @@ describe('DiffPatcher', () => {
   });
 
   describe('using cloneDiffValues', () => {
-    before(function () {
+    before(function() {
       this.instance = new DiffPatcher({
         cloneDiffValues: true,
       });
     });
-    it("ensures deltas don't reference original objects", function () {
+    it("ensures deltas don't reference original objects", function() {
       let left = {
         oldProp: {
           value: 3,
@@ -223,12 +223,12 @@ describe('DiffPatcher', () => {
   });
 
   describe('plugins', () => {
-    before(function () {
+    before(function() {
       this.instance = new DiffPatcher();
     });
 
     describe('getting pipe filter list', () => {
-      it('returns builtin filters', function () {
+      it('returns builtin filters', function() {
         expect(this.instance.processor.pipes.diff.list()).to.deep.equal([
           'collectChildren',
           'trivial',
@@ -243,7 +243,7 @@ describe('DiffPatcher', () => {
     describe('supporting numeric deltas', () => {
       let NUMERIC_DIFFERENCE = -8;
 
-      it('diff', function () {
+      it('diff', function() {
         // a constant to identify the custom delta type
         function numericDiffFilter(context) {
           if (
@@ -270,7 +270,7 @@ describe('DiffPatcher', () => {
         expect(delta).to.deep.equal({ population: [0, 3, NUMERIC_DIFFERENCE] });
       });
 
-      it('patch', function () {
+      it('patch', function() {
         function numericPatchFilter(context) {
           if (
             context.delta &&
@@ -291,7 +291,7 @@ describe('DiffPatcher', () => {
         expect(right).to.deep.equal({ population: 603 });
       });
 
-      it('unpatch', function () {
+      it('unpatch', function() {
         function numericReverseFilter(context) {
           if (context.nested) {
             return;
@@ -324,7 +324,7 @@ describe('DiffPatcher', () => {
     });
 
     describe('removing and replacing pipe filters', () => {
-      it('removes specified filter', function () {
+      it('removes specified filter', function() {
         expect(this.instance.processor.pipes.diff.list()).to.deep.equal([
           'collectChildren',
           'numeric',
@@ -345,7 +345,7 @@ describe('DiffPatcher', () => {
         ]);
       });
 
-      it('replaces specified filter', function () {
+      it('replaces specified filter', function() {
         function fooFilter(context) {
           context.setResult(['foo']).exit();
         }
@@ -480,7 +480,7 @@ describe('DiffPatcher', () => {
       });
 
       it('should annotate as moved op', () => {
-        expectFormat([1, 2], [2, 1], [{ op: 'move', from: '/1', path: '/0' }]);
+        expectFormat([1, 2], [2, 1], [{op: 'move', from: '/1', path: '/0'}]);
       });
     });
   });

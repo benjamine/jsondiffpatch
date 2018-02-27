@@ -6,7 +6,7 @@ var fs = require('fs');
 
 var fileLeft = process.argv[2], fileRight = process.argv[3];
 
-if (!fileLeft || !fileRight) {
+if (!fileLeft || !fileRight){
     console.log('\n  USAGE: jsondiffpatch left.json right.json');
     return;
 }
