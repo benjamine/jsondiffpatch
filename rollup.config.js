@@ -4,7 +4,7 @@ import {
   createModuleBuild,
   createTestBuild,
   createBrowserTestBuild
-} from './rollupConfigFactory';
+} from './rollup-config-factory';
 
 var outputDir = "build";
 var includeTestCoverage = true;
