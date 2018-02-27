@@ -18,7 +18,7 @@
     "jsondiffpatch": "./bin/jsondiffpatch"
   },
   "scripts": {
-    "build": "rollup -c",
+    "build": "rollup -c rollup-dev.config.js",
     "test-browser": "gulp test-browser",
     "bump": "gulp bump",
     "test": "nyc mocha",
