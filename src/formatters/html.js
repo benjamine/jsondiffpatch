@@ -28,11 +28,11 @@ class HtmlFormatter extends BaseFormatter {
         pieceIndex < piecesLength;
         pieceIndex++
       ) {
-        /* global unescape */
+        /* global decodeURI */
         let piece = pieces[pieceIndex];
         context.out(
           `<span class="jsondiffpatch-textdiff-${piece.type}">${htmlEscape(
-            unescape(piece.text)
+            decodeURI(piece.text)
           )}</span>`
         );
       }
