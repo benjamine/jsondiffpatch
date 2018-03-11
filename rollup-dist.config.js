@@ -2,8 +2,7 @@ import {
   createBrowserUmdBuildConfig,
   createSlimBrowserUmdBuildConfig,
   createModuleBuild,
-  createTestBuild,
-  createBrowserTestBuild
+  createBrowserTestBuild,
 } from './rollup-config-factory';
 
 export default [

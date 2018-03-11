@@ -1,9 +1,9 @@
 (function demo() {
-
-  var getExampleJson = function() {
-    var data = {
+  const getExampleJson = function() {
+    const data = {
       name: 'South America',
-      summary: 'South America (Spanish: América del Sur, Sudamérica or  \n' +
+      summary:
+        'South America (Spanish: América del Sur, Sudamérica or  \n' +
         'Suramérica; Portuguese: América do Sul; Quechua and Aymara:  \n' +
         'Urin Awya Yala; Guarani: Ñembyamérika; Dutch: Zuid-Amerika;  \n' +
         'French: Amérique du Sud) is a continent situated in the  \n' +
@@ -34,84 +34,113 @@
       timezone: [-4, -2],
       demographics: {
         population: 385742554,
-        largestCities: ['São Paulo', 'Buenos Aires', 'Rio de Janeiro', 'Lima', 'Bogotá']
+        largestCities: [
+          'São Paulo',
+          'Buenos Aires',
+          'Rio de Janeiro',
+          'Lima',
+          'Bogotá',
+        ],
       },
-      languages: ['spanish', 'portuguese', 'english', 'dutch',
-        'french', 'quechua', 'guaraní', 'aimara', 'mapudungun'
+      languages: [
+        'spanish',
+        'portuguese',
+        'english',
+        'dutch',
+        'french',
+        'quechua',
+        'guaraní',
+        'aimara',
+        'mapudungun',
       ],
-      countries: [{
-        name: 'Argentina',
-        capital: 'Buenos Aires',
-        independence: new Date(1816, 6, 9),
-        unasur: true
-      }, {
-        name: 'Bolivia',
-        capital: 'La Paz',
-        independence: new Date(1825, 7, 6),
-        unasur: true
-      }, {
-        name: 'Brazil',
-        capital: 'Brasilia',
-        independence: new Date(1822, 8, 7),
-        unasur: true
-      }, {
-        name: 'Chile',
-        capital: 'Santiago',
-        independence: new Date(1818, 1, 12),
-        unasur: true
-      }, {
-        name: 'Colombia',
-        capital: 'Bogotá',
-        independence: new Date(1810, 6, 20),
-        unasur: true
-      }, {
-        name: 'Ecuador',
-        capital: 'Quito',
-        independence: new Date(1809, 7, 10),
-        unasur: true
-      }, {
-        name: 'Guyana',
-        capital: 'Georgetown',
-        independence: new Date(1966, 4, 26),
-        unasur: true
-      }, {
-        name: 'Paraguay',
-        capital: 'Asunción',
-        independence: new Date(1811, 4, 14),
-        unasur: true
-      }, {
-        name: 'Peru',
-        capital: 'Lima',
-        independence: new Date(1821, 6, 28),
-        unasur: true
-      }, {
-        name: 'Suriname',
-        capital: 'Paramaribo',
-        independence: new Date(1975, 10, 25),
-        unasur: true
-      }, {
-        name: 'Uruguay',
-        capital: 'Montevideo',
-        independence: new Date(1825, 7, 25),
-        unasur: true
-      }, {
-        name: 'Venezuela',
-        capital: 'Caracas',
-        independence: new Date(1811, 6, 5),
-        unasur: true
-      }]
+      countries: [
+        {
+          name: 'Argentina',
+          capital: 'Buenos Aires',
+          independence: new Date(1816, 6, 9),
+          unasur: true,
+        },
+        {
+          name: 'Bolivia',
+          capital: 'La Paz',
+          independence: new Date(1825, 7, 6),
+          unasur: true,
+        },
+        {
+          name: 'Brazil',
+          capital: 'Brasilia',
+          independence: new Date(1822, 8, 7),
+          unasur: true,
+        },
+        {
+          name: 'Chile',
+          capital: 'Santiago',
+          independence: new Date(1818, 1, 12),
+          unasur: true,
+        },
+        {
+          name: 'Colombia',
+          capital: 'Bogotá',
+          independence: new Date(1810, 6, 20),
+          unasur: true,
+        },
+        {
+          name: 'Ecuador',
+          capital: 'Quito',
+          independence: new Date(1809, 7, 10),
+          unasur: true,
+        },
+        {
+          name: 'Guyana',
+          capital: 'Georgetown',
+          independence: new Date(1966, 4, 26),
+          unasur: true,
+        },
+        {
+          name: 'Paraguay',
+          capital: 'Asunción',
+          independence: new Date(1811, 4, 14),
+          unasur: true,
+        },
+        {
+          name: 'Peru',
+          capital: 'Lima',
+          independence: new Date(1821, 6, 28),
+          unasur: true,
+        },
+        {
+          name: 'Suriname',
+          capital: 'Paramaribo',
+          independence: new Date(1975, 10, 25),
+          unasur: true,
+        },
+        {
+          name: 'Uruguay',
+          capital: 'Montevideo',
+          independence: new Date(1825, 7, 25),
+          unasur: true,
+        },
+        {
+          name: 'Venezuela',
+          capital: 'Caracas',
+          independence: new Date(1811, 6, 5),
+          unasur: true,
+        },
+      ],
     };
 
-    var json = [JSON.stringify(data, null, 2)];
+    let json = [JSON.stringify(data, null, 2)];
 
-    data.summary = data.summary.replace('Brazil', 'Brasil').replace('also known as', 'a.k.a.');
+    data.summary = data.summary
+      .replace('Brazil', 'Brasil')
+      .replace('also known as', 'a.k.a.');
     data.languages[2] = 'inglés';
     data.countries.pop();
     data.countries.pop();
     data.countries[0].capital = 'Rawson';
     data.countries.push({
       name: 'Antártida',
-      unasur: false
+      unasur: false,
     });
 
     // modify and move
@@ -129,9 +158,8 @@
     return json;
   };
 
-
   /* global jsondiffpatch */
-  var instance = jsondiffpatch.create({
+  const instance = jsondiffpatch.create({
     objectHash: function(obj, index) {
       if (typeof obj._id !== 'undefined') {
         return obj._id;
@@ -143,10 +171,10 @@
         return obj.name;
       }
       return '$$index:' + index;
-    }
+    },
   });
 
-  var dom = {
+  const dom = {
     addClass: function(el, className) {
       if (el.classList) {
         el.classList.add(className);
@@ -158,8 +186,13 @@
       if (el.classList) {
         el.classList.remove(className);
       } else {
-        el.className = el.className.replace(new RegExp('(^|\\b)' +
-          className.split(' ').join('|') + '(\\b|$)', 'gi'), ' ');
+        el.className = el.className.replace(
+          new RegExp(
+            '(^|\\b)' + className.split(' ').join('|') + '(\\b|$)',
+            'gi'
+          ),
+          ' '
+        );
       }
     },
     text: function(el, text) {
@@ -194,15 +227,17 @@
       }
     },
     getJson: function(url, callback) {
-      var request = new XMLHttpRequest();
+      /* global XMLHttpRequest */
+      let request = new XMLHttpRequest();
       request.open('GET', url, true);
       request.onreadystatechange = function() {
         if (this.readyState === 4) {
-          var data;
+          let data;
           try {
             data = JSON.parse(this.responseText, jsondiffpatch.dateReviver);
           } catch (parseError) {
-            callback('parse error: ' + parseError);
+            // eslint-disable-next-line standard/no-callback-literal
+            return callback('parse error: ' + parseError);
           }
           if (this.status >= 200 && this.status < 400) {
             callback(null, data);
@@ -215,24 +250,24 @@
       request = null;
     },
     runScriptTags: function(el) {
-      var scripts = el.querySelectorAll('script');
-      for (var i = 0; i < scripts.length; i++) {
-        var s = scripts[i];
-        /* jshint evil: true */
+      let scripts = el.querySelectorAll('script');
+      for (let i = 0; i < scripts.length; i++) {
+        let s = scripts[i];
+        // eslint-disable-next-line no-eval
         eval(s.innerHTML);
       }
-    }
+    },
   };
 
-  var trim = function(str) {
+  const trim = function(str) {
     return str.replace(/^\s+|\s+$/g, '');
   };
 
-  var JsonArea = function JsonArea(element) {
+  const JsonArea = function JsonArea(element) {
     this.element = element;
     this.container = element.parentNode;
-    var self = this;
-    var prettifyButton = this.container.querySelector('.prettyfy');
+    const self = this;
+    const prettifyButton = this.container.querySelector('.prettyfy');
     if (prettifyButton) {
       dom.on(prettifyButton, 'click', function() {
         self.prettyfy();
@@ -241,7 +276,7 @@
   };
 
   JsonArea.prototype.error = function(err) {
-    var errorElement = this.container.querySelector('.error-message');
+    const errorElement = this.container.querySelector('.error-message');
     if (!err) {
       dom.removeClass(this.container, 'json-error');
       errorElement.innerHTML = '';
@@ -259,13 +294,15 @@
   };
 
   JsonArea.prototype.parse = function() {
-    var txt = trim(this.getValue());
+    const txt = trim(this.getValue());
     try {
       this.error(false);
-      if (/^\d+(.\d+)?(e[\+\-]?\d+)?$/i.test(txt) ||
+      if (
+        /^\d+(.\d+)?(e[+-]?\d+)?$/i.test(txt) ||
         /^(true|false)$/.test(txt) ||
         /^["].*["]$/.test(txt) ||
-        /^[\{\[](.|\n)*[\}\]]$/.test(txt)) {
+        /^[{[](.|\n)*[}\]]$/.test(txt)
+      ) {
         return JSON.parse(txt, jsondiffpatch.dateReviver);
       }
       return this.getValue();
@@ -284,8 +321,9 @@
   };
 
   JsonArea.prototype.prettyfy = function() {
-    var value = this.parse();
-    var prettyJson = typeof value === 'string' ? value : JSON.stringify(value, null, 2);
+    const value = this.parse();
+    const prettyJson =
+      typeof value === 'string' ? value : JSON.stringify(value, null, 2);
     this.setValue(prettyJson);
   };
 
@@ -297,21 +335,21 @@
     this.editor = CodeMirror.fromTextArea(this.element, {
       mode: 'javascript',
       json: true,
-      readOnly: readOnly
+      readOnly: readOnly,
     });
     if (!readOnly) {
       this.editor.on('change', compare);
     }
   };
 
-  var areas = {
+  const areas = {
     left: new JsonArea(document.getElementById('json-input-left')),
     right: new JsonArea(document.getElementById('json-input-right')),
-    delta: new JsonArea(document.getElementById('json-delta'))
+    delta: new JsonArea(document.getElementById('json-delta')),
   };
 
-  var compare = function() {
-    var left, right, error;
+  const compare = function() {
+    let left, right, error;
     document.getElementById('results').style.display = 'none';
     try {
       left = areas.left.parse();
@@ -328,12 +366,12 @@
       areas.delta.setValue('');
       return;
     }
-    var selectedType = getSelectedDeltaType();
-    var visualdiff = document.getElementById('visualdiff');
-    var annotateddiff = document.getElementById('annotateddiff');
-    var jsondifflength = document.getElementById('jsondifflength');
+    const selectedType = getSelectedDeltaType();
+    const visualdiff = document.getElementById('visualdiff');
+    const annotateddiff = document.getElementById('annotateddiff');
+    const jsondifflength = document.getElementById('jsondifflength');
     try {
-      var delta = instance.diff(left, right);
+      const delta = instance.diff(left, right);
 
       if (typeof delta === 'undefined') {
         switch (selectedType) {
@@ -351,18 +389,24 @@
       } else {
         switch (selectedType) {
           case 'visual':
-            visualdiff.innerHTML = jsondiffpatch.formatters.html.format(delta, left);
+            visualdiff.innerHTML = jsondiffpatch.formatters.html.format(
+              delta,
+              left
+            );
             if (!document.getElementById('showunchanged').checked) {
               jsondiffpatch.formatters.html.hideUnchanged();
             }
             dom.runScriptTags(visualdiff);
             break;
           case 'annotated':
-            annotateddiff.innerHTML = jsondiffpatch.formatters.annotated.format(delta);
+            annotateddiff.innerHTML = jsondiffpatch.formatters.annotated.format(
+              delta
+            );
             break;
           case 'json':
             areas.delta.setValue(JSON.stringify(delta, null, 2));
-            jsondifflength.innerHTML = (Math.round(JSON.stringify(delta).length / 102.4) / 10.0) + '';
+            jsondifflength.innerHTML =
+              Math.round(JSON.stringify(delta).length / 102.4) / 10.0 + '';
             break;
         }
       }
@@ -388,7 +432,7 @@
   dom.on(areas.left.element, 'keyup', compare);
   dom.on(areas.right.element, 'keyup', compare);
 
-  var getSelectedDeltaType = function() {
+  const getSelectedDeltaType = function() {
     if (document.getElementById('show-delta-type-visual').checked) {
       return 'visual';
     }
@@ -400,8 +444,8 @@
     }
   };
 
-  var showSelectedDeltaType = function() {
-    var type = getSelectedDeltaType();
+  const showSelectedDeltaType = function() {
+    const type = getSelectedDeltaType();
     document.getElementById('delta-panel-visual').style.display =
       type === 'visual' ? '' : 'none';
     document.getElementById('delta-panel-annotated').style.display =
@@ -411,12 +455,24 @@
     compare();
   };
 
-  dom.on(document.getElementById('show-delta-type-visual'), 'click', showSelectedDeltaType);
-  dom.on(document.getElementById('show-delta-type-annotated'), 'click', showSelectedDeltaType);
-  dom.on(document.getElementById('show-delta-type-json'), 'click', showSelectedDeltaType);
+  dom.on(
+    document.getElementById('show-delta-type-visual'),
+    'click',
+    showSelectedDeltaType
+  );
+  dom.on(
+    document.getElementById('show-delta-type-annotated'),
+    'click',
+    showSelectedDeltaType
+  );
+  dom.on(
+    document.getElementById('show-delta-type-json'),
+    'click',
+    showSelectedDeltaType
+  );
 
   dom.on(document.getElementById('swap'), 'click', function() {
-    var leftValue = areas.left.getValue();
+    let leftValue = areas.left.getValue();
     areas.left.setValue(areas.right.getValue());
     areas.right.setValue(leftValue);
     compare();
@@ -429,17 +485,21 @@
   });
 
   dom.on(document.getElementById('showunchanged'), 'change', function() {
-    jsondiffpatch.formatters.html.showUnchanged(document.getElementById('showunchanged').checked, null, 800);
+    jsondiffpatch.formatters.html.showUnchanged(
+      document.getElementById('showunchanged').checked,
+      null,
+      800
+    );
   });
 
-  dom.ready(function(){
+  dom.ready(function() {
     setTimeout(compare);
   }, 1);
 
-  var load = {};
+  const load = {};
 
-  load.data = function(data) {
-    data = data || {};
+  load.data = function(dataArg) {
+    const data = dataArg || {};
     dom.text(document.getElementById('description'), data.description || '');
     if (data.url && trim(data.url).substr(0, 10) !== 'javascript') {
       document.getElementById('external-link').setAttribute('href', data.url);
@@ -447,18 +507,28 @@
     } else {
       document.getElementById('external-link').style.display = 'none';
     }
-    var leftValue = data.left ? (data.left.content || data.left) : '';
+    const leftValue = data.left ? data.left.content || data.left : '';
     areas.left.setValue(leftValue);
-    var rightValue = data.right ? (data.right.content || data.right) : '';
+    const rightValue = data.right ? data.right.content || data.right : '';
     areas.right.setValue(rightValue);
 
-    dom.text(document.getElementById('json-panel-left').querySelector('h2'), (data.left && data.left.name) || 'left.json');
-    dom.text(document.getElementById('json-panel-right').querySelector('h2'), (data.right && data.right.name) || 'right.json');
+    dom.text(
+      document.getElementById('json-panel-left').querySelector('h2'),
+      (data.left && data.left.name) || 'left.json'
+    );
+    dom.text(
+      document.getElementById('json-panel-right').querySelector('h2'),
+      (data.right && data.right.name) || 'right.json'
+    );
 
-    document.getElementById('json-panel-left').querySelector('h2').setAttribute(
-      'title', (data.left && data.left.fullname) || '');
-    document.getElementById('json-panel-right').querySelector('h2').setAttribute(
-      'title', (data.right && data.right.fullname) || '');
+    document
+      .getElementById('json-panel-left')
+      .querySelector('h2')
+      .setAttribute('title', (data.left && data.left.fullname) || '');
+    document
+      .getElementById('json-panel-right')
+      .querySelector('h2')
+      .setAttribute('title', (data.right && data.right.fullname) || '');
 
     if (data.error) {
       areas.left.setValue('ERROR LOADING: ' + data.error);
@@ -469,54 +539,53 @@
   load.gist = function(id) {
     dom.getJson('https://api.github.com/gists/' + id, function(error, data) {
       if (error) {
-        var message = error + ((data && data.message) ? data.message : '');
+        let message = error + (data && data.message ? data.message : '');
         load.data({
-          error: message
+          error: message,
         });
         return;
       }
-      var filenames = [];
-      for (var filename in data.files) {
-        var file = data.files[filename];
+      let filenames = [];
+      for (let filename in data.files) {
+        let file = data.files[filename];
         if (file.language === 'JSON') {
           filenames.push(filename);
         }
       }
       filenames.sort();
-      var files = [
-        data.files[filenames[0]],
-        data.files[filenames[1]]
-      ];
-      /*jshint camelcase: false */
+      let files = [data.files[filenames[0]], data.files[filenames[1]]];
+      /* jshint camelcase: false */
       load.data({
         url: data.html_url,
         description: data.description,
         left: {
           name: files[0].filename,
-          content: files[0].content
+          content: files[0].content,
         },
         right: {
           name: files[1].filename,
-          content: files[1].content
-        }
+          content: files[1].content,
+        },
       });
     });
   };
 
-  load.leftright = function(description, leftValue, rightValue) {
+  load.leftright = function(descriptionArg, leftValueArg, rightValueArg) {
     try {
-      description = decodeURIComponent(description || '');
-      leftValue = decodeURIComponent(leftValue);
-      rightValue = decodeURIComponent(rightValue);
-      var urlmatch = /https?:\/\/.*\/([^\/]+\.json)(?:[\?#].*)?/;
-      var dataLoaded = {
+      const description = decodeURIComponent(descriptionArg || '');
+      const leftValue = decodeURIComponent(leftValueArg);
+      const rightValue = decodeURIComponent(rightValueArg);
+      const urlmatch = /https?:\/\/.*\/([^/]+\.json)(?:[?#].*)?/;
+      const dataLoaded = {
         description: description,
         left: {},
-        right: {}
+        right: {},
       };
-      var loadIfReady = function() {
-        if (typeof dataLoaded.left.content !== 'undefined' &&
-          typeof dataLoaded.right.content !== 'undefined') {
+      const loadIfReady = function() {
+        if (
+          typeof dataLoaded.left.content !== 'undefined' &&
+          typeof dataLoaded.right.content !== 'undefined'
+        ) {
           load.data(dataLoaded);
         }
       };
@@ -525,7 +594,8 @@
         dataLoaded.left.fullname = leftValue;
         dom.getJson(leftValue, function(error, data) {
           if (error) {
-            dataLoaded.left.content = error + ((data && data.message) ? data.message : '');
+            dataLoaded.left.content =
+              error + (data && data.message ? data.message : '');
           } else {
             dataLoaded.left.content = JSON.stringify(data, null, 2);
           }
@@ -539,7 +609,8 @@
         dataLoaded.right.fullname = rightValue;
         dom.getJson(rightValue, function(error, data) {
           if (error) {
-            dataLoaded.right.content = error + ((data && data.message) ? data.message : '');
+            dataLoaded.right.content =
+              error + (data && data.message ? data.message : '');
           } else {
             dataLoaded.right.content = JSON.stringify(data, null, 2);
           }
@@ -551,82 +622,98 @@
       loadIfReady();
     } catch (err) {
       load({
-        error: err
+        error: err,
       });
     }
   };
 
   load.key = function(key) {
-    var matchers = {
+    const matchers = {
+      // eslint-disable-next-line max-len
       gist: /^(?:https?:\/\/)?(?:gist\.github\.com\/)?(?:[\w0-9\-a-f]+\/)?([0-9a-f]+)$/i,
       leftright: /^(?:desc=(.*)?&)?left=(.*)&right=(.*)&?$/i,
     };
-    for (var loader in matchers) {
-      var match = matchers[loader].exec(key);
+    for (let loader in matchers) {
+      const match = matchers[loader].exec(key);
       if (match) {
         return load[loader].apply(load, match.slice(1));
       }
     }
     load.data({
-      error: 'unsupported source: ' + key
+      error: 'unsupported source: ' + key,
     });
   };
 
-  var urlQuery = /^[^?]*\?([^\#]+)/.exec(document.location.href);
+  const urlQuery = /^[^?]*\?([^#]+)/.exec(document.location.href);
   if (urlQuery) {
     load.key(urlQuery[1]);
   } else {
-    var exampleJson = getExampleJson();
+    const exampleJson = getExampleJson();
     load.data({
       left: exampleJson[0],
-      right: exampleJson[1]
+      right: exampleJson[1],
     });
   }
 
   dom.on(document.getElementById('examples'), 'change', function() {
-    var example = trim(this.value);
+    const example = trim(this.value);
     switch (example) {
       case 'text':
-        var exampleJson = getExampleJson();
+        const exampleJson = getExampleJson();
         load.data({
           left: {
             name: 'left.txt',
-            content: JSON.parse(exampleJson[0]).summary
+            content: JSON.parse(exampleJson[0]).summary,
           },
           right: {
             name: 'right.txt',
-            content: JSON.parse(exampleJson[1]).summary
-          }
+            content: JSON.parse(exampleJson[1]).summary,
+          },
         });
         break;
       case 'gist':
         document.location = '?benjamine/9188826';
         break;
       case 'moving':
-        document.location = '?desc=moving%20around&left=' +
-          encodeURIComponent(JSON.stringify([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10])) +
+        document.location =
+          '?desc=moving%20around&left=' +
+          encodeURIComponent(
+            JSON.stringify([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
+          ) +
           '&right=' +
-          encodeURIComponent(JSON.stringify([10, 0, 1, 7, 2, 4, 5, 6, 88, 9, 3]));
+          encodeURIComponent(
+            JSON.stringify([10, 0, 1, 7, 2, 4, 5, 6, 88, 9, 3])
+          );
         break;
       case 'query':
-        document.location = '?desc=encoded%20in%20url&left=' +
-        /* jshint quotmark: false */
-        encodeURIComponent(JSON.stringify({
-          "don't": "abuse",
-          "with": ["large", "urls"]
-        })) +
+        document.location =
+          '?desc=encoded%20in%20url&left=' +
+          /* jshint quotmark: false */
+          encodeURIComponent(
+            JSON.stringify({
+              "don't": 'abuse',
+              with: ['large', 'urls'],
+            })
+          ) +
           '&right=' +
-          encodeURIComponent(JSON.stringify({
-            "don't": "use",
-            "with": [">", 2, "KB urls"]
-          }));
+          encodeURIComponent(
+            JSON.stringify({
+              "don't": 'use',
+              with: ['>', 2, 'KB urls'],
+            })
+          );
         break;
       case 'urls':
-        document.location = '?desc=http%20raw%20file%20urls&left=' +
-          encodeURIComponent('https://rawgithub.com/benjamine/JsonDiffPatch/' +
-            'c83e942971c627f61ef874df3cfdd50a95f1c5a2/package.json') +
+        document.location =
+          '?desc=http%20raw%20file%20urls&left=' +
+          encodeURIComponent(
+            'https://rawgithub.com/benjamine/JsonDiffPatch/' +
+              'c83e942971c627f61ef874df3cfdd50a95f1c5a2/package.json'
+          ) +
           '&right=' +
-          encodeURIComponent('https://rawgithub.com/benjamine/JsonDiffPatch/master/package.json');
+          encodeURIComponent(
+            'https://rawgithub.com/benjamine/JsonDiffPatch/master/package.json'
+          );
         break;
       default:
         document.location = '?';

@@ -5,7 +5,7 @@
 import * as jsondiffpatch from '../build/jsondiffpatch.esm';
 import examples from './examples/diffpatch';
 import chai from 'chai';
-let expect = chai.expect;
+const expect = chai.expect;
 
 describe('jsondiffpatch', () => {
   before(() => {});
@@ -21,7 +21,7 @@ const isArray =
     ? Array.isArray
     : a => typeof a === 'object' && a instanceof Array;
 
-let valueDescription = value => {
+const valueDescription = value => {
   if (value === null) {
     return 'null';
   }
@@ -46,12 +46,12 @@ let valueDescription = value => {
 };
 
 // Object.keys polyfill
-let objectKeys =
+const objectKeys =
   typeof Object.keys === 'function'
     ? obj => Object.keys(obj)
     : obj => {
-      let keys = [];
-      for (let key in obj) {
+      const keys = [];
+      for (const key in obj) {
         if (Object.prototype.hasOwnProperty.call(obj, key)) {
           keys.push(key);
         }
@@ -60,7 +60,7 @@ let objectKeys =
     };
 
 // Array.prototype.forEach polyfill
-let arrayForEach =
+const arrayForEach =
   typeof Array.prototype.forEach === 'function'
     ? (array, fn) => array.forEach(fn)
     : (array, fn) => {
@@ -71,13 +71,13 @@ let arrayForEach =
 
 describe('DiffPatcher', () => {
   arrayForEach(objectKeys(examples), groupName => {
-    let group = examples[groupName];
+    const group = examples[groupName];
     describe(groupName, () => {
       arrayForEach(group, example => {
         if (!example) {
           return;
         }
-        let name =
+        const name =
           example.name ||
           `${valueDescription(example.left)} -> ${valueDescription(
             example.right
@@ -88,7 +88,7 @@ describe('DiffPatcher', () => {
           });
           if (example.error) {
             it(`diff should fail with: ${example.error}`, function() {
-              let instance = this.instance;
+              const instance = this.instance;
               expect(() => {
                 instance.diff(example.left, example.right);
               }).to.throw(example.error);
@@ -96,16 +96,16 @@ describe('DiffPatcher', () => {
             return;
           }
           it('can diff', function() {
-            let delta = this.instance.diff(example.left, example.right);
+            const delta = this.instance.diff(example.left, example.right);
             expect(delta).to.deep.equal(example.delta);
           });
           it('can diff backwards', function() {
-            let reverse = this.instance.diff(example.right, example.left);
+            const reverse = this.instance.diff(example.right, example.left);
             expect(reverse).to.deep.equal(example.reverse);
           });
           if (!example.noPatch) {
             it('can patch', function() {
-              let right = this.instance.patch(
+              const right = this.instance.patch(
                 jsondiffpatch.clone(example.left),
                 example.delta
               );
@@ -135,7 +135,7 @@ describe('DiffPatcher', () => {
               }
             });
             it('can unpatch', function() {
-              let left = this.instance.unpatch(
+              const left = this.instance.unpatch(
                 jsondiffpatch.clone(example.right),
                 example.delta
               );
@@ -149,7 +149,7 @@ describe('DiffPatcher', () => {
 
   describe('.clone', () => {
     it('clones complex objects', () => {
-      let obj = {
+      const obj = {
         name: 'a string',
         nested: {
           attributes: [
@@ -162,14 +162,14 @@ describe('DiffPatcher', () => {
           },
         },
       };
-      let cloned = jsondiffpatch.clone(obj);
+      const cloned = jsondiffpatch.clone(obj);
       expect(cloned).to.deep.equal(obj);
     });
     it('clones RegExp', () => {
-      let obj = {
+      const obj = {
         pattern: /expr/gim,
       };
-      let cloned = jsondiffpatch.clone(obj);
+      const cloned = jsondiffpatch.clone(obj);
       expect(cloned).to.deep.equal({
         pattern: /expr/gim,
       });
@@ -183,17 +183,17 @@ describe('DiffPatcher', () => {
       });
     });
     it("ensures deltas don't reference original objects", function() {
-      let left = {
+      const left = {
         oldProp: {
           value: 3,
         },
       };
-      let right = {
+      const right = {
         newProp: {
           value: 5,
         },
       };
-      let delta = this.instance.diff(left, right);
+      const delta = this.instance.diff(left, right);
       left.oldProp.value = 1;
       right.newProp.value = 8;
       expect(delta).to.deep.equal({
@@ -205,19 +205,19 @@ describe('DiffPatcher', () => {
 
   describe('static shortcuts', () => {
     it('diff', () => {
-      let delta = jsondiffpatch.diff(4, 5);
+      const delta = jsondiffpatch.diff(4, 5);
       expect(delta).to.deep.equal([4, 5]);
     });
     it('patch', () => {
-      let right = jsondiffpatch.patch(4, [4, 5]);
+      const right = jsondiffpatch.patch(4, [4, 5]);
       expect(right).to.eql(5);
     });
     it('unpatch', () => {
-      let left = jsondiffpatch.unpatch(5, [4, 5]);
+      const left = jsondiffpatch.unpatch(5, [4, 5]);
       expect(left).to.eql(4);
     });
     it('reverse', () => {
-      let reverseDelta = jsondiffpatch.reverse([4, 5]);
+      const reverseDelta = jsondiffpatch.reverse([4, 5]);
       expect(reverseDelta).to.deep.equal([5, 4]);
     });
   });
@@ -241,7 +241,7 @@ describe('DiffPatcher', () => {
     });
 
     describe('supporting numeric deltas', () => {
-      let NUMERIC_DIFFERENCE = -8;
+      const NUMERIC_DIFFERENCE = -8;
 
       it('diff', function() {
         // a constant to identify the custom delta type
@@ -263,7 +263,7 @@ describe('DiffPatcher', () => {
         // insert new filter, right before trivial one
         this.instance.processor.pipes.diff.before('trivial', numericDiffFilter);
 
-        let delta = this.instance.diff(
+        const delta = this.instance.diff(
           { population: 400 },
           { population: 403 }
         );
@@ -286,8 +286,8 @@ describe('DiffPatcher', () => {
           numericPatchFilter
         );
 
-        let delta = { population: [0, 3, NUMERIC_DIFFERENCE] };
-        let right = this.instance.patch({ population: 600 }, delta);
+        const delta = { population: [0, 3, NUMERIC_DIFFERENCE] };
+        const right = this.instance.patch({ population: 600 }, delta);
         expect(right).to.deep.equal({ population: 603 });
       });
 
@@ -312,12 +312,12 @@ describe('DiffPatcher', () => {
           numericReverseFilter
         );
 
-        let delta = { population: [0, 3, NUMERIC_DIFFERENCE] };
-        let reverseDelta = this.instance.reverse(delta);
+        const delta = { population: [0, 3, NUMERIC_DIFFERENCE] };
+        const reverseDelta = this.instance.reverse(delta);
         expect(reverseDelta).to.deep.equal({
           population: [0, -3, NUMERIC_DIFFERENCE],
         });
-        let right = { population: 703 };
+        const right = { population: 703 };
         this.instance.unpatch(right, delta);
         expect(right).to.deep.equal({ population: 700 });
       });
@@ -480,10 +480,10 @@ describe('DiffPatcher', () => {
       });
 
       it('should annotate as moved op', () => {
-        expectFormat([1, 2], [2, 1], [{op: 'move', from: '/1', path: '/0'}]);
+        expectFormat([1, 2], [2, 1], [{ op: 'move', from: '/1', path: '/0' }]);
       });
     });
-    
+
     describe('html', () => {
       let instance;
       let formatter;
@@ -499,85 +499,120 @@ describe('DiffPatcher', () => {
         expect(format).to.be.eql(expected);
       };
 
-      const expectedHtml = (expectedDiff) => {
-        let html = []
+      const expectedHtml = expectedDiff => {
+        const html = [];
         arrayForEach(expectedDiff, function(diff) {
           html.push('<li>');
           html.push('<div class="jsondiffpatch-textdiff-location">');
-          html.push(`<span class="jsondiffpatch-textdiff-line-number">${diff.start}</span>`);
-          html.push(`<span class="jsondiffpatch-textdiff-char">${diff.length}</span>`);
+          html.push(
+            `<span class="jsondiffpatch-textdiff-line-number">${
+              diff.start
+            }</span>`
+          );
+          html.push(
+            `<span class="jsondiffpatch-textdiff-char">${diff.length}</span>`
+          );
           html.push('</div>');
           html.push('<div class="jsondiffpatch-textdiff-line">');
 
           arrayForEach(diff.data, function(data) {
-            html.push(`<span class="jsondiffpatch-textdiff-${data.type}">${data.text}</span>`);
+            html.push(
+              `<span class="jsondiffpatch-textdiff-${data.type}">${
+                data.text
+              }</span>`
+            );
           });
 
           html.push('</div>');
           html.push('</li>');
         });
-        return `<div class="jsondiffpatch-delta jsondiffpatch-textdiff"><div class="jsondiffpatch-value"><ul class="jsondiffpatch-textdiff">${html.join('')}</ul></div></div>`;
-      }
+        return (
+          `<div class="jsondiffpatch-delta jsondiffpatch-textdiff">` +
+          `<div class="jsondiffpatch-value">` +
+          `<ul class="jsondiffpatch-textdiff">` +
+          `${html.join('')}</ul></div></div>`
+        );
+      };
 
       it('should format Chinese', () => {
         const before = '喵星人最可爱最可爱最可爱喵星人最可爱最可爱最可爱';
         const after = '汪星人最可爱最可爱最可爱喵星人meow最可爱最可爱最可爱';
-        const expectedDiff = [{
-          start: 1,
-          length: 17,
-          data: [{
-            type: 'deleted',
-            text: '喵'
-          }, {
-            type: 'added',
-            text: '汪'
-          }, {
-            type: 'context',
-            text: '星人最可爱最可爱最可爱喵星人最可'
-          }]
-        }, {
-          start: 8,
-          length: 16,
-          data: [{
-            type: 'context',
-            text: '可爱最可爱喵星人'
-          }, {
-            type: 'added',
-            text: 'meow'
-          }, {
-            type: 'context',
-            text: '最可爱最可爱最可'
-          }]
-        }];
+        const expectedDiff = [
+          {
+            start: 1,
+            length: 17,
+            data: [
+              {
+                type: 'deleted',
+                text: '喵',
+              },
+              {
+                type: 'added',
+                text: '汪',
+              },
+              {
+                type: 'context',
+                text: '星人最可爱最可爱最可爱喵星人最可',
+              },
+            ],
+          },
+          {
+            start: 8,
+            length: 16,
+            data: [
+              {
+                type: 'context',
+                text: '可爱最可爱喵星人',
+              },
+              {
+                type: 'added',
+                text: 'meow',
+              },
+              {
+                type: 'context',
+                text: '最可爱最可爱最可',
+              },
+            ],
+          },
+        ];
         expectFormat(before, after, expectedHtml(expectedDiff));
       });
 
       it('should format Japanese', () => {
         const before = '猫が可愛いです猫が可愛いです';
         const after = '猫がmeow可愛いですいぬ可愛いです';
-        const expectedDiff = [{
-          start: 1,
-          length: 13,
-          data: [{
-            type: 'context',
-            text: '猫が'
-          }, {
-            type: 'added',
-            text: 'meow'
-          }, {
-            type: 'context',
-            text: '可愛いです'
-          }, {
-            type: 'deleted',
-            text: '猫が'
-          }, {
-            type: 'added',
-            text: 'いぬ'
-          }, {
-            type: 'context',
-            text: '可愛いで'
-          }]
-        }];
+        const expectedDiff = [
+          {
+            start: 1,
+            length: 13,
+            data: [
+              {
+                type: 'context',
+                text: '猫が',
+              },
+              {
+                type: 'added',
+                text: 'meow',
+              },
+              {
+                type: 'context',
+                text: '可愛いです',
+              },
+              {
+                type: 'deleted',
+                text: '猫が',
+              },
+              {
+                type: 'added',
+                text: 'いぬ',
+              },
+              {
+                type: 'context',
+                text: '可愛いで',
+              },
+            ],
+          },
+        ];
         expectFormat(before, after, expectedHtml(expectedDiff));
       });
     });

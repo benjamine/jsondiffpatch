@@ -1,13 +1,11 @@
 import {
-  createBrowserUmdBuildConfig,
-  createSlimBrowserUmdBuildConfig,
   createModuleBuild,
   createTestBuild,
-  createBrowserTestBuild
+  createBrowserTestBuild,
 } from './rollup-config-factory';
 
-var outputDir = "build";
-var includeTestCoverage = true;
+let outputDir = 'build';
+let includeTestCoverage = true;
 
 export default [
   createModuleBuild(outputDir, includeTestCoverage),

@@ -1,6 +1,6 @@
-let examples = {};
+const examples = {};
 
-let exampleDate = () => new Date(2020, 10, 30, 15, 10, 3);
+const exampleDate = () => new Date(2020, 10, 30, 15, 10, 3);
 
 /* jshint camelcase: false */
 /* jshint multistr: true */
@@ -517,10 +517,10 @@ examples.atomicValues = [
   0,
 ];
 
-let shortText = `Madre,
+const shortText = `Madre,
 cuando yo sea grande
 quisiera hacer versos`;
-let largeText = `-Madre,
+const largeText = `-Madre,
 cuando yo sea grande
 seré marinero.
 

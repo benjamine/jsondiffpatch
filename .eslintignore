@@ -3,5 +3,4 @@ node_modules
 build
 .git
 coverage
-flow-typed
 dist

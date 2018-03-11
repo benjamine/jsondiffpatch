@@ -21,8 +21,10 @@
     "build": "rollup -c",
     "build-dist": "rollup -c rollup-dist.config.js",
     "test-browser": "gulp test-browser",
+    "lint": "eslint .",
     "bump": "gulp bump",
     "test": "nyc mocha",
+    "watch": "nodemon --exec \"mocha\"",
     "prepublish": "npm run build && npm run build-dist",
     "cover-report": "open coverage/lcov-report/index.html",
     "cover-publish": "nyc mocha && codeclimate < coverage/lcov.info"
@@ -62,6 +64,7 @@
     "eslint-plugin-standard": "^3.0.1",
     "istanbul": "^0.4.5",
     "mocha": "^5.0.0",
+    "nodemon": "^1.17.1",
     "nyc": "^11.4.1",
     "prettier": "^1.10.2",
     "rollup": "^0.54.1",

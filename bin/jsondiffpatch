@@ -1,18 +1,19 @@
 #!/usr/bin/env node
 
-var jsondiffpatch = require('../build/jsondiffpatch.cjs');
+const jsondiffpatch = require('../build/jsondiffpatch.cjs');
 
-var fs = require('fs');
+const fs = require('fs');
 
-var fileLeft = process.argv[2], fileRight = process.argv[3];
+const fileLeft = process.argv[2];
+const fileRight = process.argv[3];
 
-if (!fileLeft || !fileRight){
-    console.log('\n  USAGE: jsondiffpatch left.json right.json');
-    return;
+if (!fileLeft || !fileRight) {
+  console.log('\n  USAGE: jsondiffpatch left.json right.json');
+  return;
 }
 
-var left = JSON.parse(fs.readFileSync(fileLeft));
-var right = JSON.parse(fs.readFileSync(fileRight));
+const left = JSON.parse(fs.readFileSync(fileLeft));
+const right = JSON.parse(fs.readFileSync(fileRight));
 
-var delta = jsondiffpatch.diff(left, right);
+const delta = jsondiffpatch.diff(left, right);
 jsondiffpatch.console.log(delta);
