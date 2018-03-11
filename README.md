@@ -228,10 +228,10 @@ Visual Diff
 <!DOCTYPE html>
 <html>
     <head>
-        <script type="text/javascript" src="public/build/jsondiffpatch.min.js"></script>
-        <script type="text/javascript" src="public/build/jsondiffpatch-formatters.min.js"></script>
-        <link rel="stylesheet" href="public/formatters-styles/html.css" type="text/css" />
-        <link rel="stylesheet" href="public/formatters-styles/annotated.css" type="text/css" />
+        <script type='text/javascript' src="https://cdn.jsdelivr.net/npm/jsondiffpatch/dist/jsondiffpatch.umd.min.js"></script>
+        <link rel="stylesheet" href="./style.css" type="text/css" />
+        <link rel="stylesheet" href="../formatters-styles/html.css" type="text/css" />
+        <link rel="stylesheet" href="../formatters-styles/annotated.css" type="text/css" />
     </head>
     <body>
         <div id="visual"></div>
@@ -269,7 +269,7 @@ npm install -g jsondiffpatch
 jsondiffpatch ./demo/left.json ./demo/right.json
 ```
 
-![console_demo!](public/demo/consoledemo.png)
+![console_demo!](docs/demo/consoledemo.png)
 
 Plugins
 -------
