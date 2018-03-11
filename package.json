@@ -19,10 +19,11 @@
   },
   "scripts": {
     "build": "rollup -c",
+    "build-dist": "rollup -c rollup-dist.config.js",
     "test-browser": "gulp test-browser",
     "bump": "gulp bump",
     "test": "nyc mocha",
-    "prepublish": "rollup -c",
+    "prepublish": "npm run build && npm run build-dist",
     "cover-report": "open coverage/lcov-report/index.html",
     "cover-publish": "nyc mocha && codeclimate < coverage/lcov.info"
   },

@@ -13,4 +13,5 @@ ratings:
   - src/**/*.js
   - test/**/*.js
 exclude_paths:
+- build/**/*
 - dist/**/*
