@@ -1,5 +1,6 @@
 import fs from 'fs';
 import path from 'path';
+import mkdirp from 'mkdirp';
 import replace from 'rollup-plugin-replace';
 import resolve from 'rollup-plugin-node-resolve';
 import commonjs from 'rollup-plugin-commonjs';
@@ -96,6 +97,8 @@ export function createModuleBuild(dirName = 'dist', includeCoverage = false) {
   }
   if (dirName === 'dist') {
     plugins.push(copySrcFileToDist('index.d.ts'));
+    plugins.push(copyDocsFileToDist('formatters-styles/annotated.css'));
+    plugins.push(copyDocsFileToDist('formatters-styles/html.css'));
   }
 
   return {
@@ -209,19 +212,26 @@ export const createBrowserTestBuild = (
   };
 };
 
-function copySrcFileToDist(filename) {
-  let executed = false;
-  return {
-    ongenerate: () => {
-      if (executed) {
-        return;
-      }
-      fs.writeFileSync(
-        path.join(__dirname, 'dist', filename),
-        fs.readFileSync(path.join(__dirname, 'src', filename))
-      );
-      console.log(`src/${filename} → dist/${filename} (copied)`);
-      executed = true;
-    },
+const copySrcFileToDist = copyFromFolderToDist('src');
+const copyDocsFileToDist = copyFromFolderToDist('docs');
+
+function copyFromFolderToDist(folder) {
+  return function(filename) {
+    let executed = false;
+    return {
+      ongenerate: () => {
+        if (executed) {
+          return;
+        }
+        const distFilename = path.join(__dirname, 'dist', filename);
+        mkdirp(path.dirname(distFilename));
+        fs.writeFileSync(
+          distFilename,
+          fs.readFileSync(path.join(__dirname, folder, filename))
+        );
+        console.log(`${folder}/${filename} → dist/${filename} (copied)`);
+        executed = true;
+      },
+    };
   };
 }
