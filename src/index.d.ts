@@ -49,6 +49,7 @@ export class DiffPatcher {
         annotated: Formatter;
         console: Formatter;
         html: Formatter;
+        jsonpatch: Formatter;
     };
     patch: (left: any, delta: Delta) => any;
     reverse: (delta: Delta) => Delta | undefined;
