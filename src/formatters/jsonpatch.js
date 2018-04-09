@@ -140,16 +140,16 @@ const partition = (arr, pred) => {
 
 const partitionRemovedOps = jsonFormattedDiff => {
   const isRemoveOp = ({op}) => op === 'remove';
-  const removeOpsOtherOps = partition(
+  return partition(
     jsonFormattedDiff,
     isRemoveOp
   );
-  return removeOpsOtherOps;
 };
 
 const reorderOps = jsonFormattedDiff => {
-  const [removeOps, otherOps] = partitionRemovedOps(jsonFormattedDiff);
-
+  const removeOpsOtherOps = partitionRemovedOps(jsonFormattedDiff);
+  const removeOps = removeOpsOtherOps[0];
+  const otherOps = removeOpsOtherOps[1];
   const removeOpsReverse = opsByDescendingOrder(removeOps);
   return removeOpsReverse.concat(otherOps);
 };

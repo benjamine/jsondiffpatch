@@ -55,13 +55,7 @@ class Pipe {
   }
 
   list() {
-    let names = [];
-
-    for (let filter of this.filters) {
-      names.push(filter.filterName);
-    }
-
-    return names;
+    return this.filters.map(f => f.filterName);
   }
 
   after(filterName) {
