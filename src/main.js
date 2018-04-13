@@ -7,6 +7,7 @@ export {
   unpatch,
   reverse,
   clone,
+  dateReviver
 } from './core';
 
 // Export all formatters
