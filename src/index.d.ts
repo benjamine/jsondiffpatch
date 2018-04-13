@@ -47,7 +47,7 @@ export class DiffPatcher {
     diff: (left: any, right: any) => Delta | undefined;
     formatters: {
         annotated: Formatter;
-        console: Formatter;
+        console?: Formatter;
         html: Formatter;
     };
     patch: (left: any, delta: Delta) => any;

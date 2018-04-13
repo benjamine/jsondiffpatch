@@ -39,6 +39,37 @@ export function createBrowserUmdBuildConfig(dirName = 'dist') {
 }
 
 /**
+ * browser-friendly UMD build without console formatter
+ * @param {string} dirName Output destination directory
+ */
+export function createBrowserUmdEs5BuildConfig(dirName = 'dist') {
+  return {
+    input: 'src/core.js',
+    external: [
+      // external node modules
+      // 'diff-match-patch'
+      // 'chalk',
+    ],
+    output: {
+      name: pkg.name + '-ES5',
+      file: pkg.browser
+        .replace('.js', '.es5.js')
+        .replace(/^dist\//, `${dirName}/`),
+      format: 'umd',
+    },
+    plugins: [
+      replace({ 'process.browser': true }),
+      babel({
+        exclude: 'node_modules/**',
+        plugins: ['external-helpers'],
+      }),
+      resolve(), // so Rollup can find node modules
+      commonjs(), // so Rollup can convert node modules to ES modules
+    ],
+  };
+}
+
+/**
  * browser-friendly UMD build, slim (no diff-match-patch, no formatters)
  * @param {string} dirName Output destination directory
  */
