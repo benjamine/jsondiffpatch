@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-const jsondiffpatch = require('../build/jsondiffpatch.cjs');
+const jsondiffpatch = require('..');
 
 const fs = require('fs');
 
