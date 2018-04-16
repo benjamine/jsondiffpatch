@@ -6,11 +6,12 @@ import resolve from 'rollup-plugin-node-resolve';
 import commonjs from 'rollup-plugin-commonjs';
 import babel from 'rollup-plugin-babel';
 import istanbul from 'rollup-plugin-istanbul';
+import hypothetical from 'rollup-plugin-hypothetical';
 import pkg from './package.json';
 import Visualizer from 'rollup-plugin-visualizer';
 
 /**
- * browser-friendly UMD build
+ * browser-friendly UMD build (No chalk)
  * @param {string} dirName Output destination directory
  */
 export function createBrowserUmdBuildConfig(dirName = 'dist') {
@@ -18,7 +19,7 @@ export function createBrowserUmdBuildConfig(dirName = 'dist') {
     input: 'src/main.js',
     external: [
       // external node modules
-      'chalk',
+      // 'chalk',
       // 'diff-match-patch'
     ],
     output: {
@@ -28,6 +29,15 @@ export function createBrowserUmdBuildConfig(dirName = 'dist') {
     },
     plugins: [
       replace({ 'process.browser': true }),
+      hypothetical({
+        allowRealFiles: true,
+        allowFallthrough: true,
+        files: {
+          './node_modules/chalk/index.js': `
+        export default null;
+      `,
+        },
+      }),
       babel({
         exclude: 'node_modules/**',
         plugins: ['external-helpers'],
@@ -47,8 +57,8 @@ export function createSlimBrowserUmdBuildConfig(dirName = 'dist') {
     input: 'src/main.js',
     external: [
       // external node modules
-      'chalk',
-      'diff-match-patch',
+      // 'chalk',
+      // 'diff-match-patch',
     ],
     output: {
       name: pkg.name,
@@ -64,6 +74,18 @@ export function createSlimBrowserUmdBuildConfig(dirName = 'dist') {
           .replace(/^dist\//, `${dirName}/`),
       }),
       replace({ 'process.browser': true }),
+      hypothetical({
+        allowRealFiles: true,
+        allowFallthrough: true,
+        files: {
+          './node_modules/chalk/index.js': `
+        export default null;
+      `,
+          './node_modules/diff-match-patch/index.js': `
+        export default null;
+      `,
+        },
+      }),
       babel({
         exclude: 'node_modules/**',
         plugins: ['external-helpers'],
