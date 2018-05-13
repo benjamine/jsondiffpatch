@@ -14,19 +14,20 @@ import Visualizer from 'rollup-plugin-visualizer';
  * @param {string} dirName Output destination directory
  */
 export function createBrowserUmdBuildConfig(dirName = 'dist') {
+  const external = [
+    'chalk',
+  ];
   return {
     input: 'src/main.js',
-    external: [
-      // external node modules
-      'chalk',
-      // 'diff-match-patch'
-    ],
+    external,
     output: {
       name: pkg.name,
       file: pkg.browser.replace(/^dist\//, `${dirName}/`),
       format: 'umd',
+      ...outputExternal(external),
     },
     plugins: [
+      createEmptyModuleDist(),
       replace({ 'process.browser': true }),
       babel({
         exclude: 'node_modules/**',
@@ -43,19 +44,20 @@ export function createBrowserUmdBuildConfig(dirName = 'dist') {
  * @param {string} dirName Output destination directory
  */
 export function createSlimBrowserUmdBuildConfig(dirName = 'dist') {
+  const external = [
+    'chalk',
+    'diff-match-patch',
+  ];
   return {
     input: 'src/main.js',
-    external: [
-      // external node modules
-      'chalk',
-      'diff-match-patch',
-    ],
+    external,
     output: {
       name: pkg.name,
       file: pkg.browser
         .replace('.js', '.slim.js')
         .replace(/^dist\//, `${dirName}/`),
       format: 'umd',
+      ...outputExternal(external),
     },
     plugins: [
       new Visualizer({
@@ -63,6 +65,7 @@ export function createSlimBrowserUmdBuildConfig(dirName = 'dist') {
           .replace('.js', '.slim.stats.html')
           .replace(/^dist\//, `${dirName}/`),
       }),
+      createEmptyModuleDist(),
       replace({ 'process.browser': true }),
       babel({
         exclude: 'node_modules/**',
@@ -208,6 +211,9 @@ export const createBrowserTestBuild = (
         .replace(/^dist\//, `${dirName}/`),
       sourcemap: true,
       format: 'umd',
+      globals: {
+        'chalk': 'chalk',
+      },
     },
   };
 };
@@ -233,5 +239,39 @@ function copyFromFolderToDist(folder) {
         executed = true;
       },
     };
+  };
+}
+
+function createEmptyModuleDist() {
+  return function() {
+    let executed = false;
+    return {
+      ongenerate: () => {
+        if (executed) {
+          return;
+        }
+        const distFilename = path.join(__dirname, 'dist', 'empty.js');
+        mkdirp(path.dirname(distFilename));
+        fs.writeFileSync(distFilename, '');
+        console.log(`dist/empty.js (created)`);
+        executed = true;
+      },
+    };
+  };
+}
+
+function outputExternal(names) {
+  if (!names || names.length < 1) {
+    return;
+  }
+  return {
+    globals: names.reduce((accum, name) => ({
+      ...accum,
+      [name]: name,
+    }), {}),
+    paths: names.reduce((accum, name) => ({
+      ...accum,
+      [name]: './empty',
+    }), {}),
   };
 }
