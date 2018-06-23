@@ -30,13 +30,22 @@ class JSONFormatter extends BaseFormatter {
     };
 
     context.pushMoveOp = function(to) {
-      const finalTo = `/${to}`;
       const from = this.currentPath();
-      this.result.push({op: OPERATIONS.move, from: from, path: finalTo});
+      this.result.push({
+        op: OPERATIONS.move,
+        from: from,
+        path: this.toPath(to),
+      });
     };
 
     context.currentPath = function() {
       return `/${this.path.join('/')}`;
+    };
+
+    context.toPath = function(toPath) {
+      const to = this.path.slice();
+      to[to.length - 1] = toPath;
+      return `/${to.join('/')}`;
     };
   }
 
@@ -127,31 +136,29 @@ const opsByDescendingOrder = removeOps => sortBy(removeOps, (a, b) => {
   }
 });
 
-const partition = (arr, pred) => {
-  const left = [];
-  const right = [];
-
-  arr.forEach(el => {
-    const coll = pred(el) ? left : right;
-    coll.push(el);
-  });
-  return [left, right];
+export const partitionOps = (arr, fns) => {
+  const initArr = Array(fns.length + 1).fill().map(() => []);
+  return arr
+    .map(item => {
+      let position = fns.map(fn => fn(item)).indexOf(true);
+      if (position < 0) {
+        position = fns.length;
+      }
+      return { item, position };
+    })
+    .reduce((acc, item) => {
+      acc[ item.position ].push(item.item);
+      return acc;
+    }, initArr);
 };
+const isMoveOp = ({op}) => op === 'move';
+const isRemoveOp = ({op}) => op === 'remove';
 
-const partitionRemovedOps = jsonFormattedDiff => {
-  const isRemoveOp = ({op}) => op === 'remove';
-  return partition(
-    jsonFormattedDiff,
-    isRemoveOp
-  );
-};
-
-const reorderOps = jsonFormattedDiff => {
-  const removeOpsOtherOps = partitionRemovedOps(jsonFormattedDiff);
-  const removeOps = removeOpsOtherOps[0];
-  const otherOps = removeOpsOtherOps[1];
-  const removeOpsReverse = opsByDescendingOrder(removeOps);
-  return removeOpsReverse.concat(otherOps);
+const reorderOps = diff => {
+  const [ moveOps, removedOps, restOps ] =
+    partitionOps(diff, [ isMoveOp, isRemoveOp ]);
+  const removeOpsReverse = opsByDescendingOrder(removedOps);
+  return [ ...removeOpsReverse, ...moveOps, ...restOps ];
 };
 
 let defaultInstance;
