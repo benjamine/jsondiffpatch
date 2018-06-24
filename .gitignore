@@ -18,3 +18,4 @@ dist
 build
 
 npm-debug.log
+.idea/

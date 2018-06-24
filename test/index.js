@@ -392,6 +392,12 @@ describe('DiffPatcher', () => {
         path,
       });
 
+      const moveOp = (from, path) => ({
+        op: 'move',
+        from,
+        path,
+      });
+
       const addOp = (path, value) => ({
         op: 'add',
         path,
@@ -477,10 +483,112 @@ describe('DiffPatcher', () => {
           const expectedDiff = [removeOp('/0'), removeOp('/0/items/0')];
           expectFormat(before, after, expectedDiff);
         });
+
+        it('should annotate move', () => {
+          const before = [
+            anObjectWithId('first'),
+            anObjectWithId('second'),
+          ];
+          const after = [
+            anObjectWithId('second'),
+            anObjectWithId('first'),
+          ];
+          const expectedDiff = [moveOp('/1', '/0')];
+          expectFormat(before, after, expectedDiff);
+        });
+
+        it('should sort the ops', () => {
+          expectFormat(
+            { 'hl': [ { id: 1, bla: 'bla' }, { id: 2, bla: 'ga' } ] },
+            { 'hl': [ { id: 2, bla: 'bla' }, { id: 1, bla: 'ga' } ] },
+            [
+              moveOp('/hl/1', '/hl/0'),
+              replaceOp('/hl/0/bla', 'bla'),
+              replaceOp('/hl/1/bla', 'ga'),
+            ]);
+        });
       });
 
       it('should annotate as moved op', () => {
-        expectFormat([1, 2], [2, 1], [{ op: 'move', from: '/1', path: '/0' }]);
+        expectFormat([1, 2], [2, 1], [moveOp('/1', '/0')]);
+      });
+
+      it('should add full path for moved op', () => {
+        expectFormat(
+          {'hl': [1, 2]},
+          {'hl': [2, 1]},
+          [moveOp('/hl/1', '/hl/0')]);
+      });
+
+      it('should put the full path in move op and sort by HL - #230', () => {
+        const before = {
+          'middleName': 'z',
+          'referenceNumbers': [
+            {
+              'id': 'id-3',
+              'referenceNumber': '123',
+              'index': 'index-0',
+            },
+            {
+              'id': 'id-1',
+              'referenceNumber': '456',
+              'index': 'index-1',
+            },
+            {
+              'id': 'id-2',
+              'referenceNumber': '789',
+              'index': 'index-2',
+            },
+          ],
+        };
+        const after = {
+          'middleName': 'x',
+          'referenceNumbers': [
+            {
+              'id': 'id-1',
+              'referenceNumber': '456',
+              'index': 'index-0',
+            },
+            {
+              'id': 'id-3',
+              'referenceNumber': '123',
+              'index': 'index-1',
+            },
+            {
+              'id': 'id-2',
+              'referenceNumber': '789',
+              'index': 'index-2',
+            },
+          ],
+        };
+        const diff = [
+          {
+            'op': 'move',
+            'from': '/referenceNumbers/1',
+            'path': '/referenceNumbers/0',
+          },
+          {
+            'op': 'replace',
+            'path': '/middleName',
+            'value': 'x',
+          },
+          {
+            'op': 'replace',
+            'path': '/referenceNumbers/0/index',
+            'value': 'index-0',
+          },
+          {
+            'op': 'replace',
+            'path': '/referenceNumbers/1/index',
+            'value': 'index-1',
+          },
+        ];
+        instance = new DiffPatcher({
+          objectHash(obj) {
+            return obj.id;
+          },
+        });
+        expectFormat(before, after, diff);
       });
     });
 
