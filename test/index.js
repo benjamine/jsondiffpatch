@@ -5,6 +5,8 @@
 import * as jsondiffpatch from '../build/jsondiffpatch.esm';
 import examples from './examples/diffpatch';
 import chai from 'chai';
+
+import lcs from '../src/filters/lcs';
 const expect = chai.expect;
 
 describe('jsondiffpatch', () => {
@@ -723,6 +725,30 @@ describe('DiffPatcher', () => {
         ];
         expectFormat(before, after, expectedHtml(expectedDiff));
       });
+    });
+  });
+});
+
+describe('lcs', () => {
+  it('should lcs arrays ', () => {
+    expect(lcs.get([], [])).to.deep.equal({
+      sequence: [],
+      indices1: [],
+      indices2: [],
+    });
+
+    expect(lcs.get([1], [2])).to.deep.equal({
+      sequence: [],
+      indices1: [],
+      indices2: [],
+    });
+
+    // indices1 and indices2 show where the sequence
+    // elements are located in the original arrays
+    expect(lcs.get([ 1 ], [ -9, 1 ])).to.deep.equal({
+      sequence: [1],
+      indices1: [0],
+      indices2: [1],
     });
   });
 });
