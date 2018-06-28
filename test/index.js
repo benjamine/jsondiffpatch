@@ -751,4 +751,21 @@ describe('lcs', () => {
       indices2: [1],
     });
   });
+
+  it('should compute diff for large array', () => {
+    const ARRAY_LENGTH = 5000; // js stack is about 50k
+    function randomArray() {
+      let result = [];
+      for (let i = 0; i < ARRAY_LENGTH; i++) {
+        if (Math.random() > 0.5) {
+          result.push('A');
+        } else {
+          result.push('B');
+        }
+      }
+      return result;
+    }
+
+    lcs.get(randomArray(), randomArray());
+  });
 });
