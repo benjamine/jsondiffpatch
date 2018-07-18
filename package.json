@@ -39,8 +39,8 @@
     "patch"
   ],
   "dependencies": {
-    "chalk": "^2.3.0",
-    "diff-match-patch": "^1.0.0"
+    "diff-match-patch": "^1.0.0",
+    "turbocolor": "2.3.0"
   },
   "devDependencies": {
     "@istanbuljs/nyc-config-babel": "^1.2.2",

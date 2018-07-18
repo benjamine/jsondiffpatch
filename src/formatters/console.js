@@ -1,9 +1,9 @@
-import chalk from 'chalk';
+import tc from 'turbocolor';
 import BaseFormatter from './base';
 
 function chalkColor(name) {
   return (
-    (chalk && chalk[name]) ||
+    (tc && tc[name]) ||
     function(...args) {
       return args;
     }
