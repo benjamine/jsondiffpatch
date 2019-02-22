@@ -73,8 +73,8 @@ export const diffFilter = function textsDiffFilter(context) {
   // if the user specified a max length for character diffing, don't use the text-diff algorithm
   let maxLength = (context.options &&
       context.options.textDiff &&
-      context.options.textDiff.maxLength);
-  if (maxLength && (context.left.length > maxLength || context.right.length > maxLength)) {
+      context.options.textDiff.maxLength) || Number.POSITIVE_INFINITY;
+  if (context.left.length > maxLength || context.right.length > maxLength) {
     context.setResult([context.left, context.right]).exit();
     return;
   }
