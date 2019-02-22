@@ -24,6 +24,8 @@ export interface Config {
     textDiff?: {
         // default 60, minimum string length (left and right sides) to use text diff algorythm: google-diff-match-patch
         minLength: number,
+        // optional character max (left and right sides) at which google-diff-match-patch will not be used
+        maxLength?: number,
     };
     /*
         this optional function can be specified to ignore object properties (eg. volatile data)
