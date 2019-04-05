@@ -46,7 +46,7 @@ export class DiffPatcher {
 
     clone: (value: any) => any;
     diff: (left: any, right: any) => Delta | undefined;
-    patch: (left: any, delta: Delta) => any;
+    patch: (left: any, delta: Delta | undefined) => any;
     reverse: (delta: Delta) => Delta | undefined;
     unpatch: (right: any, delta: Delta) => any;
 }
