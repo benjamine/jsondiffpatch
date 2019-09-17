@@ -51,7 +51,7 @@ export class DiffPatcher {
     unpatch: (right: any, delta: Delta) => any;
 }
 
-export const create: (options?: any) => typeof DiffPatcher
+export const create: (options?: any) => DiffPatcher
 
 export const formatters: {
   annotated: Formatter;
