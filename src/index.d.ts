@@ -2,6 +2,11 @@ export interface Formatter {
   format(delta: Delta, original: any): string;
 }
 
+export interface HTMLFormatter extends Formatter {
+    showUnchanged(): void;
+    hideUnchanged(): void;
+}
+
 export interface Delta {
     [key: string]: any;
     [key: number]: any;
@@ -56,7 +61,7 @@ export const create: (options?: any) => DiffPatcher
 export const formatters: {
   annotated: Formatter;
   console: Formatter;
-  html: Formatter;
+  html: HTMLFormatter;
 };
 
 export const console: Formatter
