@@ -25,6 +25,7 @@ Diff & patch JavaScript objects
     - html (check it at the [Live Demo](http://benjamine.github.com/jsondiffpatch/demo/index.html))
     - annotated json (html), makes the JSON delta format self-explained
     - console (colored), try running ```./node_modules/.bin/jsondiffpatch left.json right.json```
+    - JSON Patch format RFC 6902 support
     - write your own! check [Formatters documentation](docs/formatters.md)
 - BONUS: `jsondiffpatch.clone(obj)` (deep clone)
 
