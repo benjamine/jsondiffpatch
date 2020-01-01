@@ -19,6 +19,11 @@ export interface HtmlFormatter extends Formatter {
     hideUnchanged(node?: Element | null, delay?: number): void;
 }
 
+export interface HTMLFormatter extends Formatter {
+    showUnchanged(): void;
+    hideUnchanged(): void;
+}
+
 export interface Delta {
     [key: string]: any;
     [key: number]: any;
@@ -68,13 +73,17 @@ export class DiffPatcher {
     unpatch: (right: any, delta: Delta) => any;
 }
 
+export const create: (options?: any) => DiffPatcher
+
 export const formatters: {
-    annotated: Formatter;
-    console: Formatter;
-    html: HtmlFormatter;
+  annotated: Formatter;
+  console: Formatter;
+  html: HTMLFormatter;
 };
 
 export const console: Formatter
+
+export const dateReviver: (key: string, value: any) => any;
 
 export const diff: (left: any, right: any) => Delta | undefined;
 export const patch: (left: any, delta: Delta) => any;
