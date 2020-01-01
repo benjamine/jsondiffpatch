@@ -61,6 +61,8 @@ export const formatters: {
 
 export const console: Formatter
 
+export const dateReviver: (key: string, value: any) => any;
+
 export const diff: (left: any, right: any) => Delta | undefined;
 export const patch: (left: any, delta: Delta) => any;
 export const reverse: (delta: Delta) => Delta | undefined;
