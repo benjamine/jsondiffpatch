@@ -19,11 +19,6 @@ export interface HtmlFormatter extends Formatter {
     hideUnchanged(node?: Element | null, delay?: number): void;
 }
 
-export interface HTMLFormatter extends Formatter {
-    showUnchanged(): void;
-    hideUnchanged(): void;
-}
-
 export interface Delta {
     [key: string]: any;
     [key: number]: any;
