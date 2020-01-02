@@ -750,6 +750,15 @@ describe('lcs', () => {
       indices1: [0],
       indices2: [1],
     });
+
+    // indices1 and indices2 show where the sequence
+    // elements are located in the original arrays
+    expect(lcs.get([ 1, 9, 3, 4, 5 ], [ -9, 1, 34, 3, 2, 1, 5, 93 ]))
+      .to.deep.equal({
+        sequence: [1, 3, 5],
+        indices1: [0, 2, 4],
+        indices2: [1, 3, 6],
+      });
   });
 
   it('should compute diff for large array', () => {
