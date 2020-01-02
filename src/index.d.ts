@@ -189,7 +189,7 @@ export const create: (options?: any) => DiffPatcher
 export const formatters: {
   annotated: Formatter;
   console: Formatter;
-  html: HTMLFormatter;
+  html: HtmlFormatter;
 };
 
 export const console: Formatter
