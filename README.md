@@ -191,6 +191,9 @@ Options
 -------
 
 ``` javascript
+// to use default options, you must pass {}
+var jsondiffpatch = require('jsondiffpatch').create({})
+// to override options:
 var jsondiffpatch = require('jsondiffpatch').create({
     // used to match objects when diffing arrays, by default only === operator is used
     objectHash: function(obj) {
