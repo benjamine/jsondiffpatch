@@ -49,7 +49,7 @@ but you can use it programmatically too:
 ``` javascript
 var delta = jsondiffpatch.diff(left, right);
 var output = jsondiffpatch.formatters.console.format(delta);
-console.log(delta);
+console.log(output);
 
 // or simply
 jsondiffpatch.console.log(delta);
@@ -60,7 +60,7 @@ JSON PATCH (RFC 6902)
 ``` javascript
 var delta = jsondiffpatch.diff(left, right);
 var output = jsondiffpatch.formatters.jsonpatch.format(delta);
-console.log(delta);
+console.log(output);
 ```
 *Don't use with `textDiff` as it isn't suppported*
 
