@@ -278,3 +278,8 @@ Plugins
 ```diff()```, ```patch()``` and ```reverse()``` functions are implemented using Pipes & Filters pattern, making it extremely customizable by adding or replacing filters on a pipe.
 
 Check [Plugins documentation](docs/plugins.md) for details.
+
+Contributor over time
+-------
+
+[![Contributor over time](https://contributor-graph-api.apiseven.com/contributors-svg?chart=contributorOverTime&repo=benjamine/jsondiffpatch)](https://www.apiseven.com/en/contributor-graph?chart=contributorOverTime&repo=benjamine/jsondiffpatch)
