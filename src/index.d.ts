@@ -184,15 +184,16 @@ export class DiffPatcher {
     unpatch: (right: any, delta: Delta) => any;
 }
 
-export const create: (options?: any) => DiffPatcher
+export const create: (options?: any) => DiffPatcher;
 
 export const formatters: {
   annotated: Formatter;
   console: Formatter;
   html: HtmlFormatter;
+  jsonpatch: Formatter;
 };
 
-export const console: Formatter
+export const console: Formatter;
 
 export const dateReviver: (key: string, value: any) => any;
 
