@@ -60,6 +60,17 @@ export const diffFilter = function textsDiffFilter(context) {
   if (context.leftType !== 'string') {
     return;
   }
+
+  // opt out of text diffing
+  let enabled =
+    (context.options &&
+      context.options.textDiff &&
+      context.options.textDiff.enabled)
+  if (enabled === false) {
+    context.setResult([context.left, context.right]).exit();
+    return;
+  }
+
   let minLength =
     (context.options &&
       context.options.textDiff &&
@@ -69,6 +80,7 @@ export const diffFilter = function textsDiffFilter(context) {
     context.setResult([context.left, context.right]).exit();
     return;
   }
+
   // large text, try to use a text-diff algorithm
   let diffMatchPatch = getDiffMatchPatch();
   if (!diffMatchPatch) {
@@ -77,6 +89,7 @@ export const diffFilter = function textsDiffFilter(context) {
     context.setResult([context.left, context.right]).exit();
     return;
   }
+
   let diff = diffMatchPatch.diff;
   context.setResult([diff(context.left, context.right), 0, TEXT_DIFF]).exit();
 };

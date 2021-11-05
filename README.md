@@ -204,8 +204,10 @@ var jsondiffpatch = require('jsondiffpatch').create({
         includeValueOnMove: false
     },
     textDiff: {
-        // default 60, minimum string length (left and right sides) to use text diff algorythm: google-diff-match-patch
+        // default 60, minimum string length (left and right sides) to use text diff algorithm: google-diff-match-patch
         minLength: 60
+        // default true, set to false to completely opt out of text diffing
+        enabled: true,
     },
     propertyFilter: function(name, context) {
       /*

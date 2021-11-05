@@ -86,7 +86,7 @@ an item was moved to a different position in the same array
 ``` javascript
 delta = [ '', destinationIndex, 3]
 ```
-> Note: '' represents the moved item value, suppresed by default
+> Note: '' represents the moved item value, suppressed by default
 
 > Note: 3 is the magical number that indicates "array move"
 
@@ -118,3 +118,11 @@ delta = [ unidiff, 0, 2 ]
 
 > Note: unidiff is actually a character-based variation of Unidiff format that is explained [here](https://code.google.com/p/google-diff-match-patch/wiki/Unidiff)
 
+You can completely opt out of text diffing:
+``` javascript
+var customDiffPatch = jsondiffpatch.create({
+  textDiff: {
+    enabled: false // default true
+  }
+});
+```

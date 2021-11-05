@@ -148,8 +148,10 @@ export interface Config {
     };
 
     textDiff?: {
-        // default 60, minimum string length (left and right sides) to use text diff algorythm: google-diff-match-patch
-        minLength: number,
+        // default 60, minimum string length (left and right sides) to use text diff algorithm: google-diff-match-patch
+        minLength?: number,
+        // default true, set to false to completely opt out of text diffing
+        enabled?: boolean,
     };
 
     /**
