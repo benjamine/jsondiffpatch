@@ -19,6 +19,34 @@ export interface HtmlFormatter extends Formatter {
     hideUnchanged(node?: Element | null, delay?: number): void;
 }
 
+type AddOperation = {
+  opp: string;
+  path: string;
+  value: any
+}
+
+type RemoveOperation = {
+  opp: string;
+  path: string;
+}
+
+type ReplaceOperation = {
+  opp: string;
+  path: string;
+  value: any;
+}
+
+type MoveOperation = {
+  opp: string;
+  path: string;
+}
+
+export type Operation = AddOperation | RemoveOperation | ReplaceOperation | MoveOperation
+
+export interface JSONPatchFormatter {
+  format(delta: Delta, original: any): Operation[];
+}
+
 export interface Delta {
     [key: string]: any;
     [key: number]: any;
@@ -190,6 +218,7 @@ export const formatters: {
   annotated: Formatter;
   console: Formatter;
   html: HtmlFormatter;
+  jsonpatch: JSONPatchFormatter;
 };
 
 export const console: Formatter
