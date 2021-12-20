@@ -20,24 +20,24 @@ export interface HtmlFormatter extends Formatter {
 }
 
 type AddOperation = {
-  opp: string;
+  opp: "add";
   path: string;
   value: any
 }
 
 type RemoveOperation = {
-  opp: string;
+  opp: "remove";
   path: string;
 }
 
 type ReplaceOperation = {
-  opp: string;
+  opp: "replace";
   path: string;
   value: any;
 }
 
 type MoveOperation = {
-  opp: string;
+  opp: "move";
   path: string;
 }
 
