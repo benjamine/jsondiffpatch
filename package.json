@@ -27,8 +27,7 @@
     "watch": "nodemon --exec \"mocha\"",
     "prepublish": "npm run build && npm run build-dist",
     "cover-report": "open coverage/lcov-report/index.html",
-    "cover-publish": "nyc mocha && codeclimate < coverage/lcov.info",
-    "apply-patch": "git apply jsondiffpatch+0.4.1.patch"
+    "cover-publish": "nyc mocha && codeclimate < coverage/lcov.info"
   },
   "repository": {
     "type": "git",
