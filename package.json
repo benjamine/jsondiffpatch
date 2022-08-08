@@ -25,10 +25,9 @@
     "bump": "gulp bump",
     "test": "nyc mocha",
     "watch": "nodemon --exec \"mocha\"",
-    "prepublish": "npm run build && npm run build-dist && npm run apply-patch",
+    "prepublish": "npm run build && npm run build-dist",
     "cover-report": "open coverage/lcov-report/index.html",
-    "cover-publish": "nyc mocha && codeclimate < coverage/lcov.info",
-    "apply-patch": "git apply jsondiffpatch+0.4.1.patch"
+    "cover-publish": "nyc mocha && codeclimate < coverage/lcov.info"
   },
   "repository": {
     "type": "git",
@@ -40,7 +39,6 @@
     "patch"
   ],
   "dependencies": {
-    "chalk": "^2.3.0",
     "diff-match-patch": "^1.0.0"
   },
   "devDependencies": {
@@ -78,7 +76,6 @@
     "rollup-plugin-replace": "^2.0.0",
     "rollup-plugin-visualizer": "^0.3.1"
   },
-  "bundleDependencies": [],
   "license": "MIT",
   "engines": {
     "node": ">=8.17.0"

@@ -1,24 +1,4 @@
-import chalk from 'chalk';
 import BaseFormatter from './base';
-
-function chalkColor(name) {
-  return (
-    (chalk && chalk[name]) ||
-    function(...args) {
-      return args;
-    }
-  );
-}
-
-let colors = {
-  added: chalkColor('green'),
-  deleted: chalkColor('red'),
-  movedestination: chalkColor('gray'),
-  moved: chalkColor('yellow'),
-  unchanged: chalkColor('gray'),
-  error: chalkColor('white.bgRed'),
-  textDiffLine: chalkColor('gray'),
-};
 
 class ConsoleFormatter extends BaseFormatter {
   constructor() {
@@ -58,7 +38,6 @@ class ConsoleFormatter extends BaseFormatter {
   }
 
   typeFormattterErrorFormatter(context, err) {
-    context.pushColor(colors.error);
     context.out(`[ERROR]${err}`);
     context.popColor();
   }
@@ -72,7 +51,6 @@ class ConsoleFormatter extends BaseFormatter {
     context.indent();
     for (let i = 0, l = lines.length; i < l; i++) {
       let line = lines[i];
-      context.pushColor(colors.textDiffLine);
       context.out(`${line.location.line},${line.location.chr} `);
       context.popColor();
       let pieces = line.pieces;
@@ -82,7 +60,6 @@ class ConsoleFormatter extends BaseFormatter {
         pieceIndex++
       ) {
         let piece = pieces[pieceIndex];
-        context.pushColor(colors[piece.type]);
         context.out(piece.text);
         context.popColor();
       }
@@ -94,7 +71,6 @@ class ConsoleFormatter extends BaseFormatter {
   }
 
   rootBegin(context, type, nodeType) {
-    context.pushColor(colors[type]);
     if (type === 'node') {
       context.out(nodeType === 'array' ? '[' : '{');
       context.indent();
@@ -110,7 +86,6 @@ class ConsoleFormatter extends BaseFormatter {
   }
 
   nodeBegin(context, key, leftKey, type, nodeType) {
-    context.pushColor(colors[type]);
     context.out(`${leftKey}: `);
     if (type === 'node') {
       context.out(nodeType === 'array' ? '[' : '{');
@@ -156,11 +131,9 @@ class ConsoleFormatter extends BaseFormatter {
   }
 
   format_modified(context, delta) {
-    context.pushColor(colors.deleted);
     this.formatValue(context, delta[0]);
     context.popColor();
     context.out(' => ');
-    context.pushColor(colors.added);
     this.formatValue(context, delta[1]);
     context.popColor();
   }
