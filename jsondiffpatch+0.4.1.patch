@@ -1,7 +1,7 @@
-diff --git a/dist/index.d.ts b/dist/index.d.ts
+diff --git a/src/index.d.ts b/src/index.d.ts
 index 58c0b89..69f60aa 100644
---- a/dist/index.d.ts
-+++ b/dist/index.d.ts
+--- a/src/index.d.ts
++++ b/src/index.d.ts
 @@ -1,5 +1,45 @@
 +export interface BaseOperation {
 +  path: string;
