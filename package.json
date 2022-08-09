@@ -1,6 +1,6 @@
 {
   "name": "@contentful/jsondiffpatch",
-  "version": "0.4.2",
+  "version": "0.5.0",
   "author": "Benjamin Eidelman <beneidel@gmail.com>",
   "description": "Diff & Patch for Javascript objects",
   "contributors": [
