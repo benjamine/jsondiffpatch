@@ -54,10 +54,10 @@ function matchItems(array1, array2, index1, index2, context) {
     context.hashCache1 = context.hashCache1 || [];
     hash1 = context.hashCache1[index1];
     if (typeof hash1 === 'undefined') {
-      context.hashCache1[index1] = hash1 = objectHash(value1, index1);
+      context.hashCache1[index1] = hash1 = objectHash(value1, index1, 'right');
     }
   } else {
-    hash1 = objectHash(value1);
+    hash1 = objectHash(value1, index1, 'right');
   }
   if (typeof hash1 === 'undefined') {
     return false;
@@ -66,10 +66,10 @@ function matchItems(array1, array2, index1, index2, context) {
     context.hashCache2 = context.hashCache2 || [];
     hash2 = context.hashCache2[index2];
     if (typeof hash2 === 'undefined') {
-      context.hashCache2[index2] = hash2 = objectHash(value2, index2);
+      context.hashCache2[index2] = hash2 = objectHash(value2, index2, 'left');
     }
   } else {
-    hash2 = objectHash(value2);
+    hash2 = objectHash(value2, index2, 'left');
   }
   if (typeof hash2 === 'undefined') {
     return false;

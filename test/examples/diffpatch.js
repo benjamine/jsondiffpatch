@@ -1378,6 +1378,54 @@ examples.arrays = [
     },
     noPatch: true,
   },
+  {
+    name: 'nested using position',
+    options: {
+      objectHash(obj, _index, position) {
+        if (obj && obj.id && ['left', 'right'].includes(position)) {
+          return obj.id;
+        }
+      },
+    },
+    left: [
+      {
+        id: 4,
+        pos: 'target(left)',
+      },
+      {
+        id: 'five',
+        pos: 'target(left)',
+      },
+    ],
+    right: [
+      {
+        id: 4,
+        pos: 'source(right)',
+      },
+      {
+        id: 'five',
+        pos: 'source(right)',
+      },
+    ],
+    delta: {
+      _t: 'a',
+      0: {
+        pos: ['target(left)', 'source(right)'],
+      },
+      1: {
+        pos: ['target(left)', 'source(right)'],
+      },
+    },
+    reverse: {
+      _t: 'a',
+      0: {
+        pos: ['source(right)', 'target(left)'],
+      },
+      1: {
+        pos: ['source(right)', 'target(left)'],
+      },
+    },
+  },
   0,
 ];
 

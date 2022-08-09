@@ -178,7 +178,7 @@ export class Processor {
 
 export interface Config {
     // used to match objects when diffing arrays, by default only === operator is used
-    objectHash?: (item: any, index: number) => string;
+    objectHash?: (item: any, index?: number, position?: 'left' | 'right') => string;
 
     arrays?: {
         // default true, detect items moved inside the array (otherwise they will be registered as remove+add)
