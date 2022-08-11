@@ -1,0 +1,65 @@
+version: 1.0
+jobs:
+  unit:
+    docker:
+      - image: cimg/node:16.11
+    steps:
+      - run: node --version
+      - run: npm --version
+      - checkout
+      - restore_cache:
+          key: dependency-cache-{{ checksum "package.json" }}
+      - run: npm ci
+      - run: npm test
+  release:
+    docker:
+      - image: cimg/node:16.11
+    steps:
+      - checkout
+      - run: npm ci
+      - run: npm run semantic-release
+  audit: &audit
+    docker:
+      - image: cimg/node:16.11
+        environment:
+          NPM_CONFIG_PROGRESS: false
+          NPM_CONFIG_LOGLEVEL: warn
+    steps:
+      - checkout
+      - run: &audit_action
+          name: Audit
+          command: |
+            npm audit --audit-level=moderate
+  audit-and-notify:
+    <<: *audit
+    steps:
+      - checkout
+      - run: *audit_action
+      - run:
+          name: Notify vulnerabilities found
+          when: on_fail
+          command: |
+            script/notify-vulnerabilities-to-slack.sh $SLACK_WEBHOOK
+workflows:
+  version: 2
+  scheduled-audit:
+    triggers:
+      - schedule:
+          # Run each day at midnight
+          cron: '0 0 * * *'
+          filters:
+            branches:
+              only: master
+    jobs:
+      - audit-and-notify
+  build_and_test:
+    jobs:
+      - unit
+      - release:
+          context: dev-workflows-release
+          requires:
+            - unit
+          filters:
+            branches:
+              only:
+                - master

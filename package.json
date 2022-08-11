@@ -1,10 +1,11 @@
 {
   "name": "@contentful/jsondiffpatch",
-  "version": "0.5.0",
+  "version": "0.0.0-determined-by-semantic-release",
   "author": "Benjamin Eidelman <beneidel@gmail.com>",
   "description": "Diff & Patch for Javascript objects",
   "contributors": [
-    "Benjamin Eidelman <beneidel@gmail.com>"
+    "Benjamin Eidelman <beneidel@gmail.com>",
+    "Contentful <opensource@contentful.com>"
   ],
   "browser": "dist/jsondiffpatch.umd.js",
   "main": "dist/jsondiffpatch.cjs.js",
@@ -27,7 +28,8 @@
     "watch": "nodemon --exec \"mocha\"",
     "prepublish": "npm run build && npm run build-dist",
     "cover-report": "open coverage/lcov-report/index.html",
-    "cover-publish": "nyc mocha && codeclimate < coverage/lcov.info"
+    "cover-publish": "nyc mocha && codeclimate < coverage/lcov.info",
+    "semantic-release": "semantic-release"
   },
   "repository": {
     "type": "git",
@@ -74,11 +76,33 @@
     "rollup-plugin-istanbul": "^2.0.0",
     "rollup-plugin-node-resolve": "^3.0.2",
     "rollup-plugin-replace": "^2.0.0",
-    "rollup-plugin-visualizer": "^0.3.1"
+    "rollup-plugin-visualizer": "^0.3.1",
+    "semantic-release": "^19.0.3"
   },
   "license": "MIT",
   "engines": {
     "node": ">=8.17.0"
+  },
+  "release": {
+    "branches": [
+      "master"
+    ],
+    "plugins": [
+      [
+        "@semantic-release/commit-analyzer",
+        {
+          "releaseRules": [
+            {
+              "type": "build",
+              "scope": "deps",
+              "release": "patch"
+            }
+          ]
+        }
+      ],
+      "@semantic-release/release-notes-generator",
+      "@semantic-release/npm"
+    ]
   },
   "homepage": "https://github.com/contentful/jsondiffpatch"
 }
