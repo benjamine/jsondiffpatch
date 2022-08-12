@@ -14,9 +14,7 @@ import Visualizer from 'rollup-plugin-visualizer';
  * @param {string} dirName Output destination directory
  */
 export function createBrowserUmdBuildConfig(dirName = 'dist') {
-  const external = [
-    'chalk',
-  ];
+  const external = ['chalk'];
   return {
     input: 'src/main.js',
     external,
@@ -44,10 +42,7 @@ export function createBrowserUmdBuildConfig(dirName = 'dist') {
  * @param {string} dirName Output destination directory
  */
 export function createSlimBrowserUmdBuildConfig(dirName = 'dist') {
-  const external = [
-    'chalk',
-    'diff-match-patch',
-  ];
+  const external = ['chalk', 'diff-match-patch'];
   return {
     input: 'src/main.js',
     external,
@@ -212,7 +207,7 @@ export const createBrowserTestBuild = (
       sourcemap: true,
       format: 'umd',
       globals: {
-        'chalk': 'chalk',
+        chalk: 'chalk',
       },
     },
   };
@@ -230,7 +225,9 @@ function copyFromFolderToDist(folder) {
           return;
         }
         const distFilename = path.join(__dirname, 'dist', filename);
+        console.log('Make path ' + path.dirname(distFilename));
         mkdirp(path.dirname(distFilename));
+        console.log('Write file');
         fs.writeFileSync(
           distFilename,
           fs.readFileSync(path.join(__dirname, folder, filename))
@@ -265,13 +262,19 @@ function outputExternal(names) {
     return;
   }
   return {
-    globals: names.reduce((accum, name) => ({
-      ...accum,
-      [name]: name,
-    }), {}),
-    paths: names.reduce((accum, name) => ({
-      ...accum,
-      [name]: './empty',
-    }), {}),
+    globals: names.reduce(
+      (accum, name) => ({
+        ...accum,
+        [name]: name,
+      }),
+      {}
+    ),
+    paths: names.reduce(
+      (accum, name) => ({
+        ...accum,
+        [name]: './empty',
+      }),
+      {}
+    ),
   };
 }
