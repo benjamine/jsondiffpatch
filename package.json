@@ -61,7 +61,7 @@
     "eslint-config-standard": "^11.0.0-beta.0",
     "eslint-plugin-import": "^2.8.0",
     "eslint-plugin-node": "^8.0.1",
-    "eslint-plugin-promise": "^3.6.0",
+    "eslint-plugin-promise": "^6.0.0",
     "eslint-plugin-standard": "^3.0.1",
     "istanbul": "^0.4.5",
     "mkdirp": "^0.5.1",
