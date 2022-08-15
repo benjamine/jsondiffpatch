@@ -69,7 +69,7 @@
     "nodemon": "^1.17.1",
     "npm-check": "^6.0.1",
     "nyc": "^11.4.1",
-    "prettier": "^1.10.2",
+    "prettier": "^2.7.1",
     "rollup": "^0.54.1",
     "rollup-plugin-babel": "^3.0.3",
     "rollup-plugin-commonjs": "^8.2.6",
