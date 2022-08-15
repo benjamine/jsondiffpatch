@@ -1,0 +1,48 @@
+version: 2
+registries:
+  npm-registry-registry-npmjs-org: # Only required if you use npm
+    type: npm-registry
+    url: https://registry.npmjs.org
+    token: "${{secrets.NPM_REGISTRY_REGISTRY_NPMJS_ORG_TOKEN}}"
+updates:
+  - package-ecosystem: npm # Only required if you use npm
+    directory: "/"
+    schedule:
+      interval: daily
+      time: "00:00"
+      timezone: UTC
+    open-pull-requests-limit: 15
+    versioning-strategy: increase
+    ignore:
+      - dependency-name: "@types/node"
+        versions:
+          - ">=17.0.0"
+    commit-message:
+      prefix: build
+      include: scope
+    registries:
+      - npm-registry-registry-npmjs-org
+  - package-ecosystem: docker
+    directory: "/"
+    schedule:
+      interval: daily
+      time: "00:00"
+      timezone: UTC
+    open-pull-requests-limit: 15
+    ignore:
+      - dependency-name: node # Only required if you use npm
+        versions:
+          - ">=17.0.0"
+    commit-message:
+      prefix: build
+      include: scope
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule:
+      interval: daily
+      time: "00:00"
+      timezone: UTC
+    open-pull-requests-limit: 15
+    commit-message:
+      prefix: build
+      include: scope

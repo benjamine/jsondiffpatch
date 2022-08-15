@@ -1,4 +1,4 @@
-version: 1.0
+version: 2.0
 jobs:
   unit:
     docker:
@@ -46,7 +46,7 @@ workflows:
     triggers:
       - schedule:
           # Run each day at midnight
-          cron: '0 0 * * *'
+          cron: "0 0 * * *"
           filters:
             branches:
               only: master

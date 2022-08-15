@@ -1,0 +1,13 @@
+name: "dependabot approve-and-request-merge"
+
+on: pull_request_target
+
+jobs:
+  worker:
+    runs-on: ubuntu-latest
+
+    if: github.actor == 'dependabot[bot]'
+    steps:
+      - uses: contentful/dependabot-auto-merge@v1
+        with:
+          github_token: ${{ secrets.CF_ECOSYSTEM_BOT_GITHUB_TOKEN_AUTO_APPROVE }}
