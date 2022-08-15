@@ -68,7 +68,7 @@
     "mocha": "^5.0.0",
     "nodemon": "^2.0.19",
     "npm-check": "^6.0.1",
-    "nyc": "^11.4.1",
+    "nyc": "^15.1.0",
     "prettier": "^2.7.1",
     "rollup": "^0.54.1",
     "rollup-plugin-babel": "^3.0.3",
