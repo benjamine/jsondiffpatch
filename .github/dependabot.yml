@@ -15,8 +15,6 @@ updates:
     commit-message:
       prefix: build
       include: scope
-    registries:
-      - npm-registry-registry-npmjs-org
   - package-ecosystem: docker
     directory: "/"
     schedule:
