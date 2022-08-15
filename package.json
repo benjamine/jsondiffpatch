@@ -41,7 +41,7 @@
     "patch"
   ],
   "dependencies": {
-    "diff-match-patch": "^1.0.0"
+    "diff-match-patch": "^1.0.5"
   },
   "devDependencies": {
     "@istanbuljs/nyc-config-babel": "^1.2.2",
