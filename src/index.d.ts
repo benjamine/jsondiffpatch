@@ -11,7 +11,7 @@ export interface RemoveOperation extends BaseOperation{
   op: 'remove';
 };
 
-export interface ReplaceOperation<T extends any> extends BaseOperation {
+export interface ReplaceOperation<T = any> extends BaseOperation {
   op: 'replace';
   value: T;
 };
@@ -25,7 +25,7 @@ export interface CopyOperation extends BaseOperation {
   op: 'copy';
   from: string;
 }
-export interface TestOperation<T> extends BaseOperation {
+export interface TestOperation<T = any> extends BaseOperation {
   op: 'test';
   value: T;
 }
