@@ -189,12 +189,22 @@ export const diffFilter = function arraysDiffFilter(context) {
     }
   }
 
+  let ignoreMove = false;
+  if (
+    context.options &&
+    context.options.arrays &&
+    context.options.arrays.ignoreMove === true
+  ) {
+    ignoreMove = true;
+  }
+
   let detectMove = true;
   if (
     context.options &&
     context.options.arrays &&
     context.options.arrays.detectMove === false
   ) {
+
     detectMove = false;
   }
   let includeValueOnMove = false;
@@ -228,13 +238,17 @@ export const diffFilter = function arraysDiffFilter(context) {
               matchContext
             )
           ) {
-            // store position move as: [originalValue, newPosition, ARRAY_MOVE]
+            // This converts a removal delta into a move delta
             result[`_${index1}`].splice(1, 2, index, ARRAY_MOVE);
             if (!includeValueOnMove) {
               // don't include moved value on diff, to save bytes
               result[`_${index1}`][0] = '';
             }
-
+            if (ignoreMove) {
+              // This deletes the delta alltogether, making sure
+              // neither a removal nor a move will be added
+              result[`_${index1}`] = undefined
+            }
             index2 = index;
             child = new DiffContext(
               context.left[index1],
