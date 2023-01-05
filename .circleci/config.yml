@@ -16,6 +16,8 @@ jobs:
       - image: cimg/node:16.11
     steps:
       - checkout
+      - vault/get-secrets: # Loads vault secrets
+          template-preset: 'semantic-release-ecosystem'
       - run: npm ci
       - run: npm run semantic-release
 workflows:
@@ -24,7 +26,8 @@ workflows:
     jobs:
       - unit
       - release:
-          context: dev-workflows-release
+          context: 
+            - vault
           requires:
             - unit
           filters:
