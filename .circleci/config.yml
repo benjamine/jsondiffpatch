@@ -20,7 +20,7 @@ jobs:
     steps:
       - checkout
       - vault/get-secrets: # Loads vault secrets
-          template-preset: 'semantic-release-ecosystem'
+          template-preset: 'semantic-release'
       - run: npm ci
       - run: npm run semantic-release
 workflows:
