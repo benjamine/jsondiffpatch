@@ -81,7 +81,7 @@
   },
   "license": "MIT",
   "engines": {
-    "node": ">=8.17.0"
+    "node": ">=18"
   },
   "release": {
     "branches": [
