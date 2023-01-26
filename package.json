@@ -77,7 +77,7 @@
     "rollup-plugin-node-resolve": "^3.0.2",
     "rollup-plugin-replace": "^2.0.0",
     "rollup-plugin-visualizer": "^0.8.0",
-    "semantic-release": "^20.0"
+    "semantic-release": "^20.1"
   },
   "license": "MIT",
   "engines": {
