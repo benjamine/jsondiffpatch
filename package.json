@@ -57,7 +57,7 @@
     "babel-preset-stage-2": "^6.24.1",
     "chai": "^4.3.7",
     "codeclimate-test-reporter": "^0.5.1",
-    "eslint": "^8.34.0",
+    "eslint": "^8.35.0",
     "eslint-config-standard": "^17.0.0",
     "eslint-plugin-import": "^2.27.5",
     "eslint-plugin-node": "^11.1.0",
