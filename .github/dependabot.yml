@@ -12,6 +12,10 @@ updates:
       - dependency-name: "@types/node"
         versions:
           - ">=17.0.0"
+      # requires node@18
+      - dependency-name: semantic-release
+        versions:
+          - ">= 20.0.0"
     commit-message:
       prefix: build
       include: scope
