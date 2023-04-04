@@ -5,7 +5,7 @@ orbs:
 jobs:
   unit:
     docker:
-      - image: cimg/node:16.11
+      - image: cimg/node:18.14
     steps:
       - run: node --version
       - run: npm --version
@@ -16,7 +16,7 @@ jobs:
       - run: npm test
   release:
     docker:
-      - image: cimg/node:16.11
+      - image: cimg/node:18.14
     steps:
       - checkout
       - vault/get-secrets: # Loads vault secrets
