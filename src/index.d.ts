@@ -5,21 +5,21 @@ export interface BaseOperation {
 export interface AddOperation<T = any> extends BaseOperation{
   op: 'add';
   value: T;
-};
+}
 
 export interface RemoveOperation extends BaseOperation{
   op: 'remove';
-};
+}
 
 export interface ReplaceOperation<T = any> extends BaseOperation {
   op: 'replace';
   value: T;
-};
+}
 
 export interface MoveOperation extends BaseOperation {
   op: 'move';
   from: string;
-};
+}
 
 export interface CopyOperation extends BaseOperation {
   op: 'copy';
