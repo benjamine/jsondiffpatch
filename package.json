@@ -39,7 +39,7 @@
     "patch"
   ],
   "dependencies": {
-    "chalk": "^2.3.0",
+    "chalk": "^3.0.0",
     "diff-match-patch": "^1.0.0"
   },
   "devDependencies": {
