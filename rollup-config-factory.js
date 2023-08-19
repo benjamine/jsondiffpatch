@@ -31,7 +31,6 @@ export function createBrowserUmdBuildConfig(dirName = 'dist') {
       replace({ 'process.browser': true }),
       babel({
         exclude: 'node_modules/**',
-        plugins: ['external-helpers'],
       }),
       resolve(), // so Rollup can find node modules
       commonjs(), // so Rollup can convert node modules to ES modules
@@ -69,7 +68,6 @@ export function createSlimBrowserUmdBuildConfig(dirName = 'dist') {
       replace({ 'process.browser': true }),
       babel({
         exclude: 'node_modules/**',
-        plugins: ['external-helpers'],
       }),
       resolve(), // so Rollup can find node modules
       commonjs(), // so Rollup can convert node modules to ES modules
@@ -87,7 +85,6 @@ export function createModuleBuild(dirName = 'dist', includeCoverage = false) {
   let plugins = [
     babel({
       exclude: 'node_modules/**',
-      plugins: ['external-helpers'],
     }),
   ];
   if (includeCoverage) {
@@ -137,7 +134,6 @@ export function createTestBuild(dirName = 'dist', includeCoverage = false) {
   let plugins = [
     babel({
       exclude: 'node_modules/**',
-      plugins: ['external-helpers'],
     }),
   ];
   if (includeCoverage) {
@@ -181,7 +177,6 @@ export const createBrowserTestBuild = (
   let plugins = [
     babel({
       exclude: 'node_modules/**',
-      plugins: ['external-helpers'],
     }),
     replace({ 'process.browser': true }),
     resolve(), // so Rollup can find node modules
