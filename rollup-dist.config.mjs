@@ -3,7 +3,7 @@ import {
   createSlimBrowserUmdBuildConfig,
   createModuleBuild,
   createBrowserTestBuild,
-} from './rollup-config-factory';
+} from './rollup-config-factory.mjs';
 
 export default [
   createBrowserUmdBuildConfig(),
