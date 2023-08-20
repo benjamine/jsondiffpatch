@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import mkdirp from 'mkdirp';
+import { mkdirp } from 'mkdirp';
 import replace from 'rollup-plugin-replace';
 import resolve from 'rollup-plugin-node-resolve';
 import commonjs from 'rollup-plugin-commonjs';
@@ -225,7 +225,7 @@ function copyFromFolderToDist(folder) {
           return;
         }
         const distFilename = path.join(__dirname, 'dist', filename);
-        mkdirp(path.dirname(distFilename));
+        mkdirp.sync(path.dirname(distFilename));
         fs.writeFileSync(
           distFilename,
           fs.readFileSync(path.join(__dirname, folder, filename)),
@@ -246,7 +246,7 @@ function createEmptyModuleDist() {
           return;
         }
         const distFilename = path.join(__dirname, 'dist', 'empty.js');
-        mkdirp(path.dirname(distFilename));
+        mkdirp.sync(path.dirname(distFilename));
         fs.writeFileSync(distFilename, '');
         console.log('dist/empty.js (created)');
         executed = true;
