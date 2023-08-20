@@ -39,7 +39,7 @@ Plugin a new diff filter
     },
     {
       population: 403,
-    }
+    },
   );
   assertSame(delta, [0, 3, NUMERIC_DIFFERENCE]);
 
@@ -64,7 +64,7 @@ Plugin a new diff filter
     {
       population: 400,
     },
-    delta
+    delta,
   );
   assertSame(right, {
     population: 403,

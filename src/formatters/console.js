@@ -10,7 +10,7 @@ function chalkColor(name) {
   );
 }
 
-let colors = {
+const colors = {
   added: chalkColor('green'),
   deleted: chalkColor('red'),
   movedestination: chalkColor('gray'),
@@ -39,7 +39,7 @@ class ConsoleFormatter extends BaseFormatter {
     };
     context.out = function(...args) {
       for (let i = 0, l = args.length; i < l; i++) {
-        let lines = args[i].split('\n');
+        const lines = args[i].split('\n');
         let text = lines.join(`\n${this.indentPad || ''}`);
         if (this.color && this.color[0]) {
           text = this.color[0](text);
@@ -68,20 +68,20 @@ class ConsoleFormatter extends BaseFormatter {
   }
 
   formatTextDiffString(context, value) {
-    let lines = this.parseTextDiff(value);
+    const lines = this.parseTextDiff(value);
     context.indent();
     for (let i = 0, l = lines.length; i < l; i++) {
-      let line = lines[i];
+      const line = lines[i];
       context.pushColor(colors.textDiffLine);
       context.out(`${line.location.line},${line.location.chr} `);
       context.popColor();
-      let pieces = line.pieces;
+      const pieces = line.pieces;
       for (
         let pieceIndex = 0, piecesLength = pieces.length;
         pieceIndex < piecesLength;
         pieceIndex++
       ) {
-        let piece = pieces[pieceIndex];
+        const piece = pieces[pieceIndex];
         context.pushColor(colors[piece.type]);
         context.out(piece.text);
         context.popColor();

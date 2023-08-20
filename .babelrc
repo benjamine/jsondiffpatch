@@ -1,19 +1,6 @@
 {
   "presets": [
-    "stage-0",
-    "stage-1",
-    "stage-2",
-    [
-      "env",
-      {
-        "modules": false,
-        "targets": {
-          "node": "4.8",
-          "browsers": ["last 2 versions"],
-          "ie": 8
-        }
-      }
-    ]
+    ["@babel/preset-env", { "targets": "defaults" }]
   ],
-  "plugins": ["transform-object-rest-spread"]
+  "plugins": ["@babel/plugin-proposal-export-default-from"]
 }

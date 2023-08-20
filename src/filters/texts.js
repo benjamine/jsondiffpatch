@@ -1,11 +1,11 @@
 /* global diff_match_patch */
 import dmp from 'diff-match-patch';
 
-let TEXT_DIFF = 2;
-let DEFAULT_MIN_LENGTH = 60;
+const TEXT_DIFF = 2;
+const DEFAULT_MIN_LENGTH = 60;
 let cachedDiffPatch = null;
 
-let getDiffMatchPatch = function(required) {
+const getDiffMatchPatch = function(required) {
   /* jshint camelcase: false */
 
   if (!cachedDiffPatch) {
@@ -29,7 +29,7 @@ let getDiffMatchPatch = function(required) {
       if (!required) {
         return null;
       }
-      let error = new Error('text diff_match_patch library not found');
+      const error = new Error('text diff_match_patch library not found');
       // eslint-disable-next-line camelcase
       error.diff_match_patch_not_found = true;
       throw error;
@@ -39,13 +39,13 @@ let getDiffMatchPatch = function(required) {
         return instance.patch_toText(instance.patch_make(txt1, txt2));
       },
       patch: function(txt1, patch) {
-        let results = instance.patch_apply(
+        const results = instance.patch_apply(
           instance.patch_fromText(patch),
-          txt1
+          txt1,
         );
         for (let i = 0; i < results[1].length; i++) {
           if (!results[1][i]) {
-            let error = new Error('text patch failed');
+            const error = new Error('text patch failed');
             error.textPatchFailed = true;
           }
         }
@@ -60,7 +60,7 @@ export const diffFilter = function textsDiffFilter(context) {
   if (context.leftType !== 'string') {
     return;
   }
-  let minLength =
+  const minLength =
     (context.options &&
       context.options.textDiff &&
       context.options.textDiff.minLength) ||
@@ -70,14 +70,14 @@ export const diffFilter = function textsDiffFilter(context) {
     return;
   }
   // large text, try to use a text-diff algorithm
-  let diffMatchPatch = getDiffMatchPatch();
+  const diffMatchPatch = getDiffMatchPatch();
   if (!diffMatchPatch) {
     // diff-match-patch library not available,
     // fallback to regular string replace
     context.setResult([context.left, context.right]).exit();
     return;
   }
-  let diff = diffMatchPatch.diff;
+  const diff = diffMatchPatch.diff;
   context.setResult([diff(context.left, context.right), 0, TEXT_DIFF]).exit();
 };
 diffFilter.filterName = 'texts';
@@ -99,16 +99,15 @@ patchFilter.filterName = 'texts';
 const textDeltaReverse = function(delta) {
   let i;
   let l;
-  let lines;
   let line;
   let lineTmp;
   let header = null;
   const headerRegex = /^@@ +-(\d+),(\d+) +\+(\d+),(\d+) +@@$/;
   let lineHeader;
-  lines = delta.split('\n');
+  const lines = delta.split('\n');
   for (i = 0, l = lines.length; i < l; i++) {
     line = lines[i];
-    let lineStart = line.slice(0, 1);
+    const lineStart = line.slice(0, 1);
     if (lineStart === '@') {
       header = headerRegex.exec(line);
       lineHeader = i;

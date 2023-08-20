@@ -1,7 +1,6 @@
 {
-  "parser": "babel-eslint",
+  "parser": "@babel/eslint-parser",
   "extends": ["standard"],
-  "plugins": ["standard"],
   "rules": {
     "semi": [2, "always"],
     "space-before-function-paren": [2, "never"],

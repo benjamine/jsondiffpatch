@@ -4,7 +4,7 @@ export default function dateReviver(key, value) {
   if (typeof value === 'string') {
     // eslint-disable-next-line max-len
     parts = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})(?:\.(\d*))?(Z|([+-])(\d{2}):(\d{2}))$/.exec(
-      value
+      value,
     );
     if (parts) {
       return new Date(
@@ -15,8 +15,8 @@ export default function dateReviver(key, value) {
           +parts[4],
           +parts[5],
           +parts[6],
-          +(parts[7] || 0)
-        )
+          +(parts[7] || 0),
+        ),
       );
     }
   }

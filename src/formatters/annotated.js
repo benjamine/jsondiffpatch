@@ -17,7 +17,7 @@ class AnnotatedFormatter extends BaseFormatter {
       context.out(
         '<tr><td style="white-space: nowrap;">' +
           '<pre class="jsondiffpatch-annotated-indent"' +
-          ' style="display: inline-block">'
+          ' style="display: inline-block">',
       );
       context.out(context.indentPad);
       context.out('</pre><pre style="display: inline-block">');
@@ -38,12 +38,12 @@ class AnnotatedFormatter extends BaseFormatter {
     for (let i = 0, l = lines.length; i < l; i++) {
       const line = lines[i];
       context.out(
-        `<li><div class="jsondiffpatch-textdiff-location">` +
+        '<li><div class="jsondiffpatch-textdiff-location">' +
           `<span class="jsondiffpatch-textdiff-line-number">${
             line.location.line
           }</span><span class="jsondiffpatch-textdiff-char">${
             line.location.chr
-          }</span></div><div class="jsondiffpatch-textdiff-line">`
+          }</span></div><div class="jsondiffpatch-textdiff-line">`,
       );
       const pieces = line.pieces;
       for (
@@ -55,7 +55,7 @@ class AnnotatedFormatter extends BaseFormatter {
         context.out(
           `<span class="jsondiffpatch-textdiff-${piece.type}">${
             piece.text
-          }</span>`
+          }</span>`,
         );
       }
       context.out('</div></li>');
@@ -72,7 +72,7 @@ class AnnotatedFormatter extends BaseFormatter {
     if (nodeType === 'array') {
       context.row(
         '"_t": "a",',
-        'Array delta (member names indicate array indices)'
+        'Array delta (member names indicate array indices)',
       );
     }
   }
@@ -93,7 +93,7 @@ class AnnotatedFormatter extends BaseFormatter {
     if (nodeType === 'array') {
       context.row(
         '"_t": "a",',
-        'Array delta (member names indicate array indices)'
+        'Array delta (member names indicate array indices)',
       );
     }
   }
@@ -156,7 +156,7 @@ const deltaAnnotations = {
   },
   moved(delta, left, key, leftKey) {
     return (
-      `move from <span title="(position to remove at original state)">` +
+      'move from <span title="(position to remove at original state)">' +
       `index ${leftKey}</span> to <span title="(position to insert at final` +
       ` state)">index ${delta[1]}</span>`
     );
@@ -170,7 +170,7 @@ const deltaAnnotations = {
           : ` at property ${wrapPropertyName(leftKey)}`;
     return (
       `text diff${location}, format is <a href="https://code.google.com/` +
-      `p/google-diff-match-patch/wiki/Unidiff">a variation of Unidiff</a>`
+      'p/google-diff-match-patch/wiki/Unidiff">a variation of Unidiff</a>'
     );
   },
 };

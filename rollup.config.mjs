@@ -2,10 +2,10 @@ import {
   createModuleBuild,
   createTestBuild,
   createBrowserTestBuild,
-} from './rollup-config-factory';
+} from './rollup-config-factory.mjs';
 
-let outputDir = 'build';
-let includeTestCoverage = true;
+const outputDir = 'build';
+const includeTestCoverage = true;
 
 export default [
   createModuleBuild(outputDir, includeTestCoverage),

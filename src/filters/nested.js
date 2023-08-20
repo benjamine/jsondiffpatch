@@ -81,7 +81,7 @@ export const patchFilter = function nestedPatchFilter(context) {
 patchFilter.filterName = 'objects';
 
 export const collectChildrenPatchFilter = function collectChildrenPatchFilter(
-  context
+  context,
 ) {
   if (!context || !context.children) {
     return;
@@ -89,7 +89,7 @@ export const collectChildrenPatchFilter = function collectChildrenPatchFilter(
   if (context.delta._t) {
     return;
   }
-  let length = context.children.length;
+  const length = context.children.length;
   let child;
   for (let index = 0; index < length; index++) {
     child = context.children[index];
@@ -130,9 +130,9 @@ export function collectChildrenReverseFilter(context) {
   if (context.delta._t) {
     return;
   }
-  let length = context.children.length;
+  const length = context.children.length;
   let child;
-  let delta = {};
+  const delta = {};
   for (let index = 0; index < length; index++) {
     child = context.children[index];
     if (delta[child.childName] !== child.result) {

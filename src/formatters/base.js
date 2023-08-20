@@ -6,7 +6,7 @@ const getObjectKeys =
     ? obj => Object.keys(obj)
     : obj => {
       const names = [];
-      for (let property in obj) {
+      for (const property in obj) {
         if (Object.prototype.hasOwnProperty.call(obj, property)) {
           names.push(property);
         }
@@ -94,7 +94,7 @@ class BaseFormatter {
         leftValue,
         key,
         leftKey,
-        movedFrom
+        movedFrom,
       );
     } catch (err) {
       this.typeFormattterErrorFormatter(
@@ -104,7 +104,7 @@ class BaseFormatter {
         leftValue,
         key,
         leftKey,
-        movedFrom
+        movedFrom,
       );
       if (typeof console !== 'undefined' && console.error) {
         console.error(err.stack);
@@ -128,7 +128,7 @@ class BaseFormatter {
         key,
         leftKey,
         movedFrom,
-        isLast
+        isLast,
       );
     });
   }

@@ -1,13 +1,13 @@
-import fs from 'fs';
-import path from 'path';
-import mkdirp from 'mkdirp';
-import replace from 'rollup-plugin-replace';
-import resolve from 'rollup-plugin-node-resolve';
-import commonjs from 'rollup-plugin-commonjs';
-import babel from 'rollup-plugin-babel';
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import commonjs from '@rollup/plugin-commonjs';
+import replace from '@rollup/plugin-replace';
+import resolve from '@rollup/plugin-node-resolve';
+import babel from '@rollup/plugin-babel';
 import istanbul from 'rollup-plugin-istanbul';
-import pkg from './package.json';
-import Visualizer from 'rollup-plugin-visualizer';
+import pkg from './package.json' assert { type: 'json' };
+import { visualizer } from 'rollup-plugin-visualizer';
 
 /**
  * browser-friendly UMD build
@@ -31,7 +31,7 @@ export function createBrowserUmdBuildConfig(dirName = 'dist') {
       replace({ 'process.browser': true }),
       babel({
         exclude: 'node_modules/**',
-        plugins: ['external-helpers'],
+        babelHelpers: 'bundled',
       }),
       resolve(), // so Rollup can find node modules
       commonjs(), // so Rollup can convert node modules to ES modules
@@ -60,7 +60,7 @@ export function createSlimBrowserUmdBuildConfig(dirName = 'dist') {
       ...outputExternal(external),
     },
     plugins: [
-      new Visualizer({
+      visualizer({
         filename: pkg.browser
           .replace('.js', '.slim.stats.html')
           .replace(/^dist\//, `${dirName}/`),
@@ -69,7 +69,7 @@ export function createSlimBrowserUmdBuildConfig(dirName = 'dist') {
       replace({ 'process.browser': true }),
       babel({
         exclude: 'node_modules/**',
-        plugins: ['external-helpers'],
+        babelHelpers: 'bundled',
       }),
       resolve(), // so Rollup can find node modules
       commonjs(), // so Rollup can convert node modules to ES modules
@@ -84,10 +84,10 @@ export function createSlimBrowserUmdBuildConfig(dirName = 'dist') {
  *   and include it in outputted .js files
  */
 export function createModuleBuild(dirName = 'dist', includeCoverage = false) {
-  let plugins = [
+  const plugins = [
     babel({
       exclude: 'node_modules/**',
-      plugins: ['external-helpers'],
+      babelHelpers: 'bundled',
     }),
   ];
   if (includeCoverage) {
@@ -95,7 +95,7 @@ export function createModuleBuild(dirName = 'dist', includeCoverage = false) {
       istanbul({
         include: ['src/**/*.js', 'src/formatters/*.js'],
         exclude: ['test/**/*.js', 'node_modules/**'],
-      })
+      }),
     );
   }
   if (dirName === 'dist') {
@@ -134,10 +134,10 @@ export function createModuleBuild(dirName = 'dist', includeCoverage = false) {
  *   include it in outputted .js files
  */
 export function createTestBuild(dirName = 'dist', includeCoverage = false) {
-  let plugins = [
+  const plugins = [
     babel({
       exclude: 'node_modules/**',
-      plugins: ['external-helpers'],
+      babelHelpers: 'bundled',
     }),
   ];
   if (includeCoverage) {
@@ -145,7 +145,7 @@ export function createTestBuild(dirName = 'dist', includeCoverage = false) {
       istanbul({
         include: ['src/**/*.js', 'src/formatters/*.js'],
         exclude: ['test/**/*.js', 'node_modules/**'],
-      })
+      }),
     );
   }
 
@@ -176,12 +176,12 @@ export function createTestBuild(dirName = 'dist', includeCoverage = false) {
  */
 export const createBrowserTestBuild = (
   dirName = 'dist',
-  includeCoverage = false
+  includeCoverage = false,
 ) => {
-  let plugins = [
+  const plugins = [
     babel({
       exclude: 'node_modules/**',
-      plugins: ['external-helpers'],
+      babelHelpers: 'bundled',
     }),
     replace({ 'process.browser': true }),
     resolve(), // so Rollup can find node modules
@@ -192,7 +192,7 @@ export const createBrowserTestBuild = (
       istanbul({
         include: ['src/**/*.js', 'src/formatters/*.js'],
         exclude: ['test/**/*.js', 'node_modules/**'],
-      })
+      }),
     );
   }
 
@@ -212,7 +212,7 @@ export const createBrowserTestBuild = (
       sourcemap: true,
       format: 'umd',
       globals: {
-        'chalk': 'chalk',
+        chalk: 'chalk',
       },
     },
   };
@@ -225,15 +225,16 @@ function copyFromFolderToDist(folder) {
   return function(filename) {
     let executed = false;
     return {
-      ongenerate: () => {
+      name: 'copy-from-folder-to-dist',
+      generateBundle() {
         if (executed) {
           return;
         }
-        const distFilename = path.join(__dirname, 'dist', filename);
-        mkdirp(path.dirname(distFilename));
+        const distFileURL = new URL(path.join('dist', filename), import.meta.url);
+        fs.mkdirSync(path.dirname(fileURLToPath(distFileURL)), { recursive: true });
         fs.writeFileSync(
-          distFilename,
-          fs.readFileSync(path.join(__dirname, folder, filename))
+          distFileURL,
+          fs.readFileSync(new URL(path.join(folder, filename), import.meta.url)),
         );
         console.log(`${folder}/${filename} → dist/${filename} (copied)`);
         executed = true;
@@ -243,20 +244,19 @@ function copyFromFolderToDist(folder) {
 }
 
 function createEmptyModuleDist() {
-  return function() {
-    let executed = false;
-    return {
-      ongenerate: () => {
-        if (executed) {
-          return;
-        }
-        const distFilename = path.join(__dirname, 'dist', 'empty.js');
-        mkdirp(path.dirname(distFilename));
-        fs.writeFileSync(distFilename, '');
-        console.log(`dist/empty.js (created)`);
-        executed = true;
-      },
-    };
+  let executed = false;
+  return {
+    name: 'create-empty-module-dist',
+    generateBundle() {
+      if (executed) {
+        return;
+      }
+      const distFileURL = new URL(path.join('dist', 'empty.js'), import.meta.url);
+      fs.mkdirSync(path.dirname(fileURLToPath(distFileURL)), { recursive: true });
+      fs.writeFileSync(distFileURL, '');
+      console.log('dist/empty.js (created)');
+      executed = true;
+    },
   };
 }
 
