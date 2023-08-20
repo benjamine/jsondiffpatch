@@ -25,7 +25,8 @@
     "bump": "gulp bump",
     "test": "nyc mocha",
     "watch": "nodemon --exec \"mocha\"",
-    "prepublishOnly": "npm run build && npm run build-dist",
+    "prepack": "npm run build && npm run build-dist",
+    "prepublishOnly": "npm run test && npm run lint",
     "cover-report": "open coverage/lcov-report/index.html",
     "cover-publish": "nyc mocha && codeclimate < coverage/lcov.info"
   },
