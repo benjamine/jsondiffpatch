@@ -30,8 +30,8 @@ export function createBrowserUmdBuildConfig(dirName = 'dist') {
       createEmptyModuleDist(),
       replace({ 'process.browser': true }),
       babel({
-        babelHelpers: 'bundled',
         exclude: 'node_modules/**',
+        babelHelpers: 'bundled',
       }),
       resolve(), // so Rollup can find node modules
       commonjs(), // so Rollup can convert node modules to ES modules
@@ -68,8 +68,8 @@ export function createSlimBrowserUmdBuildConfig(dirName = 'dist') {
       createEmptyModuleDist(),
       replace({ 'process.browser': true }),
       babel({
-        babelHelpers: 'bundled',
         exclude: 'node_modules/**',
+        babelHelpers: 'bundled',
       }),
       resolve(), // so Rollup can find node modules
       commonjs(), // so Rollup can convert node modules to ES modules
@@ -86,8 +86,8 @@ export function createSlimBrowserUmdBuildConfig(dirName = 'dist') {
 export function createModuleBuild(dirName = 'dist', includeCoverage = false) {
   const plugins = [
     babel({
-      babelHelpers: 'bundled',
       exclude: 'node_modules/**',
+      babelHelpers: 'bundled',
     }),
   ];
   if (includeCoverage) {
@@ -136,8 +136,8 @@ export function createModuleBuild(dirName = 'dist', includeCoverage = false) {
 export function createTestBuild(dirName = 'dist', includeCoverage = false) {
   const plugins = [
     babel({
-      babelHelpers: 'bundled',
       exclude: 'node_modules/**',
+      babelHelpers: 'bundled',
     }),
   ];
   if (includeCoverage) {
@@ -180,8 +180,8 @@ export const createBrowserTestBuild = (
 ) => {
   const plugins = [
     babel({
-      babelHelpers: 'bundled',
       exclude: 'node_modules/**',
+      babelHelpers: 'bundled',
     }),
     replace({ 'process.browser': true }),
     resolve(), // so Rollup can find node modules
