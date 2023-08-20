@@ -22,9 +22,9 @@ class DiffPatcher {
           dates.diffFilter,
           texts.diffFilter,
           nested.objectsDiffFilter,
-          arrays.diffFilter
+          arrays.diffFilter,
         )
-        .shouldHaveResult()
+        .shouldHaveResult(),
     );
     this.processor.pipe(
       new Pipe('patch')
@@ -34,9 +34,9 @@ class DiffPatcher {
           trivial.patchFilter,
           texts.patchFilter,
           nested.patchFilter,
-          arrays.patchFilter
+          arrays.patchFilter,
         )
-        .shouldHaveResult()
+        .shouldHaveResult(),
     );
     this.processor.pipe(
       new Pipe('reverse')
@@ -46,9 +46,9 @@ class DiffPatcher {
           trivial.reverseFilter,
           texts.reverseFilter,
           nested.reverseFilter,
-          arrays.reverseFilter
+          arrays.reverseFilter,
         )
-        .shouldHaveResult()
+        .shouldHaveResult(),
     );
   }
 

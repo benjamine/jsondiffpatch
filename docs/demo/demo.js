@@ -129,7 +129,7 @@
       ],
     };
 
-    let json = [JSON.stringify(data, null, 2)];
+    const json = [JSON.stringify(data, null, 2)];
 
     data.summary = data.summary
       .replace('Brazil', 'Brasil')
@@ -189,9 +189,9 @@
         el.className = el.className.replace(
           new RegExp(
             '(^|\\b)' + className.split(' ').join('|') + '(\\b|$)',
-            'gi'
+            'gi',
           ),
-          ' '
+          ' ',
         );
       }
     },
@@ -236,7 +236,7 @@
           try {
             data = JSON.parse(this.responseText, jsondiffpatch.dateReviver);
           } catch (parseError) {
-            // eslint-disable-next-line standard/no-callback-literal
+            // eslint-disable-next-line n/no-callback-literal
             return callback('parse error: ' + parseError);
           }
           if (this.status >= 200 && this.status < 400) {
@@ -250,9 +250,9 @@
       request = null;
     },
     runScriptTags: function(el) {
-      let scripts = el.querySelectorAll('script');
+      const scripts = el.querySelectorAll('script');
       for (let i = 0; i < scripts.length; i++) {
-        let s = scripts[i];
+        const s = scripts[i];
         // eslint-disable-next-line no-eval
         eval(s.innerHTML);
       }
@@ -335,7 +335,7 @@
     this.editor = CodeMirror.fromTextArea(this.element, {
       mode: 'javascript',
       json: true,
-      readOnly: readOnly,
+      readOnly,
     });
     if (!readOnly) {
       this.editor.on('change', compare);
@@ -391,7 +391,7 @@
           case 'visual':
             visualdiff.innerHTML = jsondiffpatch.formatters.html.format(
               delta,
-              left
+              left,
             );
             if (!document.getElementById('showunchanged').checked) {
               jsondiffpatch.formatters.html.hideUnchanged();
@@ -400,7 +400,7 @@
             break;
           case 'annotated':
             annotateddiff.innerHTML = jsondiffpatch.formatters.annotated.format(
-              delta
+              delta,
             );
             break;
           case 'json':
@@ -458,21 +458,21 @@
   dom.on(
     document.getElementById('show-delta-type-visual'),
     'click',
-    showSelectedDeltaType
+    showSelectedDeltaType,
   );
   dom.on(
     document.getElementById('show-delta-type-annotated'),
     'click',
-    showSelectedDeltaType
+    showSelectedDeltaType,
   );
   dom.on(
     document.getElementById('show-delta-type-json'),
     'click',
-    showSelectedDeltaType
+    showSelectedDeltaType,
   );
 
   dom.on(document.getElementById('swap'), 'click', function() {
-    let leftValue = areas.left.getValue();
+    const leftValue = areas.left.getValue();
     areas.left.setValue(areas.right.getValue());
     areas.right.setValue(leftValue);
     compare();
@@ -488,7 +488,7 @@
     jsondiffpatch.formatters.html.showUnchanged(
       document.getElementById('showunchanged').checked,
       null,
-      800
+      800,
     );
   });
 
@@ -514,11 +514,11 @@
 
     dom.text(
       document.getElementById('json-panel-left').querySelector('h2'),
-      (data.left && data.left.name) || 'left.json'
+      (data.left && data.left.name) || 'left.json',
     );
     dom.text(
       document.getElementById('json-panel-right').querySelector('h2'),
-      (data.right && data.right.name) || 'right.json'
+      (data.right && data.right.name) || 'right.json',
     );
 
     document
@@ -539,21 +539,21 @@
   load.gist = function(id) {
     dom.getJson('https://api.github.com/gists/' + id, function(error, data) {
       if (error) {
-        let message = error + (data && data.message ? data.message : '');
+        const message = error + (data && data.message ? data.message : '');
         load.data({
           error: message,
         });
         return;
       }
-      let filenames = [];
-      for (let filename in data.files) {
-        let file = data.files[filename];
+      const filenames = [];
+      for (const filename in data.files) {
+        const file = data.files[filename];
         if (file.language === 'JSON') {
           filenames.push(filename);
         }
       }
       filenames.sort();
-      let files = [data.files[filenames[0]], data.files[filenames[1]]];
+      const files = [data.files[filenames[0]], data.files[filenames[1]]];
       /* jshint camelcase: false */
       load.data({
         url: data.html_url,
@@ -577,7 +577,7 @@
       const rightValue = decodeURIComponent(rightValueArg);
       const urlmatch = /https?:\/\/.*\/([^/]+\.json)(?:[?#].*)?/;
       const dataLoaded = {
-        description: description,
+        description,
         left: {},
         right: {},
       };
@@ -633,7 +633,7 @@
       gist: /^(?:https?:\/\/)?(?:gist\.github\.com\/)?(?:[\w0-9\-a-f]+\/)?([0-9a-f]+)$/i,
       leftright: /^(?:desc=(.*)?&)?left=(.*)&right=(.*)&?$/i,
     };
-    for (let loader in matchers) {
+    for (const loader in matchers) {
       const match = matchers[loader].exec(key);
       if (match) {
         return load[loader].apply(load, match.slice(1));
@@ -658,7 +658,7 @@
   dom.on(document.getElementById('examples'), 'change', function() {
     const example = trim(this.value);
     switch (example) {
-      case 'text':
+      case 'text': {
         const exampleJson = getExampleJson();
         load.data({
           left: {
@@ -671,6 +671,7 @@
           },
         });
         break;
+      }
       case 'gist':
         document.location = '?benjamine/9188826';
         break;
@@ -678,11 +679,11 @@
         document.location =
           '?desc=moving%20around&left=' +
           encodeURIComponent(
-            JSON.stringify([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
+            JSON.stringify([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
           ) +
           '&right=' +
           encodeURIComponent(
-            JSON.stringify([10, 0, 1, 7, 2, 4, 5, 6, 88, 9, 3])
+            JSON.stringify([10, 0, 1, 7, 2, 4, 5, 6, 88, 9, 3]),
           );
         break;
       case 'query':
@@ -693,14 +694,14 @@
             JSON.stringify({
               "don't": 'abuse',
               with: ['large', 'urls'],
-            })
+            }),
           ) +
           '&right=' +
           encodeURIComponent(
             JSON.stringify({
               "don't": 'use',
               with: ['>', 2, 'KB urls'],
-            })
+            }),
           );
         break;
       case 'urls':
@@ -708,11 +709,11 @@
           '?desc=http%20raw%20file%20urls&left=' +
           encodeURIComponent(
             'https://rawgithub.com/benjamine/JsonDiffPatch/' +
-              'c83e942971c627f61ef874df3cfdd50a95f1c5a2/package.json'
+              'c83e942971c627f61ef874df3cfdd50a95f1c5a2/package.json',
           ) +
           '&right=' +
           encodeURIComponent(
-            'https://rawgithub.com/benjamine/JsonDiffPatch/master/package.json'
+            'https://rawgithub.com/benjamine/JsonDiffPatch/master/package.json',
           );
         break;
       default:

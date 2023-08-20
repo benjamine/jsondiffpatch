@@ -66,10 +66,10 @@ const arrayForEach =
   typeof Array.prototype.forEach === 'function'
     ? (array, fn) => array.forEach(fn)
     : (array, fn) => {
-      for (let index = 0, length = array.length; index < length; index++) {
-        fn(array[index], index, array);
-      }
-    };
+        for (let index = 0, length = array.length; index < length; index++) {
+          fn(array[index], index, array);
+        }
+      };
 
 describe('DiffPatcher', () => {
   arrayForEach(objectKeys(examples), groupName => {
@@ -82,7 +82,7 @@ describe('DiffPatcher', () => {
         const name =
           example.name ||
           `${valueDescription(example.left)} -> ${valueDescription(
-            example.right
+            example.right,
           )}`;
         describe(name, () => {
           before(function() {
@@ -109,7 +109,7 @@ describe('DiffPatcher', () => {
             it('can patch', function() {
               const right = this.instance.patch(
                 jsondiffpatch.clone(example.left),
-                example.delta
+                example.delta,
               );
               expect(right).to.deep.equal(example.right);
             });
@@ -124,22 +124,22 @@ describe('DiffPatcher', () => {
                 expect(
                   this.instance.patch(
                     jsondiffpatch.clone(example.right),
-                    reverse
-                  )
+                    reverse,
+                  ),
                 ).to.deep.equal(example.left);
                 reverse = this.instance.diff(example.right, example.left);
                 expect(
                   this.instance.patch(
                     jsondiffpatch.clone(example.right),
-                    reverse
-                  )
+                    reverse,
+                  ),
                 ).to.deep.equal(example.left);
               }
             });
             it('can unpatch', function() {
               const left = this.instance.unpatch(
                 jsondiffpatch.clone(example.right),
-                example.delta
+                example.delta,
               );
               expect(left).to.deep.equal(example.left);
             });
@@ -267,7 +267,7 @@ describe('DiffPatcher', () => {
 
         const delta = this.instance.diff(
           { population: 400 },
-          { population: 403 }
+          { population: 403 },
         );
         expect(delta).to.deep.equal({ population: [0, 3, NUMERIC_DIFFERENCE] });
       });
@@ -285,7 +285,7 @@ describe('DiffPatcher', () => {
         numericPatchFilter.filterName = 'numeric';
         this.instance.processor.pipes.patch.before(
           'trivial',
-          numericPatchFilter
+          numericPatchFilter,
         );
 
         const delta = { population: [0, 3, NUMERIC_DIFFERENCE] };
@@ -311,7 +311,7 @@ describe('DiffPatcher', () => {
         numericReverseFilter.filterName = 'numeric';
         this.instance.processor.pipes.reverse.after(
           'trivial',
-          numericReverseFilter
+          numericReverseFilter,
         );
 
         const delta = { population: [0, 3, NUMERIC_DIFFERENCE] };
@@ -501,8 +501,8 @@ describe('DiffPatcher', () => {
 
         it('should sort the ops', () => {
           expectFormat(
-            { 'hl': [ { id: 1, bla: 'bla' }, { id: 2, bla: 'ga' } ] },
-            { 'hl': [ { id: 2, bla: 'bla' }, { id: 1, bla: 'ga' } ] },
+            { hl: [{ id: 1, bla: 'bla' }, { id: 2, bla: 'ga' }] },
+            { hl: [{ id: 2, bla: 'bla' }, { id: 1, bla: 'ga' }] },
             [
               moveOp('/hl/1', '/hl/0'),
               replaceOp('/hl/0/bla', 'bla'),
@@ -517,72 +517,72 @@ describe('DiffPatcher', () => {
 
       it('should add full path for moved op', () => {
         expectFormat(
-          {'hl': [1, 2]},
-          {'hl': [2, 1]},
+          { hl: [1, 2] },
+          { hl: [2, 1] },
           [moveOp('/hl/1', '/hl/0')]);
       });
 
       it('should put the full path in move op and sort by HL - #230', () => {
         const before = {
-          'middleName': 'z',
-          'referenceNumbers': [
+          middleName: 'z',
+          referenceNumbers: [
             {
-              'id': 'id-3',
-              'referenceNumber': '123',
-              'index': 'index-0',
+              id: 'id-3',
+              referenceNumber: '123',
+              index: 'index-0',
             },
             {
-              'id': 'id-1',
-              'referenceNumber': '456',
-              'index': 'index-1',
+              id: 'id-1',
+              referenceNumber: '456',
+              index: 'index-1',
             },
             {
-              'id': 'id-2',
-              'referenceNumber': '789',
-              'index': 'index-2',
+              id: 'id-2',
+              referenceNumber: '789',
+              index: 'index-2',
             },
           ],
         };
         const after = {
-          'middleName': 'x',
-          'referenceNumbers': [
+          middleName: 'x',
+          referenceNumbers: [
             {
-              'id': 'id-1',
-              'referenceNumber': '456',
-              'index': 'index-0',
+              id: 'id-1',
+              referenceNumber: '456',
+              index: 'index-0',
             },
             {
-              'id': 'id-3',
-              'referenceNumber': '123',
-              'index': 'index-1',
+              id: 'id-3',
+              referenceNumber: '123',
+              index: 'index-1',
             },
             {
-              'id': 'id-2',
-              'referenceNumber': '789',
-              'index': 'index-2',
+              id: 'id-2',
+              referenceNumber: '789',
+              index: 'index-2',
             },
           ],
         };
         const diff = [
           {
-            'op': 'move',
-            'from': '/referenceNumbers/1',
-            'path': '/referenceNumbers/0',
+            op: 'move',
+            from: '/referenceNumbers/1',
+            path: '/referenceNumbers/0',
           },
           {
-            'op': 'replace',
-            'path': '/middleName',
-            'value': 'x',
+            op: 'replace',
+            path: '/middleName',
+            value: 'x',
           },
           {
-            'op': 'replace',
-            'path': '/referenceNumbers/0/index',
-            'value': 'index-0',
+            op: 'replace',
+            path: '/referenceNumbers/0/index',
+            value: 'index-0',
           },
           {
-            'op': 'replace',
-            'path': '/referenceNumbers/1/index',
-            'value': 'index-1',
+            op: 'replace',
+            path: '/referenceNumbers/1/index',
+            value: 'index-1',
           },
         ];
         instance = new DiffPatcher({
@@ -617,10 +617,10 @@ describe('DiffPatcher', () => {
           html.push(
             `<span class="jsondiffpatch-textdiff-line-number">${
               diff.start
-            }</span>`
+            }</span>`,
           );
           html.push(
-            `<span class="jsondiffpatch-textdiff-char">${diff.length}</span>`
+            `<span class="jsondiffpatch-textdiff-char">${diff.length}</span>`,
           );
           html.push('</div>');
           html.push('<div class="jsondiffpatch-textdiff-line">');
@@ -629,7 +629,7 @@ describe('DiffPatcher', () => {
             html.push(
               `<span class="jsondiffpatch-textdiff-${data.type}">${
                 data.text
-              }</span>`
+              }</span>`,
             );
           });
 
@@ -637,9 +637,9 @@ describe('DiffPatcher', () => {
           html.push('</li>');
         });
         return (
-          `<div class="jsondiffpatch-delta jsondiffpatch-textdiff">` +
-          `<div class="jsondiffpatch-value">` +
-          `<ul class="jsondiffpatch-textdiff">` +
+          '<div class="jsondiffpatch-delta jsondiffpatch-textdiff">' +
+          '<div class="jsondiffpatch-value">' +
+          '<ul class="jsondiffpatch-textdiff">' +
           `${html.join('')}</ul></div></div>`
         );
       };
@@ -745,7 +745,7 @@ describe('lcs', () => {
 
     // indices1 and indices2 show where the sequence
     // elements are located in the original arrays
-    expect(lcs.get([ 1 ], [ -9, 1 ])).to.deep.equal({
+    expect(lcs.get([1], [-9, 1])).to.deep.equal({
       sequence: [1],
       indices1: [0],
       indices2: [1],
@@ -753,7 +753,7 @@ describe('lcs', () => {
 
     // indices1 and indices2 show where the sequence
     // elements are located in the original arrays
-    expect(lcs.get([ 1, 9, 3, 4, 5 ], [ -9, 1, 34, 3, 2, 1, 5, 93 ]))
+    expect(lcs.get([1, 9, 3, 4, 5], [-9, 1, 34, 3, 2, 1, 5, 93]))
       .to.deep.equal({
         sequence: [1, 3, 5],
         indices1: [0, 2, 4],
@@ -764,7 +764,7 @@ describe('lcs', () => {
   it('should compute diff for large array', () => {
     const ARRAY_LENGTH = 5000; // js stack is about 50k
     function randomArray() {
-      let result = [];
+      const result = [];
       for (let i = 0; i < ARRAY_LENGTH; i++) {
         if (Math.random() > 0.5) {
           result.push('A');

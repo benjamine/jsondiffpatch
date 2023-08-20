@@ -82,7 +82,7 @@ export function createSlimBrowserUmdBuildConfig(dirName = 'dist') {
  *   and include it in outputted .js files
  */
 export function createModuleBuild(dirName = 'dist', includeCoverage = false) {
-  let plugins = [
+  const plugins = [
     babel({
       exclude: 'node_modules/**',
     }),
@@ -92,7 +92,7 @@ export function createModuleBuild(dirName = 'dist', includeCoverage = false) {
       istanbul({
         include: ['src/**/*.js', 'src/formatters/*.js'],
         exclude: ['test/**/*.js', 'node_modules/**'],
-      })
+      }),
     );
   }
   if (dirName === 'dist') {
@@ -131,7 +131,7 @@ export function createModuleBuild(dirName = 'dist', includeCoverage = false) {
  *   include it in outputted .js files
  */
 export function createTestBuild(dirName = 'dist', includeCoverage = false) {
-  let plugins = [
+  const plugins = [
     babel({
       exclude: 'node_modules/**',
     }),
@@ -141,7 +141,7 @@ export function createTestBuild(dirName = 'dist', includeCoverage = false) {
       istanbul({
         include: ['src/**/*.js', 'src/formatters/*.js'],
         exclude: ['test/**/*.js', 'node_modules/**'],
-      })
+      }),
     );
   }
 
@@ -172,9 +172,9 @@ export function createTestBuild(dirName = 'dist', includeCoverage = false) {
  */
 export const createBrowserTestBuild = (
   dirName = 'dist',
-  includeCoverage = false
+  includeCoverage = false,
 ) => {
-  let plugins = [
+  const plugins = [
     babel({
       exclude: 'node_modules/**',
     }),
@@ -187,7 +187,7 @@ export const createBrowserTestBuild = (
       istanbul({
         include: ['src/**/*.js', 'src/formatters/*.js'],
         exclude: ['test/**/*.js', 'node_modules/**'],
-      })
+      }),
     );
   }
 
@@ -207,7 +207,7 @@ export const createBrowserTestBuild = (
       sourcemap: true,
       format: 'umd',
       globals: {
-        'chalk': 'chalk',
+        chalk: 'chalk',
       },
     },
   };
@@ -228,7 +228,7 @@ function copyFromFolderToDist(folder) {
         mkdirp(path.dirname(distFilename));
         fs.writeFileSync(
           distFilename,
-          fs.readFileSync(path.join(__dirname, folder, filename))
+          fs.readFileSync(path.join(__dirname, folder, filename)),
         );
         console.log(`${folder}/${filename} → dist/${filename} (copied)`);
         executed = true;
@@ -248,7 +248,7 @@ function createEmptyModuleDist() {
         const distFilename = path.join(__dirname, 'dist', 'empty.js');
         mkdirp(path.dirname(distFilename));
         fs.writeFileSync(distFilename, '');
-        console.log(`dist/empty.js (created)`);
+        console.log('dist/empty.js (created)');
         executed = true;
       },
     };

@@ -132,7 +132,7 @@ const data = {
   ],
 };
 
-let left = JSON.parse(JSON.stringify(data), jsondiffpatch.dateReviver);
+const left = JSON.parse(JSON.stringify(data), jsondiffpatch.dateReviver);
 
 data.summary = data.summary
   .replace('Brazil', 'Brasil')
@@ -156,6 +156,6 @@ delete data.surface;
 data.spanishName = 'Sudamérica';
 data.demographics.population += 2342;
 
-let right = data;
-let delta = instance.diff(left, right);
+const right = data;
+const delta = instance.diff(left, right);
 jsondiffpatch.console.log(delta);

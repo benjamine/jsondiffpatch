@@ -4,8 +4,8 @@ import {
   createBrowserTestBuild,
 } from './rollup-config-factory';
 
-let outputDir = 'build';
-let includeTestCoverage = true;
+const outputDir = 'build';
+const includeTestCoverage = true;
 
 export default [
   createModuleBuild(outputDir, includeTestCoverage),
