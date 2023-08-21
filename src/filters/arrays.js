@@ -7,7 +7,9 @@ import lcs from './lcs';
 const ARRAY_MOVE = 3;
 
 const isArray =
-  typeof Array.isArray === 'function' ? Array.isArray : a => a instanceof Array;
+  typeof Array.isArray === 'function'
+    ? Array.isArray
+    : (a) => a instanceof Array;
 
 const arrayIndexOf =
   typeof Array.prototype.indexOf === 'function'

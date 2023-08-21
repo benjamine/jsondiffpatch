@@ -4,7 +4,7 @@ import BaseFormatter from './base';
 function chalkColor(name) {
   return (
     (chalk && chalk[name]) ||
-    function(...args) {
+    function (...args) {
       return args;
     }
   );
@@ -28,16 +28,16 @@ class ConsoleFormatter extends BaseFormatter {
 
   prepareContext(context) {
     super.prepareContext(context);
-    context.indent = function(levels) {
+    context.indent = function (levels) {
       this.indentLevel =
         (this.indentLevel || 0) + (typeof levels === 'undefined' ? 1 : levels);
       this.indentPad = new Array(this.indentLevel + 1).join('  ');
       this.outLine();
     };
-    context.outLine = function() {
+    context.outLine = function () {
       this.buffer.push(`\n${this.indentPad || ''}`);
     };
-    context.out = function(...args) {
+    context.out = function (...args) {
       for (let i = 0, l = args.length; i < l; i++) {
         const lines = args[i].split('\n');
         let text = lines.join(`\n${this.indentPad || ''}`);
@@ -47,11 +47,11 @@ class ConsoleFormatter extends BaseFormatter {
         this.buffer.push(text);
       }
     };
-    context.pushColor = function(color) {
+    context.pushColor = function (color) {
       this.color = this.color || [];
       this.color.unshift(color);
     };
-    context.popColor = function() {
+    context.popColor = function () {
       this.color = this.color || [];
       this.color.shift();
     };

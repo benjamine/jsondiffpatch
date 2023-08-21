@@ -1,5 +1,7 @@
 const isArray =
-  typeof Array.isArray === 'function' ? Array.isArray : a => a instanceof Array;
+  typeof Array.isArray === 'function'
+    ? Array.isArray
+    : (a) => a instanceof Array;
 
 function cloneRegExp(re) {
   const regexMatch = /^\/(.*)\/([gimyu]*)$/.exec(re.toString());

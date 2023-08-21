@@ -16,11 +16,7 @@ class HtmlFormatter extends BaseFormatter {
       const line = lines[i];
       context.out(
         '<li><div class="jsondiffpatch-textdiff-location">' +
-          `<span class="jsondiffpatch-textdiff-line-number">${
-            line.location.line
-          }</span><span class="jsondiffpatch-textdiff-char">${
-            line.location.chr
-          }</span></div><div class="jsondiffpatch-textdiff-line">`,
+          `<span class="jsondiffpatch-textdiff-line-number">${line.location.line}</span><span class="jsondiffpatch-textdiff-char">${line.location.chr}</span></div><div class="jsondiffpatch-textdiff-line">`,
       );
       const pieces = line.pieces;
       for (
@@ -207,7 +203,7 @@ const adjustArrows = function jsondiffpatchHtmlFormatterAdjustArrows(nodeArg) {
       );
       const container = arrowParent.parentNode;
       let destinationElem;
-      eachChildren(container, child => {
+      eachChildren(container, (child) => {
         if (child.getAttribute('data-key') === destination) {
           destinationElem = child;
         }

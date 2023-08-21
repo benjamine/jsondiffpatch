@@ -55,7 +55,7 @@ class Pipe {
   }
 
   list() {
-    return this.filters.map(f => f.filterName);
+    return this.filters.map((f) => f.filterName);
   }
 
   after(filterName) {
@@ -111,7 +111,7 @@ class Pipe {
       return;
     }
     const pipe = this;
-    this.resultCheck = context => {
+    this.resultCheck = (context) => {
       if (!context.hasResult) {
         console.log(context);
         const error = new Error(`${pipe.name} failed`);

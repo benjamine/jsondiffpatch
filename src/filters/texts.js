@@ -5,7 +5,7 @@ const TEXT_DIFF = 2;
 const DEFAULT_MIN_LENGTH = 60;
 let cachedDiffPatch = null;
 
-const getDiffMatchPatch = function(required) {
+const getDiffMatchPatch = function (required) {
   /* jshint camelcase: false */
 
   if (!cachedDiffPatch) {
@@ -35,10 +35,10 @@ const getDiffMatchPatch = function(required) {
       throw error;
     }
     cachedDiffPatch = {
-      diff: function(txt1, txt2) {
+      diff: function (txt1, txt2) {
         return instance.patch_toText(instance.patch_make(txt1, txt2));
       },
-      patch: function(txt1, patch) {
+      patch: function (txt1, patch) {
         const results = instance.patch_apply(
           instance.patch_fromText(patch),
           txt1,
@@ -96,7 +96,7 @@ export const patchFilter = function textsPatchFilter(context) {
 };
 patchFilter.filterName = 'texts';
 
-const textDeltaReverse = function(delta) {
+const textDeltaReverse = function (delta) {
   let i;
   let l;
   let line;
