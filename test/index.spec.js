@@ -1,15 +1,11 @@
-import chai from 'chai';
-
 import * as jsondiffpatch from '../src/main';
 import lcs from '../src/filters/lcs';
 
 import examples from './examples/diffpatch';
 
-const expect = chai.expect;
-
 describe('jsondiffpatch', () => {
   it('has a diff method', () => {
-    expect(jsondiffpatch.diff).to.be.a('function');
+    expect(jsondiffpatch.diff).toBeInstanceOf(Function);
   });
 });
 
@@ -90,17 +86,17 @@ describe('DiffPatcher', () => {
             it(`diff should fail with: ${example.error}`, function() {
               expect(() => {
                 instance.diff(example.left, example.right);
-              }).to.throw(example.error);
+              }).toThrow(example.error);
             });
             return;
           }
           it('can diff', function() {
             const delta = instance.diff(example.left, example.right);
-            expect(delta).to.deep.equal(example.delta);
+            expect(delta).toEqual(example.delta);
           });
           it('can diff backwards', function() {
             const reverse = instance.diff(example.right, example.left);
-            expect(reverse).to.deep.equal(example.reverse);
+            expect(reverse).toEqual(example.reverse);
           });
           if (!example.noPatch) {
             it('can patch', function() {
@@ -108,12 +104,12 @@ describe('DiffPatcher', () => {
                 jsondiffpatch.clone(example.left),
                 example.delta,
               );
-              expect(right).to.deep.equal(example.right);
+              expect(right).toEqual(example.right);
             });
             it('can reverse delta', function() {
               let reverse = instance.reverse(example.delta);
               if (example.exactReverse !== false) {
-                expect(reverse).to.deep.equal(example.reverse);
+                expect(reverse).toEqual(example.reverse);
               } else {
                 // reversed delta and the swapped-diff delta are
                 // not always equal, to verify they're equivalent,
@@ -123,14 +119,14 @@ describe('DiffPatcher', () => {
                     jsondiffpatch.clone(example.right),
                     reverse,
                   ),
-                ).to.deep.equal(example.left);
+                ).toEqual(example.left);
                 reverse = instance.diff(example.right, example.left);
                 expect(
                   instance.patch(
                     jsondiffpatch.clone(example.right),
                     reverse,
                   ),
-                ).to.deep.equal(example.left);
+                ).toEqual(example.left);
               }
             });
             it('can unpatch', function() {
@@ -138,7 +134,7 @@ describe('DiffPatcher', () => {
                 jsondiffpatch.clone(example.right),
                 example.delta,
               );
-              expect(left).to.deep.equal(example.left);
+              expect(left).toEqual(example.left);
             });
           }
         });
@@ -162,14 +158,14 @@ describe('DiffPatcher', () => {
         },
       };
       const cloned = jsondiffpatch.clone(obj);
-      expect(cloned).to.deep.equal(obj);
+      expect(cloned).toEqual(obj);
     });
     it('clones RegExp', () => {
       const obj = {
         pattern: /expr/gim,
       };
       const cloned = jsondiffpatch.clone(obj);
-      expect(cloned).to.deep.equal({
+      expect(cloned).toEqual({
         pattern: /expr/gim,
       });
     });
@@ -196,7 +192,7 @@ describe('DiffPatcher', () => {
       const delta = instance.diff(left, right);
       left.oldProp.value = 1;
       right.newProp.value = 8;
-      expect(delta).to.deep.equal({
+      expect(delta).toEqual({
         oldProp: [{ value: 3 }, 0, 0],
         newProp: [{ value: 5 }],
       });
@@ -206,19 +202,19 @@ describe('DiffPatcher', () => {
   describe('static shortcuts', () => {
     it('diff', () => {
       const delta = jsondiffpatch.diff(4, 5);
-      expect(delta).to.deep.equal([4, 5]);
+      expect(delta).toEqual([4, 5]);
     });
     it('patch', () => {
       const right = jsondiffpatch.patch(4, [4, 5]);
-      expect(right).to.eql(5);
+      expect(right).toEqual(5);
     });
     it('unpatch', () => {
       const left = jsondiffpatch.unpatch(5, [4, 5]);
-      expect(left).to.eql(4);
+      expect(left).toEqual(4);
     });
     it('reverse', () => {
       const reverseDelta = jsondiffpatch.reverse([4, 5]);
-      expect(reverseDelta).to.deep.equal([5, 4]);
+      expect(reverseDelta).toEqual([5, 4]);
     });
   });
 
@@ -231,7 +227,7 @@ describe('DiffPatcher', () => {
 
     describe('getting pipe filter list', () => {
       it('returns builtin filters', function() {
-        expect(instance.processor.pipes.diff.list()).to.deep.equal([
+        expect(instance.processor.pipes.diff.list()).toEqual([
           'collectChildren',
           'trivial',
           'dates',
@@ -269,7 +265,7 @@ describe('DiffPatcher', () => {
           { population: 400 },
           { population: 403 },
         );
-        expect(delta).to.deep.equal({ population: [0, 3, NUMERIC_DIFFERENCE] });
+        expect(delta).toEqual({ population: [0, 3, NUMERIC_DIFFERENCE] });
       });
 
       it('patch', function() {
@@ -290,7 +286,7 @@ describe('DiffPatcher', () => {
 
         const delta = { population: [0, 3, NUMERIC_DIFFERENCE] };
         const right = instance.patch({ population: 600 }, delta);
-        expect(right).to.deep.equal({ population: 603 });
+        expect(right).toEqual({ population: 603 });
       });
 
       it('unpatch', function() {
@@ -316,18 +312,18 @@ describe('DiffPatcher', () => {
 
         const delta = { population: [0, 3, NUMERIC_DIFFERENCE] };
         const reverseDelta = instance.reverse(delta);
-        expect(reverseDelta).to.deep.equal({
+        expect(reverseDelta).toEqual({
           population: [0, -3, NUMERIC_DIFFERENCE],
         });
         const right = { population: 703 };
         instance.unpatch(right, delta);
-        expect(right).to.deep.equal({ population: 700 });
+        expect(right).toEqual({ population: 700 });
       });
     });
 
     describe('removing and replacing pipe filters', () => {
       it('removes specified filter', function() {
-        expect(instance.processor.pipes.diff.list()).to.deep.equal([
+        expect(instance.processor.pipes.diff.list()).toEqual([
           'collectChildren',
           'numeric',
           'trivial',
@@ -337,7 +333,7 @@ describe('DiffPatcher', () => {
           'arrays',
         ]);
         instance.processor.pipes.diff.remove('dates');
-        expect(instance.processor.pipes.diff.list()).to.deep.equal([
+        expect(instance.processor.pipes.diff.list()).toEqual([
           'collectChildren',
           'numeric',
           'trivial',
@@ -352,7 +348,7 @@ describe('DiffPatcher', () => {
           context.setResult(['foo']).exit();
         }
         fooFilter.filterName = 'foo';
-        expect(instance.processor.pipes.diff.list()).to.deep.equal([
+        expect(instance.processor.pipes.diff.list()).toEqual([
           'collectChildren',
           'numeric',
           'trivial',
@@ -361,7 +357,7 @@ describe('DiffPatcher', () => {
           'arrays',
         ]);
         instance.processor.pipes.diff.replace('trivial', fooFilter);
-        expect(instance.processor.pipes.diff.list()).to.deep.equal([
+        expect(instance.processor.pipes.diff.list()).toEqual([
           'collectChildren',
           'numeric',
           'foo',
@@ -386,7 +382,7 @@ describe('DiffPatcher', () => {
       const expectFormat = (before, after, expected) => {
         const diff = instance.diff(before, after);
         const format = formatter.format(diff);
-        expect(format).to.be.eql(expected);
+        expect(format).toEqual(expected);
       };
 
       const removeOp = path => ({
@@ -606,7 +602,7 @@ describe('DiffPatcher', () => {
       const expectFormat = (before, after, expected) => {
         const diff = instance.diff(before, after);
         const format = formatter.format(diff);
-        expect(format).to.be.eql(expected);
+        expect(format).toEqual(expected);
       };
 
       const expectedHtml = expectedDiff => {
@@ -731,13 +727,13 @@ describe('DiffPatcher', () => {
 
 describe('lcs', () => {
   it('should lcs arrays ', () => {
-    expect(lcs.get([], [])).to.deep.equal({
+    expect(lcs.get([], [])).toEqual({
       sequence: [],
       indices1: [],
       indices2: [],
     });
 
-    expect(lcs.get([1], [2])).to.deep.equal({
+    expect(lcs.get([1], [2])).toEqual({
       sequence: [],
       indices1: [],
       indices2: [],
@@ -745,7 +741,7 @@ describe('lcs', () => {
 
     // indices1 and indices2 show where the sequence
     // elements are located in the original arrays
-    expect(lcs.get([1], [-9, 1])).to.deep.equal({
+    expect(lcs.get([1], [-9, 1])).toEqual({
       sequence: [1],
       indices1: [0],
       indices2: [1],
@@ -753,12 +749,11 @@ describe('lcs', () => {
 
     // indices1 and indices2 show where the sequence
     // elements are located in the original arrays
-    expect(lcs.get([1, 9, 3, 4, 5], [-9, 1, 34, 3, 2, 1, 5, 93]))
-      .to.deep.equal({
-        sequence: [1, 3, 5],
-        indices1: [0, 2, 4],
-        indices2: [1, 3, 6],
-      });
+    expect(lcs.get([1, 9, 3, 4, 5], [-9, 1, 34, 3, 2, 1, 5, 93])).toEqual({
+      sequence: [1, 3, 5],
+      indices1: [0, 2, 4],
+      indices2: [1, 3, 6],
+    });
   });
 
   it('should compute diff for large array', () => {
