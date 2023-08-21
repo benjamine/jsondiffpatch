@@ -7,7 +7,7 @@ import resolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
 import { visualizer } from 'rollup-plugin-visualizer';
 
-import pkg from './package.json';
+import pkg from './package.json' assert { type: 'json' };
 
 const copySrcFileToDist = copyFromFolderToDist('src');
 const copyDocsFileToDist = copyFromFolderToDist('docs');
