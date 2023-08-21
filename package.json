@@ -20,9 +20,7 @@
   "scripts": {
     "build": "rollup -c",
     "build-dist": "rollup -c rollup-dist.config.mjs",
-    "test-browser": "gulp test-browser",
     "lint": "eslint .",
-    "bump": "gulp bump",
     "test": "nyc mocha",
     "watch": "nodemon --exec \"mocha\"",
     "prepack": "npm run build && npm run build-dist",
