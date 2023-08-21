@@ -21,6 +21,8 @@
     "build": "rollup -c",
     "lint": "eslint .",
     "test": "jest --coverage",
+    "format": "prettier . --write",
+    "format-check": "prettier . --check",
     "prepack": "npm run build",
     "prepublishOnly": "npm run test && npm run lint"
   },
@@ -46,6 +48,7 @@
     "@rollup/plugin-node-resolve": "^15.2.0",
     "@rollup/plugin-replace": "^5.0.2",
     "eslint": "^8.47.0",
+    "eslint-config-prettier": "^9.0.0",
     "eslint-config-standard": "^17.1.0",
     "eslint-plugin-jest": "^27.2.3",
     "jest": "^29.6.2",
