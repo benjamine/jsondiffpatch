@@ -35,7 +35,7 @@
   ],
   "dependencies": {
     "chalk": "^3.0.0",
-    "diff-match-patch": "^1.0.0"
+    "diff-match-patch": "^1.0.5"
   },
   "devDependencies": {
     "@babel/core": "^7.22.10",
