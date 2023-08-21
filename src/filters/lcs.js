@@ -6,11 +6,11 @@ reference: http://en.wikipedia.org/wiki/Longest_common_subsequence_problem
 
 */
 
-const defaultMatch = function(array1, array2, index1, index2) {
+const defaultMatch = function (array1, array2, index1, index2) {
   return array1[index1] === array2[index2];
 };
 
-const lengthMatrix = function(array1, array2, match, context) {
+const lengthMatrix = function (array1, array2, match, context) {
   const len1 = array1.length;
   const len2 = array2.length;
   let x, y;
@@ -37,7 +37,7 @@ const lengthMatrix = function(array1, array2, match, context) {
   return matrix;
 };
 
-const backtrack = function(matrix, array1, array2, context) {
+const backtrack = function (matrix, array1, array2, context) {
   let index1 = array1.length;
   let index2 = array2.length;
   const subsequence = {
@@ -47,8 +47,13 @@ const backtrack = function(matrix, array1, array2, context) {
   };
 
   while (index1 !== 0 && index2 !== 0) {
-    const sameLetter =
-      matrix.match(array1, array2, index1 - 1, index2 - 1, context);
+    const sameLetter = matrix.match(
+      array1,
+      array2,
+      index1 - 1,
+      index2 - 1,
+      context,
+    );
     if (sameLetter) {
       subsequence.sequence.unshift(array1[index1 - 1]);
       subsequence.indices1.unshift(index1 - 1);
@@ -68,7 +73,7 @@ const backtrack = function(matrix, array1, array2, context) {
   return subsequence;
 };
 
-const get = function(array1, array2, match, context) {
+const get = function (array1, array2, match, context) {
   const innerContext = context || {};
   const matrix = lengthMatrix(
     array1,
@@ -76,12 +81,7 @@ const get = function(array1, array2, match, context) {
     match || defaultMatch,
     innerContext,
   );
-  const result = backtrack(
-    matrix,
-    array1,
-    array2,
-    innerContext,
-  );
+  const result = backtrack(matrix, array1, array2, innerContext);
   if (typeof array1 === 'string' && typeof array2 === 'string') {
     result.sequence = result.sequence.join('');
   }

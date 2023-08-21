@@ -24,8 +24,8 @@ export default [
         chalk: 'chalk',
       },
       paths: {
-        chalk: './empty'
-      }
+        chalk: './empty',
+      },
     },
     plugins: [
       createEmptyModuleDist(),
@@ -42,22 +42,20 @@ export default [
     external: ['chalk', 'diff-match-patch'],
     output: {
       name: pkg.name,
-      file: pkg.browser
-        .replace('.js', '.slim.js'),
+      file: pkg.browser.replace('.js', '.slim.js'),
       format: 'umd',
       globals: {
         chalk: 'chalk',
-        'diff-match-patch': 'diff-match-patch'
+        'diff-match-patch': 'diff-match-patch',
       },
       paths: {
         chalk: './empty',
-        'diff-match-patch': './empty'
+        'diff-match-patch': './empty',
       },
     },
     plugins: [
       visualizer({
-        filename: pkg.browser
-          .replace('.js', '.slim.stats.html')
+        filename: pkg.browser.replace('.js', '.slim.stats.html'),
       }),
       createEmptyModuleDist(),
       babel({
@@ -100,7 +98,7 @@ export default [
 ];
 
 function copyFromFolderToDist(folder) {
-  return function(filename) {
+  return function (filename) {
     let executed = false;
     return {
       name: 'copy-from-folder-to-dist',
@@ -108,11 +106,18 @@ function copyFromFolderToDist(folder) {
         if (executed) {
           return;
         }
-        const distFileURL = new URL(path.join('dist', filename), import.meta.url);
-        fs.mkdirSync(path.dirname(fileURLToPath(distFileURL)), { recursive: true });
+        const distFileURL = new URL(
+          path.join('dist', filename),
+          import.meta.url,
+        );
+        fs.mkdirSync(path.dirname(fileURLToPath(distFileURL)), {
+          recursive: true,
+        });
         fs.writeFileSync(
           distFileURL,
-          fs.readFileSync(new URL(path.join(folder, filename), import.meta.url)),
+          fs.readFileSync(
+            new URL(path.join(folder, filename), import.meta.url),
+          ),
         );
         console.log(`${folder}/${filename} → dist/${filename} (copied)`);
         executed = true;
@@ -129,8 +134,13 @@ function createEmptyModuleDist() {
       if (executed) {
         return;
       }
-      const distFileURL = new URL(path.join('dist', 'empty.js'), import.meta.url);
-      fs.mkdirSync(path.dirname(fileURLToPath(distFileURL)), { recursive: true });
+      const distFileURL = new URL(
+        path.join('dist', 'empty.js'),
+        import.meta.url,
+      );
+      fs.mkdirSync(path.dirname(fileURLToPath(distFileURL)), {
+        recursive: true,
+      });
       fs.writeFileSync(distFileURL, '');
       console.log('dist/empty.js (created)');
       executed = true;

@@ -1,13 +1,13 @@
 /*
 Plugin a new diff filter
 */
-(function() {
-  const assertSame = function() {};
+(function () {
+  const assertSame = function () {};
   /* global jsondiffpatch */
   const diffpatcher = jsondiffpatch.create();
   const NUMERIC_DIFFERENCE = -8;
 
-  const numericDiffFilter = function(context) {
+  const numericDiffFilter = function (context) {
     if (typeof context.left === 'number' && typeof context.right === 'number') {
       context
         .setResult([0, context.right - context.left, NUMERIC_DIFFERENCE])
@@ -47,7 +47,7 @@ Plugin a new diff filter
   Let's make the corresponding patch filter that will handle the new delta type
 */
 
-  const numericPatchFilter = function(context) {
+  const numericPatchFilter = function (context) {
     if (
       context.delta &&
       Array.isArray(context.delta) &&
@@ -82,7 +82,7 @@ To complete the plugin, let's add the reverse filter, so numeric deltas can
 (this is needed for unpatching too)
 */
 
-  const numericReverseFilter = function(context) {
+  const numericReverseFilter = function (context) {
     if (context.nested) {
       return;
     }

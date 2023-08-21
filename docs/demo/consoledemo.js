@@ -1,7 +1,7 @@
 const jsondiffpatch = require('../../dist/jsondiffpatch.cjs.js');
 
 const instance = jsondiffpatch.create({
-  objectHash: function(obj) {
+  objectHash: function (obj) {
     return obj._id || obj.id || obj.name || JSON.stringify(obj);
   },
 });

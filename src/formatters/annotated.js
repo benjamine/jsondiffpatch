@@ -8,7 +8,7 @@ class AnnotatedFormatter extends BaseFormatter {
 
   prepareContext(context) {
     super.prepareContext(context);
-    context.indent = function(levels) {
+    context.indent = function (levels) {
       this.indentLevel =
         (this.indentLevel || 0) + (typeof levels === 'undefined' ? 1 : levels);
       this.indentPad = new Array(this.indentLevel + 1).join('&nbsp;&nbsp;');
@@ -39,11 +39,7 @@ class AnnotatedFormatter extends BaseFormatter {
       const line = lines[i];
       context.out(
         '<li><div class="jsondiffpatch-textdiff-location">' +
-          `<span class="jsondiffpatch-textdiff-line-number">${
-            line.location.line
-          }</span><span class="jsondiffpatch-textdiff-char">${
-            line.location.chr
-          }</span></div><div class="jsondiffpatch-textdiff-line">`,
+          `<span class="jsondiffpatch-textdiff-line-number">${line.location.line}</span><span class="jsondiffpatch-textdiff-char">${line.location.chr}</span></div><div class="jsondiffpatch-textdiff-line">`,
       );
       const pieces = line.pieces;
       for (
@@ -53,9 +49,7 @@ class AnnotatedFormatter extends BaseFormatter {
       ) {
         const piece = pieces[pieceIndex];
         context.out(
-          `<span class="jsondiffpatch-textdiff-${piece.type}">${
-            piece.text
-          }</span>`,
+          `<span class="jsondiffpatch-textdiff-${piece.type}">${piece.text}</span>`,
         );
       }
       context.out('</div></li>');
@@ -120,7 +114,7 @@ class AnnotatedFormatter extends BaseFormatter {
 
 /* eslint-enable camelcase */
 
-const wrapPropertyName = name =>
+const wrapPropertyName = (name) =>
   `<pre style="display:inline-block">&quot;${name}&quot;</pre>`;
 
 const deltaAnnotations = {
@@ -166,8 +160,8 @@ const deltaAnnotations = {
       typeof leftKey === 'undefined'
         ? ''
         : typeof leftKey === 'number'
-          ? ` at index ${leftKey}`
-          : ` at property ${wrapPropertyName(leftKey)}`;
+        ? ` at index ${leftKey}`
+        : ` at property ${wrapPropertyName(leftKey)}`;
     return (
       `text diff${location}, format is <a href="https://code.google.com/` +
       'p/google-diff-match-patch/wiki/Unidiff">a variation of Unidiff</a>'
@@ -175,7 +169,7 @@ const deltaAnnotations = {
   },
 };
 
-const formatAnyChange = function(context, delta) {
+const formatAnyChange = function (context, delta) {
   const deltaType = this.getDeltaType(delta);
   const annotator = deltaAnnotations[deltaType];
   const htmlNote =
