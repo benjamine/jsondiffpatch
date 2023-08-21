@@ -1,4 +1,4 @@
-import * as jsondiffpatch from '../src/main';
+import * as jsondiffpatch from '../src';
 import lcs from '../src/filters/lcs';
 
 import examples from './examples/diffpatch';

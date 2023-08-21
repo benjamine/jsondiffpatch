@@ -14,7 +14,7 @@ const copyDocsFileToDist = copyFromFolderToDist('docs');
 
 export default [
   {
-    input: 'src/main.js',
+    input: 'src/index.js',
     external: ['chalk'],
     output: {
       name: pkg.name,
@@ -38,7 +38,7 @@ export default [
     ],
   },
   {
-    input: 'src/main.js',
+    input: 'src/index.js',
     external: ['chalk', 'diff-match-patch'],
     output: {
       name: pkg.name,
@@ -67,7 +67,7 @@ export default [
     ],
   },
   {
-    input: 'src/main.js',
+    input: 'src/index.js',
     external: [
       // external node modules
       'diff-match-patch',
