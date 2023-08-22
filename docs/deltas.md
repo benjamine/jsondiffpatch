@@ -8,7 +8,7 @@ This format was created with a balance between readability and low footprint in 
 - to represent changed parts, arrays and magic numbers are used to keep a low footprint (i.e. you won't see verbosity like `"type": "added"`)
 - keep it pure JSON serializable
 
-A great way to understand this format is using the "Annotated JSON" option in the [Live Demo](http://benjamine.github.com/jsondiffpatch/demo/index.html), and try the different left/right examples, or edit left/right JSON to see the annotated delta update as your type.
+A great way to understand this format is using the "Annotated JSON" option in the [Live Demo](http://benjamine.github.io/jsondiffpatch/demo/index.html), and try the different left/right examples, or edit left/right JSON to see the annotated delta update as your type.
 
 Here's a complete reference of this format.
 
