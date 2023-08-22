@@ -6,11 +6,29 @@ reference: http://en.wikipedia.org/wiki/Longest_common_subsequence_problem
 
 */
 
-const defaultMatch = function (array1, array2, index1, index2) {
+import { MatchContext } from './arrays';
+
+const defaultMatch = function (
+  array1: unknown[],
+  array2: unknown[],
+  index1: number,
+  index2: number,
+) {
   return array1[index1] === array2[index2];
 };
 
-const lengthMatrix = function (array1, array2, match, context) {
+const lengthMatrix = function (
+  array1: unknown[],
+  array2: unknown[],
+  match: (
+    array1: unknown[],
+    array2: unknown[],
+    index1: number,
+    index2: number,
+    context: MatchContext,
+  ) => boolean | undefined,
+  context: MatchContext,
+) {
   const len1 = array1.length;
   const len2 = array2.length;
   let x, y;
@@ -37,10 +55,21 @@ const lengthMatrix = function (array1, array2, match, context) {
   return matrix;
 };
 
-const backtrack = function (matrix, array1, array2, context) {
+interface Subsequence {
+  sequence: unknown[];
+  indices1: unknown[];
+  indices2: unknown[];
+}
+
+const backtrack = function (
+  matrix,
+  array1: unknown[],
+  array2: unknown[],
+  context: MatchContext,
+) {
   let index1 = array1.length;
   let index2 = array2.length;
-  const subsequence = {
+  const subsequence: Subsequence = {
     sequence: [],
     indices1: [],
     indices2: [],
@@ -73,7 +102,18 @@ const backtrack = function (matrix, array1, array2, context) {
   return subsequence;
 };
 
-const get = function (array1, array2, match, context) {
+const get = function (
+  array1: unknown[],
+  array2: unknown[],
+  match: (
+    array1: unknown[],
+    array2: unknown[],
+    index1: number,
+    index2: number,
+    context: MatchContext,
+  ) => boolean | undefined,
+  context: MatchContext,
+) {
   const innerContext = context || {};
   const matrix = lengthMatrix(
     array1,

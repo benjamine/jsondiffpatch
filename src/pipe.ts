@@ -1,10 +1,24 @@
-class Pipe {
-  constructor(name) {
+import Context from './contexts/context';
+import Processor from './processor';
+
+export interface Filter<TResult, TContext extends Context<TResult>> {
+  (context: TContext): void;
+  filterName: string;
+}
+
+class Pipe<TResult, TContext extends Context<TResult>> {
+  name?: string;
+  filters: Filter<TResult, TContext>[];
+  processor?: Processor;
+  // debug??
+  resultCheck?: ((context: TContext) => void) | null;
+
+  constructor(name: string) {
     this.name = name;
     this.filters = [];
   }
 
-  process(input) {
+  process(input: TContext) {
     if (!this.processor) {
       throw new Error('add this pipe to a processor before using it');
     }
@@ -27,21 +41,21 @@ class Pipe {
     }
   }
 
-  log(msg) {
+  log(msg: string) {
     console.log(`[jsondiffpatch] ${this.name} pipe, ${msg}`);
   }
 
-  append(...args) {
+  append(...args: Filter<TResult, TContext>[]) {
     this.filters.push(...args);
     return this;
   }
 
-  prepend(...args) {
+  prepend(...args: Filter<TResult, TContext>[]) {
     this.filters.unshift(...args);
     return this;
   }
 
-  indexOf(filterName) {
+  indexOf(filterName: string) {
     if (!filterName) {
       throw new Error('a filter name is required');
     }
@@ -58,7 +72,7 @@ class Pipe {
     return this.filters.map((f) => f.filterName);
   }
 
-  after(filterName) {
+  after(filterName: string) {
     const index = this.indexOf(filterName);
     const params = Array.prototype.slice.call(arguments, 1);
     if (!params.length) {
@@ -69,7 +83,7 @@ class Pipe {
     return this;
   }
 
-  before(filterName) {
+  before(filterName: string) {
     const index = this.indexOf(filterName);
     const params = Array.prototype.slice.call(arguments, 1);
     if (!params.length) {
@@ -80,7 +94,7 @@ class Pipe {
     return this;
   }
 
-  replace(filterName) {
+  replace(filterName: string) {
     const index = this.indexOf(filterName);
     const params = Array.prototype.slice.call(arguments, 1);
     if (!params.length) {
@@ -91,7 +105,7 @@ class Pipe {
     return this;
   }
 
-  remove(filterName) {
+  remove(filterName: string) {
     const index = this.indexOf(filterName);
     this.filters.splice(index, 1);
     return this;
@@ -102,7 +116,7 @@ class Pipe {
     return this;
   }
 
-  shouldHaveResult(should) {
+  shouldHaveResult(should?: boolean) {
     if (should === false) {
       this.resultCheck = null;
       return;

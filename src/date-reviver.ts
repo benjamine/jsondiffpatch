@@ -1,5 +1,5 @@
 // use as 2nd parameter for JSON.parse to revive Date instances
-export default function dateReviver(key, value) {
+export default function dateReviver(key: string, value: unknown) {
   let parts;
   if (typeof value === 'string') {
     // eslint-disable-next-line max-len

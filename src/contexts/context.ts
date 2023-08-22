@@ -1,7 +1,21 @@
 import Pipe from '../pipe';
+import { Options } from '../processor';
 
-export default class Context {
-  setResult(result) {
+export default class Context<TResult> {
+  result?: TResult;
+  hasResult?: boolean;
+  exiting?: boolean;
+  nextPipe?: string | Pipe<TResult, this>;
+  parent?: this;
+  childName?: string | number;
+  root?: this;
+  options?: Options;
+  children?: this[];
+  nextAfterChildren?: this | null;
+  next?: this | null;
+  pipe?: string;
+
+  setResult(result: TResult) {
     this.result = result;
     this.hasResult = true;
     return this;
@@ -12,7 +26,12 @@ export default class Context {
     return this;
   }
 
-  switchTo(next, pipe) {
+  switchTo(next: string | Pipe<TResult, this>): this;
+  switchTo(next: this, pipe?: string | Pipe<TResult, this>): this;
+  switchTo(
+    next: string | Pipe<TResult, this> | this,
+    pipe?: string | Pipe<TResult, this>,
+  ) {
     if (typeof next === 'string' || next instanceof Pipe) {
       this.nextPipe = next;
     } else {
@@ -24,7 +43,7 @@ export default class Context {
     return this;
   }
 
-  push(child, name) {
+  push(child: this, name: string | number) {
     child.parent = this;
     if (typeof name !== 'undefined') {
       child.childName = name;

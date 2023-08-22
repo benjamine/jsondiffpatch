@@ -1,21 +1,16 @@
-const isArray =
-  typeof Array.isArray === 'function'
-    ? Array.isArray
-    : (a) => a instanceof Array;
-
-function cloneRegExp(re) {
-  const regexMatch = /^\/(.*)\/([gimyu]*)$/.exec(re.toString());
+function cloneRegExp(re: RegExp) {
+  const regexMatch = /^\/(.*)\/([gimyu]*)$/.exec(re.toString())!;
   return new RegExp(regexMatch[1], regexMatch[2]);
 }
 
-export default function clone(arg) {
+export default function clone(arg: unknown): unknown {
   if (typeof arg !== 'object') {
     return arg;
   }
   if (arg === null) {
     return null;
   }
-  if (isArray(arg)) {
+  if (Array.isArray(arg)) {
     return arg.map(clone);
   }
   if (arg instanceof Date) {

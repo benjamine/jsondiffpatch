@@ -3,13 +3,9 @@ import PatchContext from '../contexts/patch';
 import ReverseContext from '../contexts/reverse';
 
 import lcs from './lcs';
+import { Filter } from '../pipe';
 
 const ARRAY_MOVE = 3;
-
-const isArray =
-  typeof Array.isArray === 'function'
-    ? Array.isArray
-    : (a) => a instanceof Array;
 
 const arrayIndexOf =
   typeof Array.prototype.indexOf === 'function'
@@ -36,7 +32,18 @@ function arraysHaveMatchByRef(array1, array2, len1, len2) {
   }
 }
 
-function matchItems(array1, array2, index1, index2, context) {
+export interface MatchContext {
+  objectHash: ((item: object, index?: number) => string) | undefined;
+  matchByPosition: boolean | undefined;
+}
+
+function matchItems(
+  array1: unknown[],
+  array2: unknown[],
+  index1: number,
+  index2: number,
+  context: MatchContext,
+) {
   const value1 = array1[index1];
   const value2 = array2[index2];
   if (value1 === value2) {
@@ -79,12 +86,14 @@ function matchItems(array1, array2, index1, index2, context) {
   return hash1 === hash2;
 }
 
-export const diffFilter = function arraysDiffFilter(context) {
+export const diffFilter: Filter<DiffContext> = function arraysDiffFilter(
+  context,
+) {
   if (!context.leftIsArray) {
     return;
   }
 
-  const matchContext = {
+  const matchContext: MatchContext = {
     objectHash: context.options && context.options.objectHash,
     matchByPosition: context.options && context.options.matchByPosition,
   };
@@ -93,8 +102,8 @@ export const diffFilter = function arraysDiffFilter(context) {
   let index;
   let index1;
   let index2;
-  const array1 = context.left;
-  const array2 = context.right;
+  const array1 = context.left as unknown[];
+  const array2 = context.right as unknown[];
   const len1 = array1.length;
   const len2 = array2.length;
 
@@ -275,7 +284,9 @@ const compare = {
   },
 };
 
-export const patchFilter = function nestedPatchFilter(context) {
+export const patchFilter: Filter<PatchContext> = function nestedPatchFilter(
+  context,
+) {
   if (!context.nested) {
     return;
   }
@@ -367,66 +378,66 @@ export const patchFilter = function nestedPatchFilter(context) {
 };
 patchFilter.filterName = 'arrays';
 
-export const collectChildrenPatchFilter = function collectChildrenPatchFilter(
-  context,
-) {
-  if (!context || !context.children) {
-    return;
-  }
-  if (context.delta._t !== 'a') {
-    return;
-  }
-  const length = context.children.length;
-  let child;
-  for (let index = 0; index < length; index++) {
-    child = context.children[index];
-    context.left[child.childName] = child.result;
-  }
-  context.setResult(context.left).exit();
-};
+export const collectChildrenPatchFilter: Filter<PatchContext> =
+  function collectChildrenPatchFilter(context) {
+    if (!context || !context.children) {
+      return;
+    }
+    if (context.delta._t !== 'a') {
+      return;
+    }
+    const length = context.children.length;
+    let child;
+    for (let index = 0; index < length; index++) {
+      child = context.children[index];
+      context.left[child.childName] = child.result;
+    }
+    context.setResult(context.left).exit();
+  };
 collectChildrenPatchFilter.filterName = 'arraysCollectChildren';
 
-export const reverseFilter = function arraysReverseFilter(context) {
-  if (!context.nested) {
-    if (context.delta[2] === ARRAY_MOVE) {
-      context.newName = `_${context.delta[1]}`;
-      context
-        .setResult([
-          context.delta[0],
-          parseInt(context.childName.substr(1), 10),
-          ARRAY_MOVE,
-        ])
-        .exit();
+export const reverseFilter: Filter<ReverseContext> =
+  function arraysReverseFilter(context) {
+    if (!context.nested) {
+      if (context.delta[2] === ARRAY_MOVE) {
+        context.newName = `_${context.delta[1]}`;
+        context
+          .setResult([
+            context.delta[0],
+            parseInt(context.childName.substr(1), 10),
+            ARRAY_MOVE,
+          ])
+          .exit();
+      }
+      return;
     }
-    return;
-  }
-  if (context.delta._t !== 'a') {
-    return;
-  }
-  let name;
-  let child;
-  for (name in context.delta) {
-    if (name === '_t') {
-      continue;
+    if (context.delta._t !== 'a') {
+      return;
     }
-    child = new ReverseContext(context.delta[name]);
-    context.push(child, name);
-  }
-  context.exit();
-};
+    let name;
+    let child;
+    for (name in context.delta) {
+      if (name === '_t') {
+        continue;
+      }
+      child = new ReverseContext(context.delta[name]);
+      context.push(child, name);
+    }
+    context.exit();
+  };
 reverseFilter.filterName = 'arrays';
 
 const reverseArrayDeltaIndex = (delta, index, itemDelta) => {
   if (typeof index === 'string' && index[0] === '_') {
     return parseInt(index.substr(1), 10);
-  } else if (isArray(itemDelta) && itemDelta[2] === 0) {
+  } else if (Array.isArray(itemDelta) && itemDelta[2] === 0) {
     return `_${index}`;
   }
 
   let reverseIndex = +index;
   for (const deltaIndex in delta) {
     const deltaItem = delta[deltaIndex];
-    if (isArray(deltaItem)) {
+    if (Array.isArray(deltaItem)) {
       if (deltaItem[2] === ARRAY_MOVE) {
         const moveFromIndex = parseInt(deltaIndex.substr(1), 10);
         const moveToIndex = deltaItem[1];
@@ -455,7 +466,9 @@ const reverseArrayDeltaIndex = (delta, index, itemDelta) => {
   return reverseIndex;
 };
 
-export function collectChildrenReverseFilter(context) {
+export const collectChildrenReverseFilter: Filter<ReverseContext> = (
+  context,
+) => {
   if (!context || !context.children) {
     return;
   }
@@ -483,5 +496,5 @@ export function collectChildrenReverseFilter(context) {
     }
   }
   context.setResult(delta).exit();
-}
+};
 collectChildrenReverseFilter.filterName = 'arraysCollectChildren';
