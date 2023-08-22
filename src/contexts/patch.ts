@@ -1,7 +1,7 @@
 import Context from './context';
 import { Delta } from './diff';
 
-class PatchContext extends Context {
+class PatchContext extends Context<unknown> {
   left: unknown;
   delta: Delta;
   pipe: 'patch';

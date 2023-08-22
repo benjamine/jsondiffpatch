@@ -1,6 +1,6 @@
 import Pipe from './pipe';
 import Context from './contexts/context';
-import DiffContext, { Delta } from './contexts/diff';
+import DiffContext from './contexts/diff';
 
 export interface Options {
   objectHash?: (item: object, index?: number) => string;
@@ -18,7 +18,7 @@ export interface Options {
 
 class Processor {
   selfOptions: Options;
-  pipes: { [pipeName: string]: Pipe<Context> | undefined };
+  pipes: { [pipeName: string]: Pipe<Context<any>> | undefined };
 
   constructor(options?: Options) {
     this.selfOptions = options || {};
@@ -32,7 +32,7 @@ class Processor {
     return this.selfOptions;
   }
 
-  pipe<TContext extends Context>(
+  pipe<TContext extends Context<any>>(
     name: string | Pipe<TContext>,
     pipeArg?: Pipe<TContext>,
   ) {
@@ -55,7 +55,7 @@ class Processor {
     return pipe;
   }
 
-  process<TContext extends Context>(
+  process<TContext extends Context<any>>(
     input: TContext,
     pipe?: Pipe<TContext>,
   ): TContext['result'] | undefined {

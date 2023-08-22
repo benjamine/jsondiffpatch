@@ -1,8 +1,8 @@
 import Pipe from '../pipe';
 import { Options } from '../processor';
 
-export default class Context {
-  result?: unknown;
+export default class Context<TResult> {
+  result?: TResult;
   hasResult?: boolean;
   exiting?: boolean;
   nextPipe?: string | Pipe<this>;
@@ -15,7 +15,7 @@ export default class Context {
   next?: this | null;
   pipe?: string;
 
-  setResult(result: unknown) {
+  setResult(result: TResult) {
     this.result = result;
     this.hasResult = true;
     return this;

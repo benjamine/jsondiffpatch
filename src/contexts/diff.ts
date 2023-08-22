@@ -28,7 +28,7 @@ export type Delta =
   | TextDiffDelta
   | undefined;
 
-class DiffContext extends Context {
+class DiffContext extends Context<Delta> {
   left: unknown;
   right: unknown;
   pipe: 'diff';

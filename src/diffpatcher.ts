@@ -59,7 +59,7 @@ class DiffPatcher {
   }
 
   diff(left: unknown, right: unknown): Delta {
-    return this.processor.process(new DiffContext(left, right)) as Delta;
+    return this.processor.process(new DiffContext(left, right));
   }
 
   patch(left: unknown, delta: Delta): unknown {
@@ -67,7 +67,7 @@ class DiffPatcher {
   }
 
   reverse(delta: Delta): Delta {
-    return this.processor.process(new ReverseContext(delta)) as Delta;
+    return this.processor.process(new ReverseContext(delta));
   }
 
   unpatch(right: unknown, delta: Delta): unknown {

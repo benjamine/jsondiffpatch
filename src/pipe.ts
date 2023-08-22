@@ -1,12 +1,12 @@
 import Context from './contexts/context';
 import Processor from './processor';
 
-export interface Filter<TContext extends Context> {
+export interface Filter<TContext extends Context<any>> {
   (context: TContext): void;
   filterName: string;
 }
 
-class Pipe<TContext extends Context> {
+class Pipe<TContext extends Context<any>> {
   name?: string;
   filters: Filter<TContext>[];
   processor?: Processor;
