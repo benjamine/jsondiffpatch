@@ -17,7 +17,7 @@ class DiffPatcher {
   constructor(options?: Options) {
     this.processor = new Processor(options);
     this.processor.pipe(
-      new Pipe<Delta, DiffContext>('diff')
+      new Pipe<DiffContext>('diff')
         .append(
           nested.collectChildrenDiffFilter,
           trivial.diffFilter,
@@ -29,7 +29,7 @@ class DiffPatcher {
         .shouldHaveResult()!,
     );
     this.processor.pipe(
-      new Pipe<unknown, PatchContext>('patch')
+      new Pipe<PatchContext>('patch')
         .append(
           nested.collectChildrenPatchFilter,
           arrays.collectChildrenPatchFilter,
@@ -41,7 +41,7 @@ class DiffPatcher {
         .shouldHaveResult()!,
     );
     this.processor.pipe(
-      new Pipe<unknown, ReverseContext>('reverse')
+      new Pipe<ReverseContext>('reverse')
         .append(
           nested.collectChildrenReverseFilter,
           arrays.collectChildrenReverseFilter,
@@ -59,7 +59,7 @@ class DiffPatcher {
   }
 
   diff(left: unknown, right: unknown): Delta {
-    return this.processor.process(new DiffContext(left, right));
+    return this.processor.process(new DiffContext(left, right)) as Delta;
   }
 
   patch(left: unknown, delta: Delta): unknown {
@@ -67,7 +67,7 @@ class DiffPatcher {
   }
 
   reverse(delta: Delta): Delta {
-    return this.processor.process(new ReverseContext(delta));
+    return this.processor.process(new ReverseContext(delta)) as Delta;
   }
 
   unpatch(right: unknown, delta: Delta): unknown {

@@ -1,11 +1,11 @@
 import Pipe from '../pipe';
 import { Options } from '../processor';
 
-export default class Context<TResult> {
-  result?: TResult;
+export default class Context {
+  result?: unknown;
   hasResult?: boolean;
   exiting?: boolean;
-  nextPipe?: string | Pipe<TResult, this>;
+  nextPipe?: string | Pipe<this>;
   parent?: this;
   childName?: string | number;
   root?: this;
@@ -15,7 +15,7 @@ export default class Context<TResult> {
   next?: this | null;
   pipe?: string;
 
-  setResult(result: TResult) {
+  setResult(result: unknown) {
     this.result = result;
     this.hasResult = true;
     return this;
@@ -26,12 +26,9 @@ export default class Context<TResult> {
     return this;
   }
 
-  switchTo(next: string | Pipe<TResult, this>): this;
-  switchTo(next: this, pipe?: string | Pipe<TResult, this>): this;
-  switchTo(
-    next: string | Pipe<TResult, this> | this,
-    pipe?: string | Pipe<TResult, this>,
-  ) {
+  switchTo(next: string | Pipe<this>): this;
+  switchTo(next: this, pipe?: string | Pipe<this>): this;
+  switchTo(next: string | Pipe<this> | this, pipe?: string | Pipe<this>) {
     if (typeof next === 'string' || next instanceof Pipe) {
       this.nextPipe = next;
     } else {

@@ -1,16 +1,16 @@
 import Context from './contexts/context';
 import Processor from './processor';
 
-export interface Filter<TResult, TContext extends Context<TResult>> {
+export interface Filter<TContext extends Context> {
   (context: TContext): void;
   filterName: string;
 }
 
-class Pipe<TResult, TContext extends Context<TResult>> {
+class Pipe<TContext extends Context> {
   name?: string;
-  filters: Filter<TResult, TContext>[];
+  filters: Filter<TContext>[];
   processor?: Processor;
-  // debug??
+  debug?: boolean;
   resultCheck?: ((context: TContext) => void) | null;
 
   constructor(name: string) {
@@ -45,12 +45,12 @@ class Pipe<TResult, TContext extends Context<TResult>> {
     console.log(`[jsondiffpatch] ${this.name} pipe, ${msg}`);
   }
 
-  append(...args: Filter<TResult, TContext>[]) {
+  append(...args: Filter<TContext>[]) {
     this.filters.push(...args);
     return this;
   }
 
-  prepend(...args: Filter<TResult, TContext>[]) {
+  prepend(...args: Filter<TContext>[]) {
     this.filters.unshift(...args);
     return this;
   }

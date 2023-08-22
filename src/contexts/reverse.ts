@@ -1,7 +1,7 @@
 import Context from './context';
 import { Delta } from './diff';
 
-class ReverseContext extends Context<Delta> {
+class ReverseContext extends Context {
   delta: Delta;
   pipe: 'reverse';
   nested?: boolean;

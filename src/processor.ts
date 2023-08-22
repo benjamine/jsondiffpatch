@@ -1,8 +1,6 @@
 import Pipe from './pipe';
 import Context from './contexts/context';
 import DiffContext, { Delta } from './contexts/diff';
-import PatchContext from './contexts/patch';
-import ReverseContext from './contexts/reverse';
 
 export interface Options {
   objectHash?: (item: object, index?: number) => string;
@@ -20,11 +18,7 @@ export interface Options {
 
 class Processor {
   selfOptions: Options;
-  pipes: {
-    diff?: Pipe<Delta, DiffContext>;
-    patch?: Pipe<unknown, PatchContext>;
-    reverse?: Pipe<Delta, ReverseContext>;
-  };
+  pipes: { [pipeName: string]: Pipe<Context> | undefined };
 
   constructor(options?: Options) {
     this.selfOptions = options || {};
@@ -38,9 +32,9 @@ class Processor {
     return this.selfOptions;
   }
 
-  pipe<TResult, TContext extends Context<TResult>>(
-    name: string | Pipe<TResult, TContext>,
-    pipeArg?: Pipe<TResult, TContext>,
+  pipe<TContext extends Context>(
+    name: string | Pipe<TContext>,
+    pipeArg?: Pipe<TContext>,
   ) {
     let pipe = pipeArg;
     if (typeof name === 'string') {
@@ -61,13 +55,13 @@ class Processor {
     return pipe;
   }
 
-  process<TResult, TContext extends Context<TResult>>(
+  process<TContext extends Context>(
     input: TContext,
-    pipe?: Pipe<TResult, TContext>,
+    pipe?: Pipe<TContext>,
   ): TContext['result'] | undefined {
     let context = input;
     context.options = this.options();
-    let nextPipe: Pipe<TResult, TContext> | string | null =
+    let nextPipe: Pipe<TContext> | string | null =
       pipe || input.pipe || 'default';
     let lastPipe;
     let lastContext;
@@ -81,7 +75,7 @@ class Processor {
       if (typeof nextPipe === 'string') {
         nextPipe = this.pipe(nextPipe);
       }
-      (nextPipe as Pipe<TResult, TContext>).process(context);
+      (nextPipe as Pipe<TContext>).process(context);
       lastContext = context;
       lastPipe = nextPipe;
       nextPipe = null;
