@@ -8,11 +8,11 @@ class Pipe {
     if (!this.processor) {
       throw new Error('add this pipe to a processor before using it');
     }
-    let debug = this.debug;
-    let length = this.filters.length;
-    let context = input;
+    const debug = this.debug;
+    const length = this.filters.length;
+    const context = input;
     for (let index = 0; index < length; index++) {
-      let filter = this.filters[index];
+      const filter = this.filters[index];
       if (debug) {
         this.log(`filter: ${filter.filterName}`);
       }
@@ -46,7 +46,7 @@ class Pipe {
       throw new Error('a filter name is required');
     }
     for (let index = 0; index < this.filters.length; index++) {
-      let filter = this.filters[index];
+      const filter = this.filters[index];
       if (filter.filterName === filterName) {
         return index;
       }
@@ -55,12 +55,12 @@ class Pipe {
   }
 
   list() {
-    return this.filters.map(f => f.filterName);
+    return this.filters.map((f) => f.filterName);
   }
 
   after(filterName) {
-    let index = this.indexOf(filterName);
-    let params = Array.prototype.slice.call(arguments, 1);
+    const index = this.indexOf(filterName);
+    const params = Array.prototype.slice.call(arguments, 1);
     if (!params.length) {
       throw new Error('a filter is required');
     }
@@ -70,8 +70,8 @@ class Pipe {
   }
 
   before(filterName) {
-    let index = this.indexOf(filterName);
-    let params = Array.prototype.slice.call(arguments, 1);
+    const index = this.indexOf(filterName);
+    const params = Array.prototype.slice.call(arguments, 1);
     if (!params.length) {
       throw new Error('a filter is required');
     }
@@ -81,8 +81,8 @@ class Pipe {
   }
 
   replace(filterName) {
-    let index = this.indexOf(filterName);
-    let params = Array.prototype.slice.call(arguments, 1);
+    const index = this.indexOf(filterName);
+    const params = Array.prototype.slice.call(arguments, 1);
     if (!params.length) {
       throw new Error('a filter is required');
     }
@@ -92,7 +92,7 @@ class Pipe {
   }
 
   remove(filterName) {
-    let index = this.indexOf(filterName);
+    const index = this.indexOf(filterName);
     this.filters.splice(index, 1);
     return this;
   }
@@ -110,11 +110,11 @@ class Pipe {
     if (this.resultCheck) {
       return;
     }
-    let pipe = this;
-    this.resultCheck = context => {
+    const pipe = this;
+    this.resultCheck = (context) => {
       if (!context.hasResult) {
         console.log(context);
-        let error = new Error(`${pipe.name} failed`);
+        const error = new Error(`${pipe.name} failed`);
         error.noResult = true;
         throw error;
       }

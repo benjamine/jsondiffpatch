@@ -1,27 +1,29 @@
 const isArray =
-  typeof Array.isArray === 'function' ? Array.isArray : a => a instanceof Array;
+  typeof Array.isArray === 'function'
+    ? Array.isArray
+    : (a) => a instanceof Array;
 
 const getObjectKeys =
   typeof Object.keys === 'function'
-    ? obj => Object.keys(obj)
-    : obj => {
-      const names = [];
-      for (let property in obj) {
-        if (Object.prototype.hasOwnProperty.call(obj, property)) {
-          names.push(property);
+    ? (obj) => Object.keys(obj)
+    : (obj) => {
+        const names = [];
+        for (const property in obj) {
+          if (Object.prototype.hasOwnProperty.call(obj, property)) {
+            names.push(property);
+          }
         }
-      }
-      return names;
-    };
+        return names;
+      };
 
-const trimUnderscore = str => {
+const trimUnderscore = (str) => {
   if (str.substr(0, 1) === '_') {
     return str.slice(1);
   }
   return str;
 };
 
-const arrayKeyToSortNumber = key => {
+const arrayKeyToSortNumber = (key) => {
   if (key === '_t') {
     return -1;
   } else {
@@ -46,7 +48,7 @@ class BaseFormatter {
 
   prepareContext(context) {
     context.buffer = [];
-    context.out = function(...args) {
+    context.out = function (...args) {
       this.buffer.push(...args);
     };
   }
@@ -94,7 +96,7 @@ class BaseFormatter {
         leftValue,
         key,
         leftKey,
-        movedFrom
+        movedFrom,
       );
     } catch (err) {
       this.typeFormattterErrorFormatter(
@@ -104,7 +106,7 @@ class BaseFormatter {
         leftValue,
         key,
         leftKey,
-        movedFrom
+        movedFrom,
       );
       if (typeof console !== 'undefined' && console.error) {
         console.error(err.stack);
@@ -128,7 +130,7 @@ class BaseFormatter {
         key,
         leftKey,
         movedFrom,
-        isLast
+        isLast,
       );
     });
   }
@@ -181,7 +183,9 @@ class BaseFormatter {
         continue;
       }
       const leftKey = arrayKeys
-        ? typeof key === 'number' ? key : parseInt(trimUnderscore(key), 10)
+        ? typeof key === 'number'
+          ? key
+          : parseInt(trimUnderscore(key), 10)
         : key;
       const isLast = index === length - 1;
       fn(key, leftKey, moveDestinations[leftKey], isLast);
