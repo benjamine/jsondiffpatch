@@ -1,9 +1,9 @@
 const isArray =
   typeof Array.isArray === 'function'
     ? Array.isArray
-    : function(a) {
-      return a instanceof Array;
-    };
+    : function (a) {
+        return a instanceof Array;
+      };
 
 export const diffFilter = function trivialMatchesDiffFilter(context) {
   if (context.left === context.right) {

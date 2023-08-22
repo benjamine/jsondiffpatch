@@ -1,5 +1,7 @@
 import DiffPatcher from './diffpatcher';
-export DiffPatcher from './diffpatcher';
+import dateReviver from './date-reviver';
+
+export { DiffPatcher, dateReviver };
 
 export * as formatters from './formatters/index';
 
@@ -8,8 +10,6 @@ export * as console from './formatters/console';
 export function create(options) {
   return new DiffPatcher(options);
 }
-
-export dateReviver from './date-reviver';
 
 let defaultInstance;
 
