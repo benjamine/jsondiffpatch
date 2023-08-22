@@ -10,30 +10,26 @@ class HtmlFormatter extends BaseFormatter {
   }
 
   formatTextDiffString(context, value) {
-    let lines = this.parseTextDiff(value);
+    const lines = this.parseTextDiff(value);
     context.out('<ul class="jsondiffpatch-textdiff">');
     for (let i = 0, l = lines.length; i < l; i++) {
-      let line = lines[i];
+      const line = lines[i];
       context.out(
-        `<li><div class="jsondiffpatch-textdiff-location">` +
-          `<span class="jsondiffpatch-textdiff-line-number">${
-            line.location.line
-          }</span><span class="jsondiffpatch-textdiff-char">${
-            line.location.chr
-          }</span></div><div class="jsondiffpatch-textdiff-line">`
+        '<li><div class="jsondiffpatch-textdiff-location">' +
+          `<span class="jsondiffpatch-textdiff-line-number">${line.location.line}</span><span class="jsondiffpatch-textdiff-char">${line.location.chr}</span></div><div class="jsondiffpatch-textdiff-line">`,
       );
-      let pieces = line.pieces;
+      const pieces = line.pieces;
       for (
         let pieceIndex = 0, piecesLength = pieces.length;
         pieceIndex < piecesLength;
         pieceIndex++
       ) {
         /* global decodeURI */
-        let piece = pieces[pieceIndex];
+        const piece = pieces[pieceIndex];
         context.out(
           `<span class="jsondiffpatch-textdiff-${piece.type}">${htmlEscape(
-            decodeURI(piece.text)
-          )}</span>`
+            decodeURI(piece.text),
+          )}</span>`,
         );
       }
       context.out('</div></li>');
@@ -42,7 +38,7 @@ class HtmlFormatter extends BaseFormatter {
   }
 
   rootBegin(context, type, nodeType) {
-    let nodeClass = `jsondiffpatch-${type}${
+    const nodeClass = `jsondiffpatch-${type}${
       nodeType ? ` jsondiffpatch-child-node-type-${nodeType}` : ''
     }`;
     context.out(`<div class="jsondiffpatch-delta ${nodeClass}">`);
@@ -52,20 +48,20 @@ class HtmlFormatter extends BaseFormatter {
     context.out(
       `</div>${
         context.hasArrows
-          ? `<script type="text/javascript">setTimeout(` +
+          ? '<script type="text/javascript">setTimeout(' +
             `${adjustArrows.toString()},10);</script>`
           : ''
-      }`
+      }`,
     );
   }
 
   nodeBegin(context, key, leftKey, type, nodeType) {
-    let nodeClass = `jsondiffpatch-${type}${
+    const nodeClass = `jsondiffpatch-${type}${
       nodeType ? ` jsondiffpatch-child-node-type-${nodeType}` : ''
     }`;
     context.out(
       `<li class="${nodeClass}" data-key="${leftKey}">` +
-        `<div class="jsondiffpatch-property-name">${leftKey}</div>`
+        `<div class="jsondiffpatch-property-name">${leftKey}</div>`,
     );
   }
 
@@ -96,9 +92,9 @@ class HtmlFormatter extends BaseFormatter {
 
   format_node(context, delta, left) {
     // recurse
-    let nodeType = delta._t === 'a' ? 'array' : 'object';
+    const nodeType = delta._t === 'a' ? 'array' : 'object';
     context.out(
-      `<ul class="jsondiffpatch-node jsondiffpatch-node-type-${nodeType}">`
+      `<ul class="jsondiffpatch-node jsondiffpatch-node-type-${nodeType}">`,
     );
     this.formatDeltaChildren(context, delta, left);
     context.out('</ul>');
@@ -114,7 +110,7 @@ class HtmlFormatter extends BaseFormatter {
     context.out('<div class="jsondiffpatch-value jsondiffpatch-left-value">');
     this.formatValue(context, delta[0]);
     context.out(
-      '</div>' + '<div class="jsondiffpatch-value jsondiffpatch-right-value">'
+      '</div>' + '<div class="jsondiffpatch-value jsondiffpatch-right-value">',
     );
     this.formatValue(context, delta[1]);
     context.out('</div>');
@@ -130,13 +126,13 @@ class HtmlFormatter extends BaseFormatter {
     context.out('<div class="jsondiffpatch-value">');
     this.formatValue(context, delta[0]);
     context.out(
-      `</div><div class="jsondiffpatch-moved-destination">${delta[1]}</div>`
+      `</div><div class="jsondiffpatch-moved-destination">${delta[1]}</div>`,
     );
 
     // draw an SVG arrow from here to move destination
     context.out(
       /* jshint multistr: true */
-      `<div class="jsondiffpatch-arrow" ` +
+      '<div class="jsondiffpatch-arrow" ' +
         `style="position: relative; left: -34px;">
           <svg width="30" height="60" ` +
         `style="position: absolute; display: none;">
@@ -152,7 +148,7 @@ class HtmlFormatter extends BaseFormatter {
         `stroke-opacity: 0.5; marker-end: url(#markerArrow);"
           ></path>
           </svg>
-      </div>`
+      </div>`,
     );
     context.hasArrows = true;
   }
@@ -166,7 +162,7 @@ class HtmlFormatter extends BaseFormatter {
 
 function htmlEscape(text) {
   let html = text;
-  let replacements = [
+  const replacements = [
     [/&/g, '&amp;'],
     [/</g, '&lt;'],
     [/>/g, '&gt;'],
@@ -179,16 +175,17 @@ function htmlEscape(text) {
   return html;
 }
 
-let adjustArrows = function jsondiffpatchHtmlFormatterAdjustArrows(nodeArg) {
+const adjustArrows = function jsondiffpatchHtmlFormatterAdjustArrows(nodeArg) {
   const node = nodeArg || document;
-  let getElementText = ({ textContent, innerText }) => textContent || innerText;
-  let eachByQuery = (el, query, fn) => {
-    let elems = el.querySelectorAll(query);
+  const getElementText = ({ textContent, innerText }) =>
+    textContent || innerText;
+  const eachByQuery = (el, query, fn) => {
+    const elems = el.querySelectorAll(query);
     for (let i = 0, l = elems.length; i < l; i++) {
       fn(elems[i]);
     }
   };
-  let eachChildren = ({ children }, fn) => {
+  const eachChildren = ({ children }, fn) => {
     for (let i = 0, l = children.length; i < l; i++) {
       fn(children[i], i);
     }
@@ -197,16 +194,16 @@ let adjustArrows = function jsondiffpatchHtmlFormatterAdjustArrows(nodeArg) {
     node,
     '.jsondiffpatch-arrow',
     ({ parentNode, children, style }) => {
-      let arrowParent = parentNode;
-      let svg = children[0];
-      let path = svg.children[1];
+      const arrowParent = parentNode;
+      const svg = children[0];
+      const path = svg.children[1];
       svg.style.display = 'none';
-      let destination = getElementText(
-        arrowParent.querySelector('.jsondiffpatch-moved-destination')
+      const destination = getElementText(
+        arrowParent.querySelector('.jsondiffpatch-moved-destination'),
       );
-      let container = arrowParent.parentNode;
+      const container = arrowParent.parentNode;
       let destinationElem;
-      eachChildren(container, child => {
+      eachChildren(container, (child) => {
         if (child.getAttribute('data-key') === destination) {
           destinationElem = child;
         }
@@ -215,17 +212,17 @@ let adjustArrows = function jsondiffpatchHtmlFormatterAdjustArrows(nodeArg) {
         return;
       }
       try {
-        let distance = destinationElem.offsetTop - arrowParent.offsetTop;
+        const distance = destinationElem.offsetTop - arrowParent.offsetTop;
         svg.setAttribute('height', Math.abs(distance) + 6);
         style.top = `${-8 + (distance > 0 ? 0 : distance)}px`;
-        let curve =
+        const curve =
           distance > 0
             ? `M30,0 Q-10,${Math.round(distance / 2)} 26,${distance - 4}`
             : `M30,${-distance} Q-10,${Math.round(-distance / 2)} 26,4`;
         path.setAttribute('d', curve);
         svg.style.display = '';
       } catch (err) {}
-    }
+    },
   );
 };
 
@@ -233,15 +230,15 @@ let adjustArrows = function jsondiffpatchHtmlFormatterAdjustArrows(nodeArg) {
 /* eslint-enable camelcase */
 
 export const showUnchanged = (show, node, delay) => {
-  let el = node || document.body;
-  let prefix = 'jsondiffpatch-unchanged-';
-  let classes = {
+  const el = node || document.body;
+  const prefix = 'jsondiffpatch-unchanged-';
+  const classes = {
     showing: `${prefix}showing`,
     hiding: `${prefix}hiding`,
     visible: `${prefix}visible`,
     hidden: `${prefix}hidden`,
   };
-  let list = el.classList;
+  const list = el.classList;
   if (!list) {
     return;
   }
@@ -266,7 +263,7 @@ export const showUnchanged = (show, node, delay) => {
     list.add(classes.showing);
     list.remove(classes.hidden);
   }
-  let intervalId = setInterval(() => {
+  const intervalId = setInterval(() => {
     adjustArrows(el);
   }, 100);
   setTimeout(() => {
