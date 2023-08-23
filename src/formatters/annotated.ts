@@ -1,12 +1,33 @@
-import BaseFormatter from './base';
+import BaseFormatter, {
+  BaseFormatterContext,
+  DeltaType,
+  NodeType,
+} from './base';
+import {
+  AddedDelta,
+  ArrayDelta,
+  DeletedDelta,
+  Delta,
+  ModifiedDelta,
+  MovedDelta,
+  ObjectDelta,
+  TextDiffDelta,
+} from '../contexts/diff';
 
-class AnnotatedFormatter extends BaseFormatter {
+interface AnnotatedFormatterContext extends BaseFormatterContext {
+  indent: (levels?: number) => void;
+  indentLevel?: number;
+  indentPad: string;
+  row: (json: string, htmlNote?: string) => void;
+}
+
+class AnnotatedFormatter extends BaseFormatter<AnnotatedFormatterContext> {
   constructor() {
     super();
     this.includeMoveDestinations = false;
   }
 
-  prepareContext(context) {
+  prepareContext(context: Partial<AnnotatedFormatterContext>) {
     super.prepareContext(context);
     context.indent = function (levels) {
       this.indentLevel =
@@ -14,25 +35,28 @@ class AnnotatedFormatter extends BaseFormatter {
       this.indentPad = new Array(this.indentLevel + 1).join('&nbsp;&nbsp;');
     };
     context.row = (json, htmlNote) => {
-      context.out(
+      context.out!(
         '<tr><td style="white-space: nowrap;">' +
           '<pre class="jsondiffpatch-annotated-indent"' +
           ' style="display: inline-block">',
       );
-      context.out(context.indentPad);
-      context.out('</pre><pre style="display: inline-block">');
-      context.out(json);
-      context.out('</pre></td><td class="jsondiffpatch-delta-note"><div>');
-      context.out(htmlNote);
-      context.out('</div></td></tr>');
+      context.out!(context.indentPad);
+      context.out!('</pre><pre style="display: inline-block">');
+      context.out!(json);
+      context.out!('</pre></td><td class="jsondiffpatch-delta-note"><div>');
+      context.out!(htmlNote);
+      context.out!('</div></td></tr>');
     };
   }
 
-  typeFormattterErrorFormatter(context, err) {
+  typeFormattterErrorFormatter(
+    context: AnnotatedFormatterContext,
+    err: unknown,
+  ) {
     context.row('', `<pre class="jsondiffpatch-error">${err}</pre>`);
   }
 
-  formatTextDiffString(context, value) {
+  formatTextDiffString(context: AnnotatedFormatterContext, value: string) {
     const lines = this.parseTextDiff(value);
     context.out('<ul class="jsondiffpatch-textdiff">');
     for (let i = 0, l = lines.length; i < l; i++) {
@@ -57,7 +81,11 @@ class AnnotatedFormatter extends BaseFormatter {
     context.out('</ul>');
   }
 
-  rootBegin(context, type, nodeType) {
+  rootBegin(
+    context: AnnotatedFormatterContext,
+    type: DeltaType,
+    nodeType: NodeType,
+  ) {
     context.out('<table class="jsondiffpatch-annotated-delta">');
     if (type === 'node') {
       context.row('{');
@@ -71,7 +99,7 @@ class AnnotatedFormatter extends BaseFormatter {
     }
   }
 
-  rootEnd(context, type) {
+  rootEnd(context: AnnotatedFormatterContext, type: DeltaType) {
     if (type === 'node') {
       context.indent(-1);
       context.row('}');
@@ -79,7 +107,13 @@ class AnnotatedFormatter extends BaseFormatter {
     context.out('</table>');
   }
 
-  nodeBegin(context, key, leftKey, type, nodeType) {
+  nodeBegin(
+    context: AnnotatedFormatterContext,
+    key: string,
+    leftKey: string | number,
+    type: DeltaType,
+    nodeType: NodeType,
+  ) {
     context.row(`&quot;${key}&quot;: {`);
     if (type === 'node') {
       context.indent();
@@ -92,7 +126,14 @@ class AnnotatedFormatter extends BaseFormatter {
     }
   }
 
-  nodeEnd(context, key, leftKey, type, nodeType, isLast) {
+  nodeEnd(
+    context: AnnotatedFormatterContext,
+    key: string,
+    leftKey: string | number,
+    type: DeltaType,
+    nodeType: NodeType,
+    isLast: boolean,
+  ) {
     if (type === 'node') {
       context.indent(-1);
     }
@@ -106,19 +147,50 @@ class AnnotatedFormatter extends BaseFormatter {
 
   format_movedestination() {}
 
-  format_node(context, delta, left) {
+  format_node(
+    context: AnnotatedFormatterContext,
+    delta: ObjectDelta | ArrayDelta,
+    left: unknown,
+  ) {
     // recurse
     this.formatDeltaChildren(context, delta, left);
+  }
+
+  // TODO Forward more arguments
+
+  format_added(context: AnnotatedFormatterContext, delta: AddedDelta) {
+    formatAnyChange.call(this, context, delta);
+  }
+
+  format_modified(context: AnnotatedFormatterContext, delta: ModifiedDelta) {
+    formatAnyChange.call(this, context, delta);
+  }
+
+  format_deleted(context: AnnotatedFormatterContext, delta: DeletedDelta) {
+    formatAnyChange.call(this, context, delta);
+  }
+
+  format_moved(context: AnnotatedFormatterContext, delta: MovedDelta) {
+    formatAnyChange.call(this, context, delta);
+  }
+
+  format_textdiff(context: AnnotatedFormatterContext, delta: TextDiffDelta) {
+    formatAnyChange.call(this, context, delta);
   }
 }
 
 /* eslint-enable camelcase */
 
-const wrapPropertyName = (name) =>
+const wrapPropertyName = (name: string) =>
   `<pre style="display:inline-block">&quot;${name}&quot;</pre>`;
 
 const deltaAnnotations = {
-  added(delta, left, key, leftKey) {
+  added(
+    delta: AddedDelta,
+    left: unknown,
+    key: string | undefined,
+    leftKey: string | number | undefined,
+  ) {
     const formatLegend = ' <pre>([newValue])</pre>';
     if (typeof leftKey === 'undefined') {
       return `new value${formatLegend}`;
@@ -128,7 +200,12 @@ const deltaAnnotations = {
     }
     return `add property ${wrapPropertyName(leftKey)}${formatLegend}`;
   },
-  modified(delta, left, key, leftKey) {
+  modified(
+    delta: ModifiedDelta,
+    left: unknown,
+    key: string | undefined,
+    leftKey: string | number | undefined,
+  ) {
     const formatLegend = ' <pre>([previousValue, newValue])</pre>';
     if (typeof leftKey === 'undefined') {
       return `modify value${formatLegend}`;
@@ -138,7 +215,12 @@ const deltaAnnotations = {
     }
     return `modify property ${wrapPropertyName(leftKey)}${formatLegend}`;
   },
-  deleted(delta, left, key, leftKey) {
+  deleted(
+    delta: DeletedDelta,
+    left: unknown,
+    key: string | undefined,
+    leftKey: string | number | undefined,
+  ) {
     const formatLegend = ' <pre>([previousValue, 0, 0])</pre>';
     if (typeof leftKey === 'undefined') {
       return `delete value${formatLegend}`;
@@ -148,14 +230,24 @@ const deltaAnnotations = {
     }
     return `delete property ${wrapPropertyName(leftKey)}${formatLegend}`;
   },
-  moved(delta, left, key, leftKey) {
+  moved(
+    delta: MovedDelta,
+    left: unknown,
+    key: string | undefined,
+    leftKey: string | number | undefined,
+  ) {
     return (
       'move from <span title="(position to remove at original state)">' +
       `index ${leftKey}</span> to <span title="(position to insert at final` +
       ` state)">index ${delta[1]}</span>`
     );
   },
-  textdiff(delta, left, key, leftKey) {
+  textdiff(
+    delta: TextDiffDelta,
+    left: unknown,
+    key: string | undefined,
+    leftKey: string | number | undefined,
+  ) {
     const location =
       typeof leftKey === 'undefined'
         ? ''
@@ -169,7 +261,11 @@ const deltaAnnotations = {
   },
 };
 
-const formatAnyChange = function (context, delta) {
+const formatAnyChange = function (
+  this: AnnotatedFormatter,
+  context: AnnotatedFormatterContext,
+  delta: Delta,
+) {
   const deltaType = this.getDeltaType(delta);
   const annotator = deltaAnnotations[deltaType];
   const htmlNote =
@@ -185,21 +281,11 @@ const formatAnyChange = function (context, delta) {
   context.indent(-1);
 };
 
-/* eslint-disable camelcase */
-AnnotatedFormatter.prototype.format_added = formatAnyChange;
-AnnotatedFormatter.prototype.format_modified = formatAnyChange;
-AnnotatedFormatter.prototype.format_deleted = formatAnyChange;
-AnnotatedFormatter.prototype.format_moved = formatAnyChange;
-AnnotatedFormatter.prototype.format_textdiff = formatAnyChange;
-/* eslint-enable camelcase */
-
-/* jshint camelcase: true */
-
 export default AnnotatedFormatter;
 
-let defaultInstance;
+let defaultInstance: AnnotatedFormatter | undefined;
 
-export function format(delta, left) {
+export function format(delta: Delta, left: unknown) {
   if (!defaultInstance) {
     defaultInstance = new AnnotatedFormatter();
   }
