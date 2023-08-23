@@ -7,26 +7,28 @@ import lcs from './lcs';
 const ARRAY_MOVE = 3;
 
 const isArray =
-  typeof Array.isArray === 'function' ? Array.isArray : a => a instanceof Array;
+  typeof Array.isArray === 'function'
+    ? Array.isArray
+    : (a) => a instanceof Array;
 
 const arrayIndexOf =
   typeof Array.prototype.indexOf === 'function'
     ? (array, item) => array.indexOf(item)
     : (array, item) => {
-      let length = array.length;
-      for (let i = 0; i < length; i++) {
-        if (array[i] === item) {
-          return i;
+        const length = array.length;
+        for (let i = 0; i < length; i++) {
+          if (array[i] === item) {
+            return i;
+          }
         }
-      }
-      return -1;
-    };
+        return -1;
+      };
 
 function arraysHaveMatchByRef(array1, array2, len1, len2) {
   for (let index1 = 0; index1 < len1; index1++) {
-    let val1 = array1[index1];
+    const val1 = array1[index1];
     for (let index2 = 0; index2 < len2; index2++) {
-      let val2 = array2[index2];
+      const val2 = array2[index2];
       if (index1 !== index2 && val1 === val2) {
         return true;
       }
@@ -35,15 +37,15 @@ function arraysHaveMatchByRef(array1, array2, len1, len2) {
 }
 
 function matchItems(array1, array2, index1, index2, context) {
-  let value1 = array1[index1];
-  let value2 = array2[index2];
+  const value1 = array1[index1];
+  const value2 = array2[index2];
   if (value1 === value2) {
     return true;
   }
   if (typeof value1 !== 'object' || typeof value2 !== 'object') {
     return false;
   }
-  let objectHash = context.objectHash;
+  const objectHash = context.objectHash;
   if (!objectHash) {
     // no way to match objects was provided, try match by position
     return context.matchByPosition && index1 === index2;
@@ -82,7 +84,7 @@ export const diffFilter = function arraysDiffFilter(context) {
     return;
   }
 
-  let matchContext = {
+  const matchContext = {
     objectHash: context.options && context.options.objectHash,
     matchByPosition: context.options && context.options.matchByPosition,
   };
@@ -91,10 +93,10 @@ export const diffFilter = function arraysDiffFilter(context) {
   let index;
   let index1;
   let index2;
-  let array1 = context.left;
-  let array2 = context.right;
-  let len1 = array1.length;
-  let len2 = array2.length;
+  const array1 = context.left;
+  const array2 = context.right;
+  const len1 = array1.length;
+  const len2 = array2.length;
 
   let child;
 
@@ -108,7 +110,7 @@ export const diffFilter = function arraysDiffFilter(context) {
       array1,
       array2,
       len1,
-      len2
+      len2,
     );
   }
 
@@ -132,7 +134,7 @@ export const diffFilter = function arraysDiffFilter(context) {
       array2,
       len1 - 1 - commonTail,
       len2 - 1 - commonTail,
-      matchContext
+      matchContext,
     )
   ) {
     index1 = len1 - 1 - commonTail;
@@ -174,10 +176,10 @@ export const diffFilter = function arraysDiffFilter(context) {
   delete matchContext.hashCache2;
 
   // diff is not trivial, find the LCS (Longest Common Subsequence)
-  let trimmed1 = array1.slice(commonHead, len1 - commonTail);
-  let trimmed2 = array2.slice(commonHead, len2 - commonTail);
-  let seq = lcs.get(trimmed1, trimmed2, matchItems, matchContext);
-  let removedItems = [];
+  const trimmed1 = array1.slice(commonHead, len1 - commonTail);
+  const trimmed2 = array2.slice(commonHead, len2 - commonTail);
+  const seq = lcs.get(trimmed1, trimmed2, matchItems, matchContext);
+  const removedItems = [];
   result = result || {
     _t: 'a',
   };
@@ -206,9 +208,9 @@ export const diffFilter = function arraysDiffFilter(context) {
     includeValueOnMove = true;
   }
 
-  let removedItemsLength = removedItems.length;
+  const removedItemsLength = removedItems.length;
   for (index = commonHead; index < len2 - commonTail; index++) {
-    let indexOnArray2 = arrayIndexOf(seq.indices2, index - commonHead);
+    const indexOnArray2 = arrayIndexOf(seq.indices2, index - commonHead);
     if (indexOnArray2 < 0) {
       // added, try to match with a removed item and register as position move
       let isMove = false;
@@ -225,7 +227,7 @@ export const diffFilter = function arraysDiffFilter(context) {
               trimmed2,
               index1 - commonHead,
               index - commonHead,
-              matchContext
+              matchContext,
             )
           ) {
             // store position move as: [originalValue, newPosition, ARRAY_MOVE]
@@ -238,7 +240,7 @@ export const diffFilter = function arraysDiffFilter(context) {
             index2 = index;
             child = new DiffContext(
               context.left[index1],
-              context.right[index2]
+              context.right[index2],
             );
             context.push(child, index2);
             removedItems.splice(removeItemIndex1, 1);
@@ -264,7 +266,7 @@ export const diffFilter = function arraysDiffFilter(context) {
 };
 diffFilter.filterName = 'arrays';
 
-let compare = {
+const compare = {
   numerically(a, b) {
     return a - b;
   },
@@ -283,13 +285,13 @@ export const patchFilter = function nestedPatchFilter(context) {
   let index;
   let index1;
 
-  let delta = context.delta;
-  let array = context.left;
+  const delta = context.delta;
+  const array = context.left;
 
   // first, separate removals, insertions and modifications
   let toRemove = [];
   let toInsert = [];
-  let toModify = [];
+  const toModify = [];
   for (index in delta) {
     if (index !== '_t') {
       if (index[0] === '_') {
@@ -298,8 +300,8 @@ export const patchFilter = function nestedPatchFilter(context) {
           toRemove.push(parseInt(index.slice(1), 10));
         } else {
           throw new Error(
-            `only removal or move can be applied at original array indices,` +
-              ` invalid diff type: ${delta[index][2]}`
+            'only removal or move can be applied at original array indices,' +
+              ` invalid diff type: ${delta[index][2]}`,
           );
         }
       } else {
@@ -324,8 +326,8 @@ export const patchFilter = function nestedPatchFilter(context) {
   toRemove = toRemove.sort(compare.numerically);
   for (index = toRemove.length - 1; index >= 0; index--) {
     index1 = toRemove[index];
-    let indexDiff = delta[`_${index1}`];
-    let removedValue = array.splice(index1, 1)[0];
+    const indexDiff = delta[`_${index1}`];
+    const removedValue = array.splice(index1, 1)[0];
     if (indexDiff[2] === ARRAY_MOVE) {
       // reinsert later
       toInsert.push({
@@ -337,21 +339,21 @@ export const patchFilter = function nestedPatchFilter(context) {
 
   // insert items, in reverse order to avoid moving our own floor
   toInsert = toInsert.sort(compare.numericallyBy('index'));
-  let toInsertLength = toInsert.length;
+  const toInsertLength = toInsert.length;
   for (index = 0; index < toInsertLength; index++) {
-    let insertion = toInsert[index];
+    const insertion = toInsert[index];
     array.splice(insertion.index, 0, insertion.value);
   }
 
   // apply modifications
-  let toModifyLength = toModify.length;
+  const toModifyLength = toModify.length;
   let child;
   if (toModifyLength > 0) {
     for (index = 0; index < toModifyLength; index++) {
-      let modification = toModify[index];
+      const modification = toModify[index];
       child = new PatchContext(
         context.left[modification.index],
-        modification.delta
+        modification.delta,
       );
       context.push(child, modification.index);
     }
@@ -366,7 +368,7 @@ export const patchFilter = function nestedPatchFilter(context) {
 patchFilter.filterName = 'arrays';
 
 export const collectChildrenPatchFilter = function collectChildrenPatchFilter(
-  context
+  context,
 ) {
   if (!context || !context.children) {
     return;
@@ -374,7 +376,7 @@ export const collectChildrenPatchFilter = function collectChildrenPatchFilter(
   if (context.delta._t !== 'a') {
     return;
   }
-  let length = context.children.length;
+  const length = context.children.length;
   let child;
   for (let index = 0; index < length; index++) {
     child = context.children[index];
@@ -414,7 +416,7 @@ export const reverseFilter = function arraysReverseFilter(context) {
 };
 reverseFilter.filterName = 'arrays';
 
-let reverseArrayDeltaIndex = (delta, index, itemDelta) => {
+const reverseArrayDeltaIndex = (delta, index, itemDelta) => {
   if (typeof index === 'string' && index[0] === '_') {
     return parseInt(index.substr(1), 10);
   } else if (isArray(itemDelta) && itemDelta[2] === 0) {
@@ -422,12 +424,12 @@ let reverseArrayDeltaIndex = (delta, index, itemDelta) => {
   }
 
   let reverseIndex = +index;
-  for (let deltaIndex in delta) {
-    let deltaItem = delta[deltaIndex];
+  for (const deltaIndex in delta) {
+    const deltaItem = delta[deltaIndex];
     if (isArray(deltaItem)) {
       if (deltaItem[2] === ARRAY_MOVE) {
-        let moveFromIndex = parseInt(deltaIndex.substr(1), 10);
-        let moveToIndex = deltaItem[1];
+        const moveFromIndex = parseInt(deltaIndex.substr(1), 10);
+        const moveToIndex = deltaItem[1];
         if (moveToIndex === +index) {
           return moveFromIndex;
         }
@@ -440,7 +442,7 @@ let reverseArrayDeltaIndex = (delta, index, itemDelta) => {
           reverseIndex--;
         }
       } else if (deltaItem[2] === 0) {
-        let deleteIndex = parseInt(deltaIndex.substr(1), 10);
+        const deleteIndex = parseInt(deltaIndex.substr(1), 10);
         if (deleteIndex <= reverseIndex) {
           reverseIndex++;
         }
@@ -460,9 +462,9 @@ export function collectChildrenReverseFilter(context) {
   if (context.delta._t !== 'a') {
     return;
   }
-  let length = context.children.length;
+  const length = context.children.length;
   let child;
-  let delta = {
+  const delta = {
     _t: 'a',
   };
 
@@ -473,7 +475,7 @@ export function collectChildrenReverseFilter(context) {
       name = reverseArrayDeltaIndex(
         context.delta,
         child.childName,
-        child.result
+        child.result,
       );
     }
     if (delta[name] !== child.result) {
