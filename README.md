@@ -183,6 +183,7 @@ npm install jsondiffpatch
 var jsondiffpatch = require('jsondiffpatch');
 var jsondiffpatchInstance = jsondiffpatch.create(options);
 ```
+
 Some properties are available only from static main module (e.g. formatters, console), so we need to keep the reference to it if we want to use them.
 
 ### browser
