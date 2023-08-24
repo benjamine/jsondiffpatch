@@ -1,4 +1,4 @@
-import DiffContext from '../contexts/diff';
+import DiffContext, {AddedDelta, ArrayDelta, DeletedDelta, Delta} from '../contexts/diff';
 import PatchContext from '../contexts/patch';
 import ReverseContext from '../contexts/reverse';
 
@@ -7,20 +7,12 @@ import { Filter } from '../pipe';
 
 const ARRAY_MOVE = 3;
 
-const arrayIndexOf =
-  typeof Array.prototype.indexOf === 'function'
-    ? (array, item) => array.indexOf(item)
-    : (array, item) => {
-        const length = array.length;
-        for (let i = 0; i < length; i++) {
-          if (array[i] === item) {
-            return i;
-          }
-        }
-        return -1;
-      };
-
-function arraysHaveMatchByRef(array1, array2, len1, len2) {
+function arraysHaveMatchByRef(
+  array1: unknown[],
+  array2: unknown[],
+  len1: number,
+  len2: number,
+) {
   for (let index1 = 0; index1 < len1; index1++) {
     const val1 = array1[index1];
     for (let index2 = 0; index2 < len2; index2++) {
@@ -35,6 +27,8 @@ function arraysHaveMatchByRef(array1, array2, len1, len2) {
 export interface MatchContext {
   objectHash: ((item: object, index?: number) => string) | undefined;
   matchByPosition: boolean | undefined;
+  hashCache1?: string[];
+  hashCache2?: string[];
 }
 
 function matchItems(
@@ -130,7 +124,7 @@ export const diffFilter: Filter<DiffContext> = function arraysDiffFilter(
     matchItems(array1, array2, commonHead, commonHead, matchContext)
   ) {
     index = commonHead;
-    child = new DiffContext(context.left[index], context.right[index]);
+    child = new DiffContext((context.left as unknown[])[index], (context.right as unknown[])[index]);
     context.push(child, index);
     commonHead++;
   }
@@ -148,11 +142,11 @@ export const diffFilter: Filter<DiffContext> = function arraysDiffFilter(
   ) {
     index1 = len1 - 1 - commonTail;
     index2 = len2 - 1 - commonTail;
-    child = new DiffContext(context.left[index1], context.right[index2]);
+    child = new DiffContext((context.left as unknown[])[index1], (context.right as unknown[])[index2]);
     context.push(child, index2);
     commonTail++;
   }
-  let result;
+  let result: { _t: 'a', [index: `${number}`]: AddedDelta; [index: `_${number}`]: DeletedDelta } | undefined;
   if (commonHead + commonTail === len1) {
     if (len1 === len2) {
       // arrays are identical
@@ -164,7 +158,7 @@ export const diffFilter: Filter<DiffContext> = function arraysDiffFilter(
       _t: 'a',
     };
     for (index = commonHead; index < len2 - commonTail; index++) {
-      result[index] = [array2[index]];
+      result[`${index}`] = [array2[index]];
     }
     context.setResult(result).exit();
     return;
@@ -193,7 +187,7 @@ export const diffFilter: Filter<DiffContext> = function arraysDiffFilter(
     _t: 'a',
   };
   for (index = commonHead; index < len1 - commonTail; index++) {
-    if (arrayIndexOf(seq.indices1, index - commonHead) < 0) {
+    if (seq.indices1.indexOf(index - commonHead) < 0) {
       // removed
       result[`_${index}`] = [array1[index], 0, 0];
       removedItems.push(index);
@@ -219,7 +213,7 @@ export const diffFilter: Filter<DiffContext> = function arraysDiffFilter(
 
   const removedItemsLength = removedItems.length;
   for (index = commonHead; index < len2 - commonTail; index++) {
-    const indexOnArray2 = arrayIndexOf(seq.indices2, index - commonHead);
+    const indexOnArray2 = seq.indices2.indexOf(index - commonHead);
     if (indexOnArray2 < 0) {
       // added, try to match with a removed item and register as position move
       let isMove = false;
@@ -248,8 +242,8 @@ export const diffFilter: Filter<DiffContext> = function arraysDiffFilter(
 
             index2 = index;
             child = new DiffContext(
-              context.left[index1],
-              context.right[index2],
+              (context.left as unknown[])[index1],
+              (context.right as unknown[])[index2],
             );
             context.push(child, index2);
             removedItems.splice(removeItemIndex1, 1);
@@ -260,13 +254,13 @@ export const diffFilter: Filter<DiffContext> = function arraysDiffFilter(
       }
       if (!isMove) {
         // added
-        result[index] = [array2[index]];
+        result[`${index}`] = [array2[index]];
       }
     } else {
       // match, do inner diff
       index1 = seq.indices1[indexOnArray2] + commonHead;
       index2 = seq.indices2[indexOnArray2] + commonHead;
-      child = new DiffContext(context.left[index1], context.right[index2]);
+      child = new DiffContext((context.left as unknown[])[index1], (context.right as unknown[])[index2]);
       context.push(child, index2);
     }
   }
@@ -276,13 +270,23 @@ export const diffFilter: Filter<DiffContext> = function arraysDiffFilter(
 diffFilter.filterName = 'arrays';
 
 const compare = {
-  numerically(a, b) {
+  numerically(a: number, b: number) {
     return a - b;
   },
-  numericallyBy(name) {
-    return (a, b) => a[name] - b[name];
+  numericallyBy<T>(name: keyof T) {
+    return (a: T, b: T) => a[name] - b[name];
   },
 };
+
+interface ToInsert {
+  index: number;
+  value: unknown;
+}
+
+interface ToModify {
+  index: number;
+  delta: Delta;
+}
 
 export const patchFilter: Filter<PatchContext> = function nestedPatchFilter(
   context,
@@ -290,29 +294,29 @@ export const patchFilter: Filter<PatchContext> = function nestedPatchFilter(
   if (!context.nested) {
     return;
   }
-  if (context.delta._t !== 'a') {
+  if ((context.delta as ArrayDelta)._t !== 'a') {
     return;
   }
   let index;
   let index1;
 
-  const delta = context.delta;
-  const array = context.left;
+  const delta = context.delta as ArrayDelta;
+  const array = context.left as unknown[];
 
   // first, separate removals, insertions and modifications
-  let toRemove = [];
-  let toInsert = [];
+  let toRemove: number[] = [];
+  let toInsert: ToInsert[] = [];
   const toModify = [];
   for (index in delta) {
     if (index !== '_t') {
       if (index[0] === '_') {
         // removed item from original array
-        if (delta[index][2] === 0 || delta[index][2] === ARRAY_MOVE) {
+        if (delta[index as `_${number}`][2] === 0 || delta[index as `_${number}`][2] === ARRAY_MOVE) {
           toRemove.push(parseInt(index.slice(1), 10));
         } else {
           throw new Error(
             'only removal or move can be applied at original array indices,' +
-              ` invalid diff type: ${delta[index][2]}`,
+              ` invalid diff type: ${delta[index as `_${number}`][2]}`,
           );
         }
       } else {
@@ -383,7 +387,7 @@ export const collectChildrenPatchFilter: Filter<PatchContext> =
     if (!context || !context.children) {
       return;
     }
-    if (context.delta._t !== 'a') {
+    if ((context.delta as ArrayDelta)._t !== 'a') {
       return;
     }
     const length = context.children.length;

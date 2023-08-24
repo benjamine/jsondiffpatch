@@ -1,7 +1,7 @@
 import Context from './contexts/context';
 import Processor from './processor';
 
-export interface Filter<TContext extends Context<any>> {
+export interface Filter<TContext> {
   (context: TContext): void;
   filterName: string;
 }

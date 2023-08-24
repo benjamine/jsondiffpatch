@@ -57,8 +57,8 @@ const lengthMatrix = function (
 
 interface Subsequence {
   sequence: unknown[];
-  indices1: unknown[];
-  indices2: unknown[];
+  indices1: number[];
+  indices2: number[];
 }
 
 const backtrack = function (

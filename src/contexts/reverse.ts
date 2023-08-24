@@ -5,6 +5,7 @@ class ReverseContext extends Context<Delta> {
   delta: Delta;
   pipe: 'reverse';
   nested?: boolean;
+  newName?: string;
 
   constructor(delta: Delta) {
     super();

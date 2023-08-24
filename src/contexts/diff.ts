@@ -58,7 +58,7 @@ class DiffContext extends Context<Delta> {
         result[1] = clone(result[1]);
       }
     }
-    return Context.prototype.setResult.apply(this, arguments) as this;
+    return super.setResult(result);
   }
 }
 
