@@ -16,9 +16,9 @@ const lengthMatrix = function (array1, array2, match, context) {
   let x, y;
 
   // initialize empty matrix of len1+1 x len2+1
-  const matrix = [len1 + 1];
+  const matrix = new Array(len1 + 1);
   for (x = 0; x < len1 + 1; x++) {
-    matrix[x] = [len2 + 1];
+    matrix[x] = new Array(len2 + 1);
     for (y = 0; y < len2 + 1; y++) {
       matrix[x][y] = 0;
     }
