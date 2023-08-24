@@ -4,13 +4,13 @@ import BaseFormatter from './base';
 function chalkColor(name) {
   return (
     (chalk && chalk[name]) ||
-    function(...args) {
+    function (...args) {
       return args;
     }
   );
 }
 
-let colors = {
+const colors = {
   added: chalkColor('green'),
   deleted: chalkColor('red'),
   movedestination: chalkColor('gray'),
@@ -28,18 +28,18 @@ class ConsoleFormatter extends BaseFormatter {
 
   prepareContext(context) {
     super.prepareContext(context);
-    context.indent = function(levels) {
+    context.indent = function (levels) {
       this.indentLevel =
         (this.indentLevel || 0) + (typeof levels === 'undefined' ? 1 : levels);
       this.indentPad = new Array(this.indentLevel + 1).join('  ');
       this.outLine();
     };
-    context.outLine = function() {
+    context.outLine = function () {
       this.buffer.push(`\n${this.indentPad || ''}`);
     };
-    context.out = function(...args) {
+    context.out = function (...args) {
       for (let i = 0, l = args.length; i < l; i++) {
-        let lines = args[i].split('\n');
+        const lines = args[i].split('\n');
         let text = lines.join(`\n${this.indentPad || ''}`);
         if (this.color && this.color[0]) {
           text = this.color[0](text);
@@ -47,11 +47,11 @@ class ConsoleFormatter extends BaseFormatter {
         this.buffer.push(text);
       }
     };
-    context.pushColor = function(color) {
+    context.pushColor = function (color) {
       this.color = this.color || [];
       this.color.unshift(color);
     };
-    context.popColor = function() {
+    context.popColor = function () {
       this.color = this.color || [];
       this.color.shift();
     };
@@ -68,20 +68,20 @@ class ConsoleFormatter extends BaseFormatter {
   }
 
   formatTextDiffString(context, value) {
-    let lines = this.parseTextDiff(value);
+    const lines = this.parseTextDiff(value);
     context.indent();
     for (let i = 0, l = lines.length; i < l; i++) {
-      let line = lines[i];
+      const line = lines[i];
       context.pushColor(colors.textDiffLine);
       context.out(`${line.location.line},${line.location.chr} `);
       context.popColor();
-      let pieces = line.pieces;
+      const pieces = line.pieces;
       for (
         let pieceIndex = 0, piecesLength = pieces.length;
         pieceIndex < piecesLength;
         pieceIndex++
       ) {
-        let piece = pieces[pieceIndex];
+        const piece = pieces[pieceIndex];
         context.pushColor(colors[piece.type]);
         context.out(piece.text);
         context.popColor();

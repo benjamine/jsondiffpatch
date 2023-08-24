@@ -1,5 +1,5 @@
 (function demo() {
-  const getExampleJson = function() {
+  const getExampleJson = function () {
     const data = {
       name: 'South America',
       summary:
@@ -129,7 +129,7 @@
       ],
     };
 
-    let json = [JSON.stringify(data, null, 2)];
+    const json = [JSON.stringify(data, null, 2)];
 
     data.summary = data.summary
       .replace('Brazil', 'Brasil')
@@ -160,7 +160,7 @@
 
   /* global jsondiffpatch */
   const instance = jsondiffpatch.create({
-    objectHash: function(obj, index) {
+    objectHash: function (obj, index) {
       if (typeof obj._id !== 'undefined') {
         return obj._id;
       }
@@ -175,27 +175,27 @@
   });
 
   const dom = {
-    addClass: function(el, className) {
+    addClass: function (el, className) {
       if (el.classList) {
         el.classList.add(className);
       } else {
         el.className += ' ' + className;
       }
     },
-    removeClass: function(el, className) {
+    removeClass: function (el, className) {
       if (el.classList) {
         el.classList.remove(className);
       } else {
         el.className = el.className.replace(
           new RegExp(
             '(^|\\b)' + className.split(' ').join('|') + '(\\b|$)',
-            'gi'
+            'gi',
           ),
-          ' '
+          ' ',
         );
       }
     },
-    text: function(el, text) {
+    text: function (el, text) {
       if (typeof el.textContent !== 'undefined') {
         if (typeof text === 'undefined') {
           return el.textContent;
@@ -208,35 +208,35 @@
         el.innerText = text;
       }
     },
-    on: function(el, eventName, handler) {
+    on: function (el, eventName, handler) {
       if (el.addEventListener) {
         el.addEventListener(eventName, handler);
       } else {
         el.attachEvent('on' + eventName, handler);
       }
     },
-    ready: function(fn) {
+    ready: function (fn) {
       if (document.addEventListener) {
         document.addEventListener('DOMContentLoaded', fn);
       } else {
-        document.attachEvent('onreadystatechange', function() {
+        document.attachEvent('onreadystatechange', function () {
           if (document.readyState === 'interactive') {
             fn();
           }
         });
       }
     },
-    getJson: function(url, callback) {
+    getJson: function (url, callback) {
       /* global XMLHttpRequest */
       let request = new XMLHttpRequest();
       request.open('GET', url, true);
-      request.onreadystatechange = function() {
+      request.onreadystatechange = function () {
         if (this.readyState === 4) {
           let data;
           try {
             data = JSON.parse(this.responseText, jsondiffpatch.dateReviver);
           } catch (parseError) {
-            // eslint-disable-next-line standard/no-callback-literal
+            // eslint-disable-next-line n/no-callback-literal
             return callback('parse error: ' + parseError);
           }
           if (this.status >= 200 && this.status < 400) {
@@ -249,17 +249,17 @@
       request.send();
       request = null;
     },
-    runScriptTags: function(el) {
-      let scripts = el.querySelectorAll('script');
+    runScriptTags: function (el) {
+      const scripts = el.querySelectorAll('script');
       for (let i = 0; i < scripts.length; i++) {
-        let s = scripts[i];
+        const s = scripts[i];
         // eslint-disable-next-line no-eval
         eval(s.innerHTML);
       }
     },
   };
 
-  const trim = function(str) {
+  const trim = function (str) {
     return str.replace(/^\s+|\s+$/g, '');
   };
 
@@ -269,13 +269,13 @@
     const self = this;
     const prettifyButton = this.container.querySelector('.prettyfy');
     if (prettifyButton) {
-      dom.on(prettifyButton, 'click', function() {
+      dom.on(prettifyButton, 'click', function () {
         self.prettyfy();
       });
     }
   };
 
-  JsonArea.prototype.error = function(err) {
+  JsonArea.prototype.error = function (err) {
     const errorElement = this.container.querySelector('.error-message');
     if (!err) {
       dom.removeClass(this.container, 'json-error');
@@ -286,14 +286,14 @@
     dom.addClass(this.container, 'json-error');
   };
 
-  JsonArea.prototype.getValue = function() {
+  JsonArea.prototype.getValue = function () {
     if (!this.editor) {
       return this.element.value;
     }
     return this.editor.getValue();
   };
 
-  JsonArea.prototype.parse = function() {
+  JsonArea.prototype.parse = function () {
     const txt = trim(this.getValue());
     try {
       this.error(false);
@@ -312,7 +312,7 @@
     }
   };
 
-  JsonArea.prototype.setValue = function(value) {
+  JsonArea.prototype.setValue = function (value) {
     if (!this.editor) {
       this.element.value = value;
       return;
@@ -320,7 +320,7 @@
     this.editor.setValue(value);
   };
 
-  JsonArea.prototype.prettyfy = function() {
+  JsonArea.prototype.prettyfy = function () {
     const value = this.parse();
     const prettyJson =
       typeof value === 'string' ? value : JSON.stringify(value, null, 2);
@@ -328,14 +328,14 @@
   };
 
   /* global CodeMirror */
-  JsonArea.prototype.makeEditor = function(readOnly) {
+  JsonArea.prototype.makeEditor = function (readOnly) {
     if (typeof CodeMirror === 'undefined') {
       return;
     }
     this.editor = CodeMirror.fromTextArea(this.element, {
       mode: 'javascript',
       json: true,
-      readOnly: readOnly,
+      readOnly,
     });
     if (!readOnly) {
       this.editor.on('change', compare);
@@ -348,7 +348,7 @@
     delta: new JsonArea(document.getElementById('json-delta')),
   };
 
-  const compare = function() {
+  const compare = function () {
     let left, right, error;
     document.getElementById('results').style.display = 'none';
     try {
@@ -391,7 +391,7 @@
           case 'visual':
             visualdiff.innerHTML = jsondiffpatch.formatters.html.format(
               delta,
-              left
+              left,
             );
             if (!document.getElementById('showunchanged').checked) {
               jsondiffpatch.formatters.html.hideUnchanged();
@@ -399,9 +399,8 @@
             dom.runScriptTags(visualdiff);
             break;
           case 'annotated':
-            annotateddiff.innerHTML = jsondiffpatch.formatters.annotated.format(
-              delta
-            );
+            annotateddiff.innerHTML =
+              jsondiffpatch.formatters.annotated.format(delta);
             break;
           case 'json':
             areas.delta.setValue(JSON.stringify(delta, null, 2));
@@ -432,7 +431,7 @@
   dom.on(areas.left.element, 'keyup', compare);
   dom.on(areas.right.element, 'keyup', compare);
 
-  const getSelectedDeltaType = function() {
+  const getSelectedDeltaType = function () {
     if (document.getElementById('show-delta-type-visual').checked) {
       return 'visual';
     }
@@ -444,7 +443,7 @@
     }
   };
 
-  const showSelectedDeltaType = function() {
+  const showSelectedDeltaType = function () {
     const type = getSelectedDeltaType();
     document.getElementById('delta-panel-visual').style.display =
       type === 'visual' ? '' : 'none';
@@ -458,47 +457,47 @@
   dom.on(
     document.getElementById('show-delta-type-visual'),
     'click',
-    showSelectedDeltaType
+    showSelectedDeltaType,
   );
   dom.on(
     document.getElementById('show-delta-type-annotated'),
     'click',
-    showSelectedDeltaType
+    showSelectedDeltaType,
   );
   dom.on(
     document.getElementById('show-delta-type-json'),
     'click',
-    showSelectedDeltaType
+    showSelectedDeltaType,
   );
 
-  dom.on(document.getElementById('swap'), 'click', function() {
-    let leftValue = areas.left.getValue();
+  dom.on(document.getElementById('swap'), 'click', function () {
+    const leftValue = areas.left.getValue();
     areas.left.setValue(areas.right.getValue());
     areas.right.setValue(leftValue);
     compare();
   });
 
-  dom.on(document.getElementById('clear'), 'click', function() {
+  dom.on(document.getElementById('clear'), 'click', function () {
     areas.left.setValue('');
     areas.right.setValue('');
     compare();
   });
 
-  dom.on(document.getElementById('showunchanged'), 'change', function() {
+  dom.on(document.getElementById('showunchanged'), 'change', function () {
     jsondiffpatch.formatters.html.showUnchanged(
       document.getElementById('showunchanged').checked,
       null,
-      800
+      800,
     );
   });
 
-  dom.ready(function() {
+  dom.ready(function () {
     setTimeout(compare);
   }, 1);
 
   const load = {};
 
-  load.data = function(dataArg) {
+  load.data = function (dataArg) {
     const data = dataArg || {};
     dom.text(document.getElementById('description'), data.description || '');
     if (data.url && trim(data.url).substr(0, 10) !== 'javascript') {
@@ -514,11 +513,11 @@
 
     dom.text(
       document.getElementById('json-panel-left').querySelector('h2'),
-      (data.left && data.left.name) || 'left.json'
+      (data.left && data.left.name) || 'left.json',
     );
     dom.text(
       document.getElementById('json-panel-right').querySelector('h2'),
-      (data.right && data.right.name) || 'right.json'
+      (data.right && data.right.name) || 'right.json',
     );
 
     document
@@ -536,24 +535,24 @@
     }
   };
 
-  load.gist = function(id) {
-    dom.getJson('https://api.github.com/gists/' + id, function(error, data) {
+  load.gist = function (id) {
+    dom.getJson('https://api.github.com/gists/' + id, function (error, data) {
       if (error) {
-        let message = error + (data && data.message ? data.message : '');
+        const message = error + (data && data.message ? data.message : '');
         load.data({
           error: message,
         });
         return;
       }
-      let filenames = [];
-      for (let filename in data.files) {
-        let file = data.files[filename];
+      const filenames = [];
+      for (const filename in data.files) {
+        const file = data.files[filename];
         if (file.language === 'JSON') {
           filenames.push(filename);
         }
       }
       filenames.sort();
-      let files = [data.files[filenames[0]], data.files[filenames[1]]];
+      const files = [data.files[filenames[0]], data.files[filenames[1]]];
       /* jshint camelcase: false */
       load.data({
         url: data.html_url,
@@ -570,18 +569,18 @@
     });
   };
 
-  load.leftright = function(descriptionArg, leftValueArg, rightValueArg) {
+  load.leftright = function (descriptionArg, leftValueArg, rightValueArg) {
     try {
       const description = decodeURIComponent(descriptionArg || '');
       const leftValue = decodeURIComponent(leftValueArg);
       const rightValue = decodeURIComponent(rightValueArg);
       const urlmatch = /https?:\/\/.*\/([^/]+\.json)(?:[?#].*)?/;
       const dataLoaded = {
-        description: description,
+        description,
         left: {},
         right: {},
       };
-      const loadIfReady = function() {
+      const loadIfReady = function () {
         if (
           typeof dataLoaded.left.content !== 'undefined' &&
           typeof dataLoaded.right.content !== 'undefined'
@@ -592,7 +591,7 @@
       if (urlmatch.test(leftValue)) {
         dataLoaded.left.name = urlmatch.exec(leftValue)[1];
         dataLoaded.left.fullname = leftValue;
-        dom.getJson(leftValue, function(error, data) {
+        dom.getJson(leftValue, function (error, data) {
           if (error) {
             dataLoaded.left.content =
               error + (data && data.message ? data.message : '');
@@ -607,7 +606,7 @@
       if (urlmatch.test(rightValue)) {
         dataLoaded.right.name = urlmatch.exec(rightValue)[1];
         dataLoaded.right.fullname = rightValue;
-        dom.getJson(rightValue, function(error, data) {
+        dom.getJson(rightValue, function (error, data) {
           if (error) {
             dataLoaded.right.content =
               error + (data && data.message ? data.message : '');
@@ -627,13 +626,13 @@
     }
   };
 
-  load.key = function(key) {
+  load.key = function (key) {
     const matchers = {
       // eslint-disable-next-line max-len
       gist: /^(?:https?:\/\/)?(?:gist\.github\.com\/)?(?:[\w0-9\-a-f]+\/)?([0-9a-f]+)$/i,
       leftright: /^(?:desc=(.*)?&)?left=(.*)&right=(.*)&?$/i,
     };
-    for (let loader in matchers) {
+    for (const loader in matchers) {
       const match = matchers[loader].exec(key);
       if (match) {
         return load[loader].apply(load, match.slice(1));
@@ -655,10 +654,10 @@
     });
   }
 
-  dom.on(document.getElementById('examples'), 'change', function() {
+  dom.on(document.getElementById('examples'), 'change', function () {
     const example = trim(this.value);
     switch (example) {
-      case 'text':
+      case 'text': {
         const exampleJson = getExampleJson();
         load.data({
           left: {
@@ -671,6 +670,7 @@
           },
         });
         break;
+      }
       case 'gist':
         document.location = '?benjamine/9188826';
         break;
@@ -678,11 +678,11 @@
         document.location =
           '?desc=moving%20around&left=' +
           encodeURIComponent(
-            JSON.stringify([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
+            JSON.stringify([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
           ) +
           '&right=' +
           encodeURIComponent(
-            JSON.stringify([10, 0, 1, 7, 2, 4, 5, 6, 88, 9, 3])
+            JSON.stringify([10, 0, 1, 7, 2, 4, 5, 6, 88, 9, 3]),
           );
         break;
       case 'query':
@@ -693,14 +693,14 @@
             JSON.stringify({
               "don't": 'abuse',
               with: ['large', 'urls'],
-            })
+            }),
           ) +
           '&right=' +
           encodeURIComponent(
             JSON.stringify({
               "don't": 'use',
               with: ['>', 2, 'KB urls'],
-            })
+            }),
           );
         break;
       case 'urls':
@@ -708,11 +708,11 @@
           '?desc=http%20raw%20file%20urls&left=' +
           encodeURIComponent(
             'https://rawgithub.com/benjamine/JsonDiffPatch/' +
-              'c83e942971c627f61ef874df3cfdd50a95f1c5a2/package.json'
+              'c83e942971c627f61ef874df3cfdd50a95f1c5a2/package.json',
           ) +
           '&right=' +
           encodeURIComponent(
-            'https://rawgithub.com/benjamine/JsonDiffPatch/master/package.json'
+            'https://rawgithub.com/benjamine/JsonDiffPatch/master/package.json',
           );
         break;
       default:
