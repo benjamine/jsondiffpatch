@@ -34,7 +34,13 @@ const lengthMatrix = function (
   let x, y;
 
   // initialize empty matrix of len1+1 x len2+1
-  const matrix = new Array(len1 + 1);
+  const matrix: number[][] & { match?: (
+      array1: unknown[],
+      array2: unknown[],
+      index1: number,
+      index2: number,
+      context: MatchContext,
+    ) => boolean | undefined } = new Array(len1 + 1);
   for (x = 0; x < len1 + 1; x++) {
     matrix[x] = new Array(len2 + 1);
     for (y = 0; y < len2 + 1; y++) {
@@ -62,7 +68,13 @@ interface Subsequence {
 }
 
 const backtrack = function (
-  matrix,
+  matrix: number[][] & { match?: (
+      array1: unknown[],
+      array2: unknown[],
+      index1: number,
+      index2: number,
+      context: MatchContext,
+    ) => boolean | undefined },
   array1: unknown[],
   array2: unknown[],
   context: MatchContext,
@@ -76,7 +88,7 @@ const backtrack = function (
   };
 
   while (index1 !== 0 && index2 !== 0) {
-    const sameLetter = matrix.match(
+    const sameLetter = matrix.match!(
       array1,
       array2,
       index1 - 1,
@@ -121,11 +133,7 @@ const get = function (
     match || defaultMatch,
     innerContext,
   );
-  const result = backtrack(matrix, array1, array2, innerContext);
-  if (typeof array1 === 'string' && typeof array2 === 'string') {
-    result.sequence = result.sequence.join('');
-  }
-  return result;
+  return backtrack(matrix, array1, array2, innerContext);
 };
 
 export default {
