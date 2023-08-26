@@ -47,6 +47,17 @@ export type DeltaType =
   | 'node'
   | 'unknown';
 
+interface DeltaTypeMap {
+  movedestination: undefined;
+  unchanged: undefined;
+  added: AddedDelta;
+  modified: ModifiedDelta;
+  deleted: DeletedDelta;
+  textdiff: TextDiffDelta;
+  moved: MovedDelta;
+  node: ObjectDelta | ArrayDelta;
+}
+
 export type NodeType = 'array' | 'object' | '';
 
 interface MoveDestination {
@@ -68,6 +79,19 @@ interface LineOutput {
   pieces: LineOutputPiece[];
   location: LineOutputLocation;
 }
+
+type FormatMehodMap = {};
+
+type Formatter<TContext extends BaseFormatterContext> = {
+  [TDeltaType in keyof DeltaTypeMap as `format_${keyof DeltaTypeMap}`]: (
+    context: TContext,
+    delta: DeltaTypeMap[TDeltaType],
+    leftValue: unknown,
+    key: string | undefined,
+    leftKey: string | number | undefined,
+    movedFrom: MoveDestination | undefined,
+  ) => void;
+};
 
 abstract class BaseFormatter<TContext extends BaseFormatterContext> {
   includeMoveDestinations?: boolean;
@@ -98,9 +122,7 @@ abstract class BaseFormatter<TContext extends BaseFormatterContext> {
     key: string | undefined,
     leftKey: string | number | undefined,
     movedFrom: MoveDestination | undefined,
-  ) {
-    return (err as Error).toString();
-  }
+  ) {}
 
   finalize({ buffer }: TContext) {
     if (Array.isArray(buffer)) {
@@ -108,9 +130,9 @@ abstract class BaseFormatter<TContext extends BaseFormatterContext> {
     }
   }
 
-  recurse(
+  recurse<TDeltaType extends keyof DeltaTypeMap>(
     context: TContext,
-    delta: Delta,
+    delta: DeltaTypeMap[TDeltaType],
     left: unknown,
     key?: string,
     leftKey?: string | number,
@@ -138,11 +160,20 @@ abstract class BaseFormatter<TContext extends BaseFormatterContext> {
       this.rootBegin(context, type, nodeType);
     }
 
-    let typeFormattter;
+    let typeFormattter:
+      | ((
+          context: TContext,
+          delta: DeltaTypeMap[TDeltaType],
+          leftValue: unknown,
+          key: string | undefined,
+          leftKey: string | number | undefined,
+          movedFrom: MoveDestination | undefined,
+        ) => void)
+      | undefined;
     try {
       typeFormattter =
         type !== 'unknown'
-          ? this[`format_${type}`]
+          ? (this as Formatter<TContext>)[`format_${type}`]
           : this.typeFormattterNotFound(context, type);
       typeFormattter.call(
         this,
@@ -184,8 +215,10 @@ abstract class BaseFormatter<TContext extends BaseFormatterContext> {
     this.forEachDeltaKey(delta, left, (key, leftKey, movedFrom, isLast) => {
       self.recurse(
         context,
-        delta[key],
-        left ? left[leftKey] : undefined,
+        (delta as ObjectDelta)[key],
+        left
+          ? (left as { [key: string | number]: unknown })[leftKey]
+          : undefined,
         key,
         leftKey,
         movedFrom,

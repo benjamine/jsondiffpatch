@@ -69,13 +69,15 @@ export const patchFilter: Filter<PatchContext> =
     if (context.nested) {
       return;
     }
-    if (context.delta.length === 1) {
+    if ((context.delta as unknown[]).length === 1) {
       context.setResult(context.delta[0]).exit();
       return;
     }
-    if (context.delta.length === 2) {
+    if ((context.delta as unknown[]).length === 2) {
       if (context.left instanceof RegExp) {
-        const regexArgs = /^\/(.*)\/([gimyu]+)$/.exec(context.delta[1]);
+        const regexArgs = /^\/(.*)\/([gimyu]+)$/.exec(
+          context.delta[1] as string,
+        );
         if (regexArgs) {
           context.setResult(new RegExp(regexArgs[1], regexArgs[2])).exit();
           return;
@@ -84,7 +86,7 @@ export const patchFilter: Filter<PatchContext> =
       context.setResult(context.delta[1]).exit();
       return;
     }
-    if (context.delta.length === 3 && context.delta[2] === 0) {
+    if ((context.delta as unknown[]).length === 3 && context.delta[2] === 0) {
       context.setResult(undefined).exit();
     }
   };
@@ -100,15 +102,15 @@ export const reverseFilter: Filter<ReverseContext> =
     if (context.nested) {
       return;
     }
-    if (context.delta.length === 1) {
+    if ((context.delta as unknown[]).length === 1) {
       context.setResult([context.delta[0], 0, 0]).exit();
       return;
     }
-    if (context.delta.length === 2) {
+    if ((context.delta as unknown[]).length === 2) {
       context.setResult([context.delta[1], context.delta[0]]).exit();
       return;
     }
-    if (context.delta.length === 3 && context.delta[2] === 0) {
+    if ((context.delta as unknown[]).length === 3 && context.delta[2] === 0) {
       context.setResult([context.delta[0]]).exit();
     }
   };

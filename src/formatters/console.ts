@@ -21,7 +21,7 @@ interface Color {
 
 function chalkColor(name: string): Color {
   return (
-    (chalk && chalk[name]) ||
+    (chalk && chalk[name as typeof chalk.ForegroundColor]) ||
     function (...args) {
       return args;
     }
@@ -110,7 +110,7 @@ class ConsoleFormatter extends BaseFormatter<ConsoleFormatterContext> {
         pieceIndex++
       ) {
         const piece = pieces[pieceIndex];
-        context.pushColor(colors[piece.type]);
+        context.pushColor(colors[piece.type as keyof typeof colors]);
         context.out(piece.text);
         context.popColor();
       }
@@ -126,7 +126,7 @@ class ConsoleFormatter extends BaseFormatter<ConsoleFormatterContext> {
     type: DeltaType,
     nodeType: NodeType,
   ) {
-    context.pushColor(colors[type]);
+    context.pushColor(colors[type as keyof typeof colors]);
     if (type === 'node') {
       context.out(nodeType === 'array' ? '[' : '{');
       context.indent();
@@ -152,7 +152,7 @@ class ConsoleFormatter extends BaseFormatter<ConsoleFormatterContext> {
     type: DeltaType,
     nodeType: NodeType,
   ) {
-    context.pushColor(colors[type]);
+    context.pushColor(colors[type as keyof typeof colors]);
     context.out(`${leftKey}: `);
     if (type === 'node') {
       context.out(nodeType === 'array' ? '[' : '{');

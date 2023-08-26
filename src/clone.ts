@@ -22,7 +22,9 @@ export default function clone(arg: unknown): unknown {
   const cloned = {};
   for (const name in arg) {
     if (Object.prototype.hasOwnProperty.call(arg, name)) {
-      cloned[name] = clone(arg[name]);
+      (cloned as { [name: string]: unknown })[name] = clone(
+        (arg as { [name: string]: unknown })[name],
+      );
     }
   }
   return cloned;

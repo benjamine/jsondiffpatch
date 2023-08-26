@@ -72,36 +72,21 @@ class Pipe<TContext extends Context<any>> {
     return this.filters.map((f) => f.filterName);
   }
 
-  after(filterName: string) {
+  after(filterName: string, ...params: Filter<TContext>[]) {
     const index = this.indexOf(filterName);
-    const params = Array.prototype.slice.call(arguments, 1);
-    if (!params.length) {
-      throw new Error('a filter is required');
-    }
-    params.unshift(index + 1, 0);
-    Array.prototype.splice.apply(this.filters, params);
+    this.filters.splice(index + 1, 0, ...params);
     return this;
   }
 
-  before(filterName: string) {
+  before(filterName: string, ...params: Filter<TContext>[]) {
     const index = this.indexOf(filterName);
-    const params = Array.prototype.slice.call(arguments, 1);
-    if (!params.length) {
-      throw new Error('a filter is required');
-    }
-    params.unshift(index, 0);
-    Array.prototype.splice.apply(this.filters, params);
+    this.filters.splice(index, 0, ...params);
     return this;
   }
 
-  replace(filterName: string) {
+  replace(filterName: string, ...params: Filter<TContext>[]) {
     const index = this.indexOf(filterName);
-    const params = Array.prototype.slice.call(arguments, 1);
-    if (!params.length) {
-      throw new Error('a filter is required');
-    }
-    params.unshift(index, 1);
-    Array.prototype.splice.apply(this.filters, params);
+    this.filters.splice(index, 1, ...params);
     return this;
   }
 
@@ -128,7 +113,9 @@ class Pipe<TContext extends Context<any>> {
     this.resultCheck = (context) => {
       if (!context.hasResult) {
         console.log(context);
-        const error = new Error(`${pipe.name} failed`);
+        const error: Error & { noResult?: boolean } = new Error(
+          `${pipe.name} failed`,
+        );
         error.noResult = true;
         throw error;
       }

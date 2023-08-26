@@ -42,7 +42,9 @@ const getDiffMatchPatch = function (required?: boolean) {
       if (!required) {
         return null;
       }
-      const error = new Error('text diff_match_patch library not found');
+      const error: Error & { diff_match_patch_not_found?: boolean } = new Error(
+        'text diff_match_patch library not found',
+      );
       // eslint-disable-next-line camelcase
       error.diff_match_patch_not_found = true;
       throw error;
@@ -58,7 +60,9 @@ const getDiffMatchPatch = function (required?: boolean) {
         );
         for (let i = 0; i < results[1].length; i++) {
           if (!results[1][i]) {
-            const error = new Error('text patch failed');
+            const error: Error & { textPatchFailed?: boolean } = new Error(
+              'text patch failed',
+            );
             error.textPatchFailed = true;
           }
         }

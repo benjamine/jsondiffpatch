@@ -1,6 +1,7 @@
 import DiffPatcher from './diffpatcher';
 import dateReviver from './date-reviver';
 import { Options } from './processor';
+import { Delta } from './contexts/diff';
 
 export { DiffPatcher, dateReviver };
 
@@ -14,37 +15,37 @@ export function create(options?: Options) {
 
 let defaultInstance: DiffPatcher;
 
-export function diff() {
+export function diff(left: unknown, right: unknown) {
   if (!defaultInstance) {
     defaultInstance = new DiffPatcher();
   }
-  return defaultInstance.diff.apply(defaultInstance, arguments);
+  return defaultInstance.diff(left, right);
 }
 
-export function patch() {
+export function patch(left: unknown, delta: Delta) {
   if (!defaultInstance) {
     defaultInstance = new DiffPatcher();
   }
-  return defaultInstance.patch.apply(defaultInstance, arguments);
+  return defaultInstance.patch(left, delta);
 }
 
-export function unpatch() {
+export function unpatch(right: unknown, delta: Delta) {
   if (!defaultInstance) {
     defaultInstance = new DiffPatcher();
   }
-  return defaultInstance.unpatch.apply(defaultInstance, arguments);
+  return defaultInstance.unpatch(right, delta);
 }
 
-export function reverse() {
+export function reverse(delta: Delta) {
   if (!defaultInstance) {
     defaultInstance = new DiffPatcher();
   }
-  return defaultInstance.reverse.apply(defaultInstance, arguments);
+  return defaultInstance.reverse(delta);
 }
 
-export function clone() {
+export function clone(value: unknown) {
   if (!defaultInstance) {
     defaultInstance = new DiffPatcher();
   }
-  return defaultInstance.clone.apply(defaultInstance, arguments);
+  return defaultInstance.clone(value);
 }

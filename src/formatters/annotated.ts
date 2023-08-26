@@ -40,11 +40,11 @@ class AnnotatedFormatter extends BaseFormatter<AnnotatedFormatterContext> {
           '<pre class="jsondiffpatch-annotated-indent"' +
           ' style="display: inline-block">',
       );
-      context.out!(context.indentPad);
+      context.out!(context.indentPad!);
       context.out!('</pre><pre style="display: inline-block">');
       context.out!(json);
       context.out!('</pre></td><td class="jsondiffpatch-delta-note"><div>');
-      context.out!(htmlNote);
+      context.out!(htmlNote!);
       context.out!('</div></td></tr>');
     };
   }
@@ -158,24 +158,54 @@ class AnnotatedFormatter extends BaseFormatter<AnnotatedFormatterContext> {
 
   // TODO Forward more arguments
 
-  format_added(context: AnnotatedFormatterContext, delta: AddedDelta) {
-    formatAnyChange.call(this, context, delta);
+  format_added(
+    context: AnnotatedFormatterContext,
+    delta: AddedDelta,
+    left: unknown,
+    key: string | undefined,
+    leftKey: string | number | undefined,
+  ) {
+    formatAnyChange.call(this, context, delta, left, key, leftKey);
   }
 
-  format_modified(context: AnnotatedFormatterContext, delta: ModifiedDelta) {
-    formatAnyChange.call(this, context, delta);
+  format_modified(
+    context: AnnotatedFormatterContext,
+    delta: ModifiedDelta,
+    left: unknown,
+    key: string | undefined,
+    leftKey: string | number | undefined,
+  ) {
+    formatAnyChange.call(this, context, delta, left, key, leftKey);
   }
 
-  format_deleted(context: AnnotatedFormatterContext, delta: DeletedDelta) {
-    formatAnyChange.call(this, context, delta);
+  format_deleted(
+    context: AnnotatedFormatterContext,
+    delta: DeletedDelta,
+    left: unknown,
+    key: string | undefined,
+    leftKey: string | number | undefined,
+  ) {
+    formatAnyChange.call(this, context, delta, left, key, leftKey);
   }
 
-  format_moved(context: AnnotatedFormatterContext, delta: MovedDelta) {
-    formatAnyChange.call(this, context, delta);
+  format_moved(
+    context: AnnotatedFormatterContext,
+    delta: MovedDelta,
+    left: unknown,
+    key: string | undefined,
+    leftKey: string | number | undefined,
+  ) {
+    formatAnyChange.call(this, context, delta, left, key, leftKey);
   }
 
-  format_textdiff(context: AnnotatedFormatterContext, delta: TextDiffDelta) {
-    formatAnyChange.call(this, context, delta);
+  format_textdiff(
+    context: AnnotatedFormatterContext,
+    delta: TextDiffDelta,
+    left: unknown,
+    key: string | undefined,
+    leftKey: string | number | undefined,
+  ) {
+    formatAnyChange.call(this, context, delta, left, key, leftKey);
   }
 }
 
@@ -184,7 +214,22 @@ class AnnotatedFormatter extends BaseFormatter<AnnotatedFormatterContext> {
 const wrapPropertyName = (name: string) =>
   `<pre style="display:inline-block">&quot;${name}&quot;</pre>`;
 
-const deltaAnnotations = {
+interface DeltaTypeAnnotationsMap {
+  added: AddedDelta;
+  modified: ModifiedDelta;
+  deleted: DeletedDelta;
+  moved: MovedDelta;
+  textdiff: TextDiffDelta;
+}
+
+const deltaAnnotations: {
+  [DeltaType in keyof DeltaTypeAnnotationsMap]: (
+    delta: DeltaTypeAnnotationsMap[DeltaType],
+    left: unknown,
+    key: string | undefined,
+    leftKey: string | number | undefined,
+  ) => string;
+} = {
   added(
     delta: AddedDelta,
     left: unknown,
@@ -261,16 +306,19 @@ const deltaAnnotations = {
   },
 };
 
-const formatAnyChange = function (
+const formatAnyChange = function <
+  TDeltaType extends keyof DeltaTypeAnnotationsMap,
+>(
   this: AnnotatedFormatter,
   context: AnnotatedFormatterContext,
-  delta: Delta,
+  delta: DeltaTypeAnnotationsMap[TDeltaType],
+  left: unknown,
+  key: string | undefined,
+  leftKey: string | number | undefined,
 ) {
-  const deltaType = this.getDeltaType(delta);
+  const deltaType = this.getDeltaType(delta) as TDeltaType;
   const annotator = deltaAnnotations[deltaType];
-  const htmlNote =
-    annotator &&
-    annotator.apply(annotator, Array.prototype.slice.call(arguments, 1));
+  const htmlNote = annotator && annotator(delta, left, key, leftKey);
   let json = JSON.stringify(delta, null, 2);
   if (deltaType === 'textdiff') {
     // split text diffs lines

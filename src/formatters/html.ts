@@ -207,7 +207,7 @@ function htmlEscape(text: string) {
     [/>/g, '&gt;'],
     [/'/g, '&apos;'],
     [/"/g, '&quot;'],
-  ];
+  ] as const;
   for (let i = 0; i < replacements.length; i++) {
     html = html.replace(replacements[i][0], replacements[i][1]);
   }
