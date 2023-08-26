@@ -93,14 +93,17 @@ type Formatter<TContext extends BaseFormatterContext> = {
   ) => void;
 };
 
-abstract class BaseFormatter<TContext extends BaseFormatterContext> {
+abstract class BaseFormatter<
+  TContext extends BaseFormatterContext,
+  TFormatted extends unknown = string | undefined,
+> {
   includeMoveDestinations?: boolean;
 
-  format(delta: Delta, left: unknown) {
+  format(delta: Delta, left: unknown): TFormatted {
     const context: Partial<TContext> = {};
     this.prepareContext(context);
     this.recurse(context as TContext, delta, left);
-    return this.finalize(context as TContext);
+    return this.finalize(context as TContext) as TFormatted;
   }
 
   prepareContext(context: Partial<TContext>) {

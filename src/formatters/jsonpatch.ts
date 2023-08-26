@@ -54,7 +54,7 @@ interface JSONFormatterContext extends BaseFormatterContext {
   toPath: (toPath: number) => string;
 }
 
-class JSONFormatter extends BaseFormatter<JSONFormatterContext> {
+class JSONFormatter extends BaseFormatter<JSONFormatterContext, Op[]> {
   constructor() {
     super();
     this.includeMoveDestinations = true;
