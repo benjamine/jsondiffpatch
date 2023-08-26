@@ -6,7 +6,7 @@ import {
   ModifiedDelta,
   MovedDelta,
   ObjectDelta,
-  TextDiffDelta
+  TextDiffDelta,
 } from '../contexts/diff';
 
 const trimUnderscore = (str: string) => {
@@ -90,7 +90,15 @@ abstract class BaseFormatter<TContext extends BaseFormatterContext> {
     throw new Error(`cannot format delta type: ${deltaType}`);
   }
 
-  typeFormattterErrorFormatter(context: TContext, err: unknown, delta: Delta, leftValue: unknown, key: string | undefined, leftKey: string | number | undefined, movedFrom: MoveDestination | undefined) {
+  typeFormattterErrorFormatter(
+    context: TContext,
+    err: unknown,
+    delta: Delta,
+    leftValue: unknown,
+    key: string | undefined,
+    leftKey: string | number | undefined,
+    movedFrom: MoveDestination | undefined,
+  ) {
     return (err as Error).toString();
   }
 
@@ -163,7 +171,11 @@ abstract class BaseFormatter<TContext extends BaseFormatterContext> {
     }
   }
 
-  formatDeltaChildren(context: TContext, delta: ObjectDelta | ArrayDelta, left: unknown) {
+  formatDeltaChildren(
+    context: TContext,
+    delta: ObjectDelta | ArrayDelta,
+    left: unknown,
+  ) {
     const self = this;
     this.forEachDeltaKey(delta, left, (key, leftKey, movedFrom, isLast) => {
       self.recurse(
@@ -178,10 +190,20 @@ abstract class BaseFormatter<TContext extends BaseFormatterContext> {
     });
   }
 
-  forEachDeltaKey(delta: Delta, left: unknown, fn: (key: string, leftKey: string | number, moveDestination: MoveDestination, isLast: boolean)) {
+  forEachDeltaKey(
+    delta: Delta,
+    left: unknown,
+    fn: (
+      key: string,
+      leftKey: string | number,
+      moveDestination: MoveDestination,
+      isLast: boolean,
+    ) => void,
+  ) {
     const keys = Object.keys(delta!);
     const arrayKeys = delta._t === 'a';
-    const moveDestinations: { [destinationIndex: string]: MoveDestination } = {};
+    const moveDestinations: { [destinationIndex: string]: MoveDestination } =
+      {};
     let name;
     if (typeof left !== 'undefined') {
       for (name in left) {
@@ -269,7 +291,10 @@ abstract class BaseFormatter<TContext extends BaseFormatterContext> {
     const lines = value.split('\n@@ ');
     for (let i = 0, l = lines.length; i < l; i++) {
       const line = lines[i];
-      const lineOutput: { pieces: LineOutputPiece[]; location?: LineOutputLocation } = {
+      const lineOutput: {
+        pieces: LineOutputPiece[];
+        location?: LineOutputLocation;
+      } = {
         pieces: [],
       };
       const location = /^(?:@@ )?[-+]?(\d+),(\d+)/.exec(line)!.slice(1);
@@ -315,9 +340,23 @@ abstract class BaseFormatter<TContext extends BaseFormatterContext> {
     nodeType: NodeType,
   ): void;
 
-  abstract nodeBegin(context: TContext, key: string, leftKey: string | number, type: DeltaType, nodeType: NodeType, isLast: boolean): void;
+  abstract nodeBegin(
+    context: TContext,
+    key: string,
+    leftKey: string | number,
+    type: DeltaType,
+    nodeType: NodeType,
+    isLast: boolean,
+  ): void;
 
-  abstract nodeEnd(context: TContext, key: string, leftKey: string | number, type: DeltaType, nodeType: NodeType, isLast: boolean): void;
+  abstract nodeEnd(
+    context: TContext,
+    key: string,
+    leftKey: string | number,
+    type: DeltaType,
+    nodeType: NodeType,
+    isLast: boolean,
+  ): void;
 
   abstract format_unchanged(
     context: TContext,

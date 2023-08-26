@@ -34,13 +34,15 @@ const lengthMatrix = function (
   let x, y;
 
   // initialize empty matrix of len1+1 x len2+1
-  const matrix: number[][] & { match?: (
+  const matrix: number[][] & {
+    match?: (
       array1: unknown[],
       array2: unknown[],
       index1: number,
       index2: number,
       context: MatchContext,
-    ) => boolean | undefined } = new Array(len1 + 1);
+    ) => boolean | undefined;
+  } = new Array(len1 + 1);
   for (x = 0; x < len1 + 1; x++) {
     matrix[x] = new Array(len2 + 1);
     for (y = 0; y < len2 + 1; y++) {
@@ -68,13 +70,15 @@ interface Subsequence {
 }
 
 const backtrack = function (
-  matrix: number[][] & { match?: (
+  matrix: number[][] & {
+    match?: (
       array1: unknown[],
       array2: unknown[],
       index1: number,
       index2: number,
       context: MatchContext,
-    ) => boolean | undefined },
+    ) => boolean | undefined;
+  },
   array1: unknown[],
   array2: unknown[],
   context: MatchContext,

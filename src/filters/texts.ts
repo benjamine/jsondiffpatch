@@ -1,26 +1,35 @@
 /* global diff_match_patch */
-import dmp from 'diff-match-patch';
+import * as dmp from 'diff-match-patch';
 import { Filter } from '../pipe';
-import DiffContext from '../contexts/diff';
+import DiffContext, { TextDiffDelta } from '../contexts/diff';
 import PatchContext from '../contexts/patch';
 import ReverseContext from '../contexts/reverse';
 
+declare global {
+  const diff_match_patch: typeof dmp | undefined;
+}
+
+interface DiffPatch {
+  diff: (txt1: string, txt2: string) => string;
+  patch: (txt1: string, string: string) => string;
+}
+
 const TEXT_DIFF = 2;
 const DEFAULT_MIN_LENGTH = 60;
-let cachedDiffPatch = null;
+let cachedDiffPatch: DiffPatch | null = null;
 
-const getDiffMatchPatch = function (required) {
+const getDiffMatchPatch = function (required?: boolean) {
   /* jshint camelcase: false */
 
   if (!cachedDiffPatch) {
-    let instance;
+    let instance: dmp | null | undefined;
     /* eslint-disable camelcase, new-cap */
     if (typeof diff_match_patch !== 'undefined') {
       // already loaded, probably a browser
       instance =
         typeof diff_match_patch === 'function'
           ? new diff_match_patch()
-          : new diff_match_patch.diff_match_patch();
+          : new (diff_match_patch as typeof dmp).diff_match_patch();
     } else if (dmp) {
       try {
         instance = dmp && new dmp();
@@ -40,11 +49,11 @@ const getDiffMatchPatch = function (required) {
     }
     cachedDiffPatch = {
       diff: function (txt1, txt2) {
-        return instance.patch_toText(instance.patch_make(txt1, txt2));
+        return instance!.patch_toText(instance!.patch_make(txt1, txt2));
       },
       patch: function (txt1, patch) {
-        const results = instance.patch_apply(
-          instance.patch_fromText(patch),
+        const results = instance!.patch_apply(
+          instance!.patch_fromText(patch),
           txt1,
         );
         for (let i = 0; i < results[1].length; i++) {
@@ -71,7 +80,10 @@ export const diffFilter: Filter<DiffContext> = function textsDiffFilter(
       context.options.textDiff &&
       context.options.textDiff.minLength) ||
     DEFAULT_MIN_LENGTH;
-  if (context.left.length < minLength || context.right.length < minLength) {
+  if (
+    (context.left as string).length < minLength ||
+    (context.right as string).length < minLength
+  ) {
     context.setResult([context.left, context.right]).exit();
     return;
   }
@@ -84,7 +96,13 @@ export const diffFilter: Filter<DiffContext> = function textsDiffFilter(
     return;
   }
   const diff = diffMatchPatch.diff;
-  context.setResult([diff(context.left, context.right), 0, TEXT_DIFF]).exit();
+  context
+    .setResult([
+      diff(context.left as string, context.right as string),
+      0,
+      TEXT_DIFF,
+    ])
+    .exit();
 };
 diffFilter.filterName = 'texts';
 
@@ -94,17 +112,21 @@ export const patchFilter: Filter<PatchContext> = function textsPatchFilter(
   if (context.nested) {
     return;
   }
-  if (context.delta[2] !== TEXT_DIFF) {
+  if (context.delta![2] !== TEXT_DIFF) {
     return;
   }
 
   // text-diff, use a text-patch algorithm
-  const patch = getDiffMatchPatch(true).patch;
-  context.setResult(patch(context.left, context.delta[0])).exit();
+  const patch = getDiffMatchPatch(true)!.patch;
+  context
+    .setResult(
+      patch(context.left as string, (context.delta as TextDiffDelta)[0]),
+    )
+    .exit();
 };
 patchFilter.filterName = 'texts';
 
-const textDeltaReverse = function (delta) {
+const textDeltaReverse = function (delta: string) {
   let i;
   let l;
   let line;
@@ -117,7 +139,7 @@ const textDeltaReverse = function (delta) {
     line = lines[i];
     const lineStart = line.slice(0, 1);
     if (lineStart === '@') {
-      header = headerRegex.exec(line);
+      header = headerRegex.exec(line)!;
       lineHeader = i;
 
       // fix header
@@ -151,13 +173,17 @@ export const reverseFilter: Filter<ReverseContext> =
     if (context.nested) {
       return;
     }
-    if (context.delta[2] !== TEXT_DIFF) {
+    if (context.delta![2] !== TEXT_DIFF) {
       return;
     }
 
     // text-diff, use a text-diff algorithm
     context
-      .setResult([textDeltaReverse(context.delta[0]), 0, TEXT_DIFF])
+      .setResult([
+        textDeltaReverse((context.delta as TextDiffDelta)[0]),
+        0,
+        TEXT_DIFF,
+      ])
       .exit();
   };
 reverseFilter.filterName = 'texts';

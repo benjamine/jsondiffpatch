@@ -1,4 +1,4 @@
-import DiffContext, {ArrayDelta, ObjectDelta} from '../contexts/diff';
+import DiffContext, { ArrayDelta, ObjectDelta } from '../contexts/diff';
 import PatchContext from '../contexts/patch';
 import ReverseContext from '../contexts/reverse';
 import { Filter } from '../pipe';
@@ -40,18 +40,26 @@ export const objectsDiffFilter: Filter<DiffContext> = (context) => {
     if (propertyFilter && !propertyFilter(name, context)) {
       continue;
     }
-    child = new DiffContext((context.left as { [name: string]: unknown })[name], (context.right as { [name: string]: unknown })[name]);
+    child = new DiffContext(
+      (context.left as { [name: string]: unknown })[name],
+      (context.right as { [name: string]: unknown })[name],
+    );
     context.push(child, name);
   }
-  for (name in (context.right as object)) {
+  for (name in context.right as object) {
     if (!Object.prototype.hasOwnProperty.call(context.right, name)) {
       continue;
     }
     if (propertyFilter && !propertyFilter(name, context)) {
       continue;
     }
-    if (typeof (context.left as { [name: string]: unknown })[name] === 'undefined') {
-      child = new DiffContext(undefined, (context.right as { [name: string]: unknown })[name]);
+    if (
+      typeof (context.left as { [name: string]: unknown })[name] === 'undefined'
+    ) {
+      child = new DiffContext(
+        undefined,
+        (context.right as { [name: string]: unknown })[name],
+      );
       context.push(child, name);
     }
   }
@@ -76,7 +84,10 @@ export const patchFilter: Filter<PatchContext> = function nestedPatchFilter(
   let name;
   let child;
   for (name in context.delta) {
-    child = new PatchContext((context.left as { [name: string]: unknown })[name], (context.delta as ObjectDelta)[name]);
+    child = new PatchContext(
+      (context.left as { [name: string]: unknown })[name],
+      (context.delta as ObjectDelta)[name],
+    );
     context.push(child, name);
   }
   context.exit();
@@ -100,8 +111,12 @@ export const collectChildrenPatchFilter: Filter<PatchContext> =
         child.result === undefined
       ) {
         delete (context.left as { [name: string]: unknown })[child.childName!];
-      } else if ((context.left as { [name: string]: unknown })[child.childName!] !== child.result) {
-        (context.left as { [name: string]: unknown })[child.childName!] = child.result;
+      } else if (
+        (context.left as { [name: string]: unknown })[child.childName!] !==
+        child.result
+      ) {
+        (context.left as { [name: string]: unknown })[child.childName!] =
+          child.result;
       }
     }
     context.setResult(context.left).exit();
