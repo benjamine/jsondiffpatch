@@ -3,7 +3,7 @@
     "target": "ES2016",
     "module": "Node16",
     "noEmit": true,
-    "esModuleInterop": false,
+    "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "strict": true,
     "skipLibCheck": false

@@ -1,5 +1,5 @@
 /* global diff_match_patch */
-import * as dmp from 'diff-match-patch';
+import dmp from 'diff-match-patch';
 import { Filter } from '../pipe';
 import DiffContext, { TextDiffDelta } from '../contexts/diff';
 import PatchContext from '../contexts/patch';
