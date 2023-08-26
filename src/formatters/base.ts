@@ -126,7 +126,11 @@ abstract class BaseFormatter<TContext extends BaseFormatterContext> {
 
     const type = this.getDeltaType(delta, movedFrom);
     const nodeType =
-      type === 'node' ? (delta._t === 'a' ? 'array' : 'object') : '';
+      type === 'node'
+        ? (delta as ArrayDelta)._t === 'a'
+          ? 'array'
+          : 'object'
+        : '';
 
     if (typeof key !== 'undefined') {
       this.nodeBegin(context, key, leftKey!, type, nodeType, isLast!);
@@ -160,7 +164,7 @@ abstract class BaseFormatter<TContext extends BaseFormatterContext> {
         movedFrom,
       );
       if (typeof console !== 'undefined' && console.error) {
-        console.error(err.stack);
+        console.error((err as Error).stack);
       }
     }
 
@@ -201,7 +205,7 @@ abstract class BaseFormatter<TContext extends BaseFormatterContext> {
     ) => void,
   ) {
     const keys = Object.keys(delta!);
-    const arrayKeys = delta._t === 'a';
+    const arrayKeys = (delta as ArrayDelta)._t === 'a';
     const moveDestinations: { [destinationIndex: string]: MoveDestination } =
       {};
     let name;
@@ -209,8 +213,10 @@ abstract class BaseFormatter<TContext extends BaseFormatterContext> {
       for (name in left) {
         if (Object.prototype.hasOwnProperty.call(left, name)) {
           if (
-            typeof delta[name] === 'undefined' &&
-            (!arrayKeys || typeof delta[`_${name}`] === 'undefined')
+            typeof (delta as ObjectDelta)[name] === 'undefined' &&
+            (!arrayKeys ||
+              typeof (delta as ArrayDelta)[`_${name as unknown as number}`] ===
+                'undefined')
           ) {
             keys.push(name);
           }
@@ -220,18 +226,18 @@ abstract class BaseFormatter<TContext extends BaseFormatterContext> {
     // look for move destinations
     for (name in delta) {
       if (Object.prototype.hasOwnProperty.call(delta, name)) {
-        const value = delta[name];
+        const value = (delta as ObjectDelta)[name];
         if (Array.isArray(value) && value[2] === 3) {
-          moveDestinations[value[1].toString()] = {
+          moveDestinations[value[1]!.toString()] = {
             key: name,
-            value: left && left[parseInt(name.substr(1))],
+            value: left && (left as unknown[])[parseInt(name.substr(1))],
           };
           if (this.includeMoveDestinations !== false) {
             if (
               typeof left === 'undefined' &&
-              typeof delta[value[1]] === 'undefined'
+              typeof (delta as ObjectDelta)[value[1] as string] === 'undefined'
             ) {
-              keys.push(value[1].toString());
+              keys.push((value[1] as string).toString());
             }
           }
         }
