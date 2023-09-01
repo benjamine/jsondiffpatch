@@ -17,7 +17,7 @@ const getObjectKeys =
       };
 
 const trimUnderscore = (str) => {
-  if (str.substr(0, 1) === '_') {
+  if (str.substring(0, 1) === '_') {
     return str.slice(1);
   }
   return str;
@@ -27,7 +27,7 @@ const arrayKeyToSortNumber = (key) => {
   if (key === '_t') {
     return -1;
   } else {
-    if (key.substr(0, 1) === '_') {
+    if (key.substring(0, 1) === '_') {
       return parseInt(key.slice(1), 10);
     } else {
       return parseInt(key, 10) + 0.1;
@@ -159,7 +159,7 @@ class BaseFormatter {
         if (isArray(value) && value[2] === 3) {
           moveDestinations[value[1].toString()] = {
             key: name,
-            value: left && left[parseInt(name.substr(1))],
+            value: left && left[parseInt(name.substring(1))],
           };
           if (this.includeMoveDestinations !== false) {
             if (
@@ -247,9 +247,9 @@ class BaseFormatter {
         const pieceOutput = {
           type: 'context',
         };
-        if (piece.substr(0, 1) === '+') {
+        if (piece.substring(0, 1) === '+') {
           pieceOutput.type = 'added';
-        } else if (piece.substr(0, 1) === '-') {
+        } else if (piece.substring(0, 1) === '-') {
           pieceOutput.type = 'deleted';
         }
         pieceOutput.text = piece.slice(1);

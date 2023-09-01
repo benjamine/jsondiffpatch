@@ -500,7 +500,7 @@
   load.data = function (dataArg) {
     const data = dataArg || {};
     dom.text(document.getElementById('description'), data.description || '');
-    if (data.url && trim(data.url).substr(0, 10) !== 'javascript') {
+    if (data.url && trim(data.url).substring(0, 10) !== 'javascript') {
       document.getElementById('external-link').setAttribute('href', data.url);
       document.getElementById('external-link').style.display = '';
     } else {
