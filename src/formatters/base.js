@@ -182,11 +182,7 @@ class BaseFormatter {
       if (arrayKeys && key === '_t') {
         continue;
       }
-      const leftKey = arrayKeys
-        ? typeof key === 'number'
-          ? key
-          : parseInt(trimUnderscore(key), 10)
-        : key;
+      const leftKey = arrayKeys ? parseInt(trimUnderscore(key), 10) : key;
       const isLast = index === length - 1;
       fn(key, leftKey, moveDestinations[leftKey], isLast);
     }
