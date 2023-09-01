@@ -81,11 +81,7 @@ const get = function (array1, array2, match, context) {
     match || defaultMatch,
     innerContext,
   );
-  const result = backtrack(matrix, array1, array2, innerContext);
-  if (typeof array1 === 'string' && typeof array2 === 'string') {
-    result.sequence = result.sequence.join('');
-  }
-  return result;
+  return backtrack(matrix, array1, array2, innerContext);
 };
 
 export default {
