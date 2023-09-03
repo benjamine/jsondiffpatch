@@ -393,7 +393,7 @@ export const reverseFilter = function arraysReverseFilter(context) {
       context
         .setResult([
           context.delta[0],
-          parseInt(context.childName.substr(1), 10),
+          parseInt(context.childName.substring(1), 10),
           ARRAY_MOVE,
         ])
         .exit();
@@ -418,7 +418,7 @@ reverseFilter.filterName = 'arrays';
 
 const reverseArrayDeltaIndex = (delta, index, itemDelta) => {
   if (typeof index === 'string' && index[0] === '_') {
-    return parseInt(index.substr(1), 10);
+    return parseInt(index.substring(1), 10);
   } else if (isArray(itemDelta) && itemDelta[2] === 0) {
     return `_${index}`;
   }
@@ -428,7 +428,7 @@ const reverseArrayDeltaIndex = (delta, index, itemDelta) => {
     const deltaItem = delta[deltaIndex];
     if (isArray(deltaItem)) {
       if (deltaItem[2] === ARRAY_MOVE) {
-        const moveFromIndex = parseInt(deltaIndex.substr(1), 10);
+        const moveFromIndex = parseInt(deltaIndex.substring(1), 10);
         const moveToIndex = deltaItem[1];
         if (moveToIndex === +index) {
           return moveFromIndex;
@@ -442,7 +442,7 @@ const reverseArrayDeltaIndex = (delta, index, itemDelta) => {
           reverseIndex--;
         }
       } else if (deltaItem[2] === 0) {
-        const deleteIndex = parseInt(deltaIndex.substr(1), 10);
+        const deleteIndex = parseInt(deltaIndex.substring(1), 10);
         if (deleteIndex <= reverseIndex) {
           reverseIndex++;
         }
