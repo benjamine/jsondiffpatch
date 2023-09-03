@@ -50,28 +50,18 @@ function matchItems(array1, array2, index1, index2, context) {
     // no way to match objects was provided, try match by position
     return context.matchByPosition && index1 === index2;
   }
-  let hash1;
-  let hash2;
-  if (typeof index1 === 'number') {
-    context.hashCache1 = context.hashCache1 || [];
-    hash1 = context.hashCache1[index1];
-    if (typeof hash1 === 'undefined') {
-      context.hashCache1[index1] = hash1 = objectHash(value1, index1);
-    }
-  } else {
-    hash1 = objectHash(value1);
+  context.hashCache1 = context.hashCache1 || [];
+  let hash1 = context.hashCache1[index1];
+  if (typeof hash1 === 'undefined') {
+    context.hashCache1[index1] = hash1 = objectHash(value1, index1);
   }
   if (typeof hash1 === 'undefined') {
     return false;
   }
-  if (typeof index2 === 'number') {
-    context.hashCache2 = context.hashCache2 || [];
-    hash2 = context.hashCache2[index2];
-    if (typeof hash2 === 'undefined') {
-      context.hashCache2[index2] = hash2 = objectHash(value2, index2);
-    }
-  } else {
-    hash2 = objectHash(value2);
+  context.hashCache2 = context.hashCache2 || [];
+  let hash2 = context.hashCache2[index2];
+  if (typeof hash2 === 'undefined') {
+    context.hashCache2[index2] = hash2 = objectHash(value2, index2);
   }
   if (typeof hash2 === 'undefined') {
     return false;
