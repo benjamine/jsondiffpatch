@@ -6,7 +6,7 @@ class Processor {
   selfOptions: Options;
   pipes: { [pipeName: string]: Pipe<Context<any>> };
 
-  constructor(options: Options) {
+  constructor(options?: Options) {
     this.selfOptions = options || {};
     this.pipes = {};
   }
@@ -41,7 +41,7 @@ class Processor {
   process<TContext extends Context<any>>(
     input: TContext,
     pipe?: Pipe<TContext>,
-  ) {
+  ): TContext['result'] | undefined {
     let context = input;
     context.options = this.options();
     let nextPipe: Pipe<TContext> | string | null =
