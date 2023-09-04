@@ -1,7 +1,20 @@
-import Pipe from '../pipe';
+import type { Options } from '../types';
 
-export default class Context {
-  setResult(result) {
+export default abstract class Context<TResult> {
+  abstract pipe: string;
+
+  result?: TResult;
+  hasResult?: boolean;
+  exiting?: boolean;
+  parent?: this;
+  childName?: string | number;
+  root?: this;
+  options?: Options;
+  children?: this[];
+  nextAfterChildren?: this | null;
+  next?: this | null;
+
+  setResult(result: TResult) {
     this.result = result;
     this.hasResult = true;
     return this;
@@ -12,19 +25,7 @@ export default class Context {
     return this;
   }
 
-  switchTo(next, pipe) {
-    if (typeof next === 'string' || next instanceof Pipe) {
-      this.nextPipe = next;
-    } else {
-      this.next = next;
-      if (pipe) {
-        this.nextPipe = pipe;
-      }
-    }
-    return this;
-  }
-
-  push(child, name) {
+  push(child: this, name?: string | number) {
     child.parent = this;
     if (typeof name !== 'undefined') {
       child.childName = name;
