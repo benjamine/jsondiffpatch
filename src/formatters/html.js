@@ -24,7 +24,6 @@ class HtmlFormatter extends BaseFormatter {
         pieceIndex < piecesLength;
         pieceIndex++
       ) {
-        /* global decodeURI */
         const piece = pieces[pieceIndex];
         context.out(
           `<span class="jsondiffpatch-textdiff-${piece.type}">${htmlEscape(
@@ -221,7 +220,9 @@ const adjustArrows = function jsondiffpatchHtmlFormatterAdjustArrows(nodeArg) {
             : `M30,${-distance} Q-10,${Math.round(-distance / 2)} 26,4`;
         path.setAttribute('d', curve);
         svg.style.display = '';
-      } catch (err) {}
+      } catch (err) {
+        // continue regardless of error
+      }
     },
   );
 };
