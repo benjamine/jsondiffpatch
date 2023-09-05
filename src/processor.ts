@@ -18,21 +18,24 @@ class Processor {
     return this.selfOptions;
   }
 
-  pipe(name: string | Pipe<Context<any>>, pipeArg?: Pipe<Context<any>>) {
+  pipe<TContext extends Context<any>>(
+    name: string | Pipe<TContext>,
+    pipeArg?: Pipe<TContext>,
+  ) {
     let pipe = pipeArg;
     if (typeof name === 'string') {
       if (typeof pipe === 'undefined') {
         return this.pipes[name]!;
       } else {
-        this.pipes[name] = pipe;
+        this.pipes[name] = pipe as Pipe<Context<any>>;
       }
     }
-    if (name && (name as Pipe<any>).name) {
+    if (name && (name as Pipe<TContext>).name) {
       pipe = name as Pipe<Context<unknown>>;
       if (pipe.processor === this) {
         return pipe;
       }
-      this.pipes[pipe.name] = pipe;
+      this.pipes[pipe.name] = pipe as Pipe<Context<any>>;
     }
     pipe!.processor = this;
     return pipe!;

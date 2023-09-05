@@ -6,19 +6,45 @@ reference: http://en.wikipedia.org/wiki/Longest_common_subsequence_problem
 
 */
 
-const defaultMatch = function (array1, array2, index1, index2) {
+import type { MatchContext } from './arrays';
+
+const defaultMatch = function (
+  array1: readonly unknown[],
+  array2: readonly unknown[],
+  index1: number,
+  index2: number,
+) {
   return array1[index1] === array2[index2];
 };
 
-const lengthMatrix = function (array1, array2, match, context) {
+const lengthMatrix = function (
+  array1: readonly unknown[],
+  array2: readonly unknown[],
+  match: (
+    array1: readonly unknown[],
+    array2: readonly unknown[],
+    index1: number,
+    index2: number,
+    context: MatchContext,
+  ) => boolean | undefined,
+  context: MatchContext,
+) {
   const len1 = array1.length;
   const len2 = array2.length;
   let x, y;
 
   // initialize empty matrix of len1+1 x len2+1
-  const matrix = new Array(len1 + 1);
+  const matrix: number[][] & {
+    match?: (
+      array1: readonly unknown[],
+      array2: readonly unknown[],
+      index1: number,
+      index2: number,
+      context: MatchContext,
+    ) => boolean | undefined;
+  } = new Array(len1 + 1);
   for (x = 0; x < len1 + 1; x++) {
-    matrix[x] = new Array(len2 + 1);
+    matrix[x] = new Array<number>(len2 + 1);
     for (y = 0; y < len2 + 1; y++) {
       matrix[x][y] = 0;
     }
@@ -37,17 +63,36 @@ const lengthMatrix = function (array1, array2, match, context) {
   return matrix;
 };
 
-const backtrack = function (matrix, array1, array2, context) {
+interface Subsequence {
+  sequence: unknown[];
+  indices1: number[];
+  indices2: number[];
+}
+
+const backtrack = function (
+  matrix: number[][] & {
+    match?: (
+      array1: readonly unknown[],
+      array2: readonly unknown[],
+      index1: number,
+      index2: number,
+      context: MatchContext,
+    ) => boolean | undefined;
+  },
+  array1: readonly unknown[],
+  array2: readonly unknown[],
+  context: MatchContext,
+) {
   let index1 = array1.length;
   let index2 = array2.length;
-  const subsequence = {
+  const subsequence: Subsequence = {
     sequence: [],
     indices1: [],
     indices2: [],
   };
 
   while (index1 !== 0 && index2 !== 0) {
-    const sameLetter = matrix.match(
+    const sameLetter = matrix.match!(
       array1,
       array2,
       index1 - 1,
@@ -73,7 +118,18 @@ const backtrack = function (matrix, array1, array2, context) {
   return subsequence;
 };
 
-const get = function (array1, array2, match, context) {
+const get = function (
+  array1: readonly unknown[],
+  array2: readonly unknown[],
+  match: (
+    array1: readonly unknown[],
+    array2: readonly unknown[],
+    index1: number,
+    index2: number,
+    context: MatchContext,
+  ) => boolean | undefined,
+  context: MatchContext,
+) {
   const innerContext = context || {};
   const matrix = lengthMatrix(
     array1,

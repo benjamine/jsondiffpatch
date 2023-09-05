@@ -1,56 +1,61 @@
 import DiffContext from '../contexts/diff';
 import PatchContext from '../contexts/patch';
 import ReverseContext from '../contexts/reverse';
+import type { Filter } from '../pipe';
+import type { ArrayDelta, Delta, ObjectDelta } from '../types';
 
-export function collectChildrenDiffFilter(context) {
+export const collectChildrenDiffFilter: Filter<DiffContext> = (context) => {
   if (!context || !context.children) {
     return;
   }
   const length = context.children.length;
   let child;
-  let result = context.result;
+  let result = context.result as ObjectDelta | ArrayDelta;
   for (let index = 0; index < length; index++) {
     child = context.children[index];
     if (typeof child.result === 'undefined') {
       continue;
     }
     result = result || {};
-    result[child.childName] = child.result;
+    (result as Record<string | number, Delta>)[child.childName!] = child.result;
   }
   if (result && context.leftIsArray) {
     result._t = 'a';
   }
   context.setResult(result).exit();
-}
+};
 collectChildrenDiffFilter.filterName = 'collectChildren';
 
-export function objectsDiffFilter(context) {
+export const objectsDiffFilter: Filter<DiffContext> = (context) => {
   if (context.leftIsArray || context.leftType !== 'object') {
     return;
   }
 
+  const left = context.left as Record<string, unknown>;
+  const right = context.right as Record<string, unknown>;
+
   let name;
   let child;
-  const propertyFilter = context.options.propertyFilter;
-  for (name in context.left) {
-    if (!Object.prototype.hasOwnProperty.call(context.left, name)) {
+  const propertyFilter = context.options!.propertyFilter;
+  for (name in left) {
+    if (!Object.prototype.hasOwnProperty.call(left, name)) {
       continue;
     }
     if (propertyFilter && !propertyFilter(name, context)) {
       continue;
     }
-    child = new DiffContext(context.left[name], context.right[name]);
+    child = new DiffContext(left[name], right[name]);
     context.push(child, name);
   }
-  for (name in context.right) {
-    if (!Object.prototype.hasOwnProperty.call(context.right, name)) {
+  for (name in right) {
+    if (!Object.prototype.hasOwnProperty.call(right, name)) {
       continue;
     }
     if (propertyFilter && !propertyFilter(name, context)) {
       continue;
     }
-    if (typeof context.left[name] === 'undefined') {
-      child = new DiffContext(undefined, context.right[name]);
+    if (typeof left[name] === 'undefined') {
+      child = new DiffContext(undefined, right[name]);
       context.push(child, name);
     }
   }
@@ -60,7 +65,7 @@ export function objectsDiffFilter(context) {
     return;
   }
   context.exit();
-}
+};
 objectsDiffFilter.filterName = 'objects';
 
 export const patchFilter = function nestedPatchFilter(context) {

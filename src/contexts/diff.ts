@@ -7,6 +7,11 @@ class DiffContext extends Context<Delta> {
   right: unknown;
   pipe: 'diff';
 
+  leftType?: string;
+  rightType?: string;
+  leftIsArray?: boolean;
+  rightIsArray?: boolean;
+
   constructor(left: unknown, right: unknown) {
     super();
     this.left = left;

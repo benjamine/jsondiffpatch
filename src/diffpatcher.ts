@@ -27,7 +27,7 @@ class DiffPatcher {
           nested.objectsDiffFilter,
           arrays.diffFilter,
         )
-        .shouldHaveResult(),
+        .shouldHaveResult()!,
     );
     this.processor.pipe(
       new Pipe<PatchContext>('patch')
@@ -39,7 +39,7 @@ class DiffPatcher {
           nested.patchFilter,
           arrays.patchFilter,
         )
-        .shouldHaveResult(),
+        .shouldHaveResult()!,
     );
     this.processor.pipe(
       new Pipe<ReverseContext>('reverse')
@@ -51,7 +51,7 @@ class DiffPatcher {
           nested.reverseFilter,
           arrays.reverseFilter,
         )
-        .shouldHaveResult(),
+        .shouldHaveResult()!,
     );
   }
 
