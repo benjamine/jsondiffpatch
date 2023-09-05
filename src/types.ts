@@ -24,7 +24,9 @@ export interface ObjectDelta {
 
 export interface ArrayDelta {
   _t: 'a';
-  [index: number | `_${number}`]: Delta;
+  [index: number]: Delta;
+  [index: `${number}`]: Delta;
+  [index: `_${number}`]: DeletedDelta | MovedDelta;
 }
 
 export type MovedDelta = [unknown, number, 3];

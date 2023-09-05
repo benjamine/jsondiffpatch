@@ -4,7 +4,14 @@ import ReverseContext from '../contexts/reverse';
 
 import lcs from './lcs';
 import type { Filter } from '../pipe';
-import type { AddedDelta, DeletedDelta, MovedDelta } from '../types';
+import type {
+  AddedDelta,
+  ArrayDelta,
+  DeletedDelta,
+  Delta,
+  MovedDelta,
+  ObjectDelta,
+} from '../types';
 
 const ARRAY_MOVE = 3;
 
@@ -264,55 +271,65 @@ export const diffFilter: Filter<DiffContext> = function arraysDiffFilter(
 diffFilter.filterName = 'arrays';
 
 const compare = {
-  numerically(a, b) {
+  numerically(this: void, a: number, b: number) {
     return a - b;
   },
-  numericallyBy(name) {
-    return (a, b) => a[name] - b[name];
+  numericallyBy<T>(
+    name: { [K in keyof T]: T[K] extends number ? K : never }[keyof T],
+  ) {
+    return (a: T, b: T) => (a[name] as number) - (b[name] as number);
   },
 };
 
-export const patchFilter = function nestedPatchFilter(context) {
+export const patchFilter: Filter<PatchContext> = function nestedPatchFilter(
+  context,
+) {
   if (!context.nested) {
     return;
   }
-  if (context.delta._t !== 'a') {
+  const nestedDelta = context.delta as ObjectDelta | ArrayDelta;
+  if (nestedDelta._t !== 'a') {
     return;
   }
   let index;
   let index1;
 
-  const delta = context.delta;
-  const array = context.left;
+  const delta = nestedDelta as ArrayDelta;
+  const array = context.left as unknown[];
 
   // first, separate removals, insertions and modifications
-  let toRemove = [];
-  let toInsert = [];
-  const toModify = [];
+  let toRemove: number[] = [];
+  let toInsert: { index: number; value: unknown }[] = [];
+  const toModify: { index: number; delta: Delta }[] = [];
   for (index in delta) {
     if (index !== '_t') {
       if (index[0] === '_') {
+        const removedOrMovedIndex = index as `_${number}`;
         // removed item from original array
-        if (delta[index][2] === 0 || delta[index][2] === ARRAY_MOVE) {
+        if (
+          delta[removedOrMovedIndex][2] === 0 ||
+          delta[removedOrMovedIndex][2] === ARRAY_MOVE
+        ) {
           toRemove.push(parseInt(index.slice(1), 10));
         } else {
           throw new Error(
             'only removal or move can be applied at original array indices,' +
-              ` invalid diff type: ${delta[index][2]}`,
+              ` invalid diff type: ${delta[removedOrMovedIndex][2]}`,
           );
         }
       } else {
-        if (delta[index].length === 1) {
+        const numberIndex = index as `${number}`;
+        if ((delta[numberIndex] as unknown[]).length === 1) {
           // added item at new array
           toInsert.push({
-            index: parseInt(index, 10),
-            value: delta[index][0],
+            index: parseInt(numberIndex, 10),
+            value: (delta[numberIndex] as AddedDelta)[0],
           });
         } else {
           // modified item at new array
           toModify.push({
-            index: parseInt(index, 10),
-            delta: delta[index],
+            index: parseInt(numberIndex, 10),
+            delta: delta[numberIndex],
           });
         }
       }
@@ -348,39 +365,38 @@ export const patchFilter = function nestedPatchFilter(context) {
   if (toModifyLength > 0) {
     for (index = 0; index < toModifyLength; index++) {
       const modification = toModify[index];
-      child = new PatchContext(
-        context.left[modification.index],
-        modification.delta,
-      );
+      child = new PatchContext(array[modification.index], modification.delta);
       context.push(child, modification.index);
     }
   }
 
   if (!context.children) {
-    context.setResult(context.left).exit();
+    context.setResult(array).exit();
     return;
   }
   context.exit();
 };
 patchFilter.filterName = 'arrays';
 
-export const collectChildrenPatchFilter = function collectChildrenPatchFilter(
-  context,
-) {
-  if (!context || !context.children) {
-    return;
-  }
-  if (context.delta._t !== 'a') {
-    return;
-  }
-  const length = context.children.length;
-  let child;
-  for (let index = 0; index < length; index++) {
-    child = context.children[index];
-    context.left[child.childName] = child.result;
-  }
-  context.setResult(context.left).exit();
-};
+export const collectChildrenPatchFilter: Filter<PatchContext> =
+  function collectChildrenPatchFilter(context) {
+    if (!context || !context.children) {
+      return;
+    }
+    const deltaWithChildren = context.delta as ObjectDelta | ArrayDelta;
+    if (deltaWithChildren._t !== 'a') {
+      return;
+    }
+    const array = context.left as unknown[];
+    const length = context.children.length;
+    let child;
+    for (let index = 0; index < length; index++) {
+      child = context.children[index];
+      const arrayIndex = child.childName as number;
+      array[arrayIndex] = child.result;
+    }
+    context.setResult(array).exit();
+  };
 collectChildrenPatchFilter.filterName = 'arraysCollectChildren';
 
 export const reverseFilter = function arraysReverseFilter(context) {

@@ -1,6 +1,14 @@
 import dmp from 'diff-match-patch';
 import type { Filter } from '../pipe';
 import type DiffContext from '../contexts/diff';
+import type PatchContext from '../contexts/patch';
+import type {
+  AddedDelta,
+  DeletedDelta,
+  ModifiedDelta,
+  MovedDelta,
+  TextDiffDelta,
+} from '../types';
 
 declare global {
   const diff_match_patch: typeof dmp | undefined;
@@ -15,7 +23,9 @@ const TEXT_DIFF = 2;
 const DEFAULT_MIN_LENGTH = 60;
 let cachedDiffPatch: DiffPatch | null = null;
 
-const getDiffMatchPatch = function (required?: boolean) {
+function getDiffMatchPatch(required: true): DiffPatch;
+function getDiffMatchPatch(required?: boolean): DiffPatch;
+function getDiffMatchPatch(required?: boolean) {
   if (!cachedDiffPatch) {
     let instance: dmp | null | undefined;
     if (typeof diff_match_patch !== 'undefined') {
@@ -64,7 +74,7 @@ const getDiffMatchPatch = function (required?: boolean) {
     };
   }
   return cachedDiffPatch;
-};
+}
 
 export const diffFilter: Filter<DiffContext> = function textsDiffFilter(
   context,
@@ -96,17 +106,26 @@ export const diffFilter: Filter<DiffContext> = function textsDiffFilter(
 };
 diffFilter.filterName = 'texts';
 
-export const patchFilter = function textsPatchFilter(context) {
+export const patchFilter: Filter<PatchContext> = function textsPatchFilter(
+  context,
+) {
   if (context.nested) {
     return;
   }
-  if (context.delta[2] !== TEXT_DIFF) {
+  const nonNestedDelta = context.delta as
+    | AddedDelta
+    | ModifiedDelta
+    | DeletedDelta
+    | MovedDelta
+    | TextDiffDelta;
+  if (nonNestedDelta[2] !== TEXT_DIFF) {
     return;
   }
+  const textDiffDelta = nonNestedDelta as TextDiffDelta;
 
   // text-diff, use a text-patch algorithm
   const patch = getDiffMatchPatch(true).patch;
-  context.setResult(patch(context.left, context.delta[0])).exit();
+  context.setResult(patch(context.left as string, textDiffDelta[0])).exit();
 };
 patchFilter.filterName = 'texts';
 

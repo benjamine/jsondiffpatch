@@ -68,47 +68,56 @@ export const objectsDiffFilter: Filter<DiffContext> = (context) => {
 };
 objectsDiffFilter.filterName = 'objects';
 
-export const patchFilter = function nestedPatchFilter(context) {
+export const patchFilter: Filter<PatchContext> = function nestedPatchFilter(
+  context,
+) {
   if (!context.nested) {
     return;
   }
-  if (context.delta._t) {
+  const nestedDelta = context.delta as ObjectDelta | ArrayDelta;
+  if (nestedDelta._t) {
     return;
   }
+  const objectDelta = nestedDelta as ObjectDelta;
   let name;
   let child;
-  for (name in context.delta) {
-    child = new PatchContext(context.left[name], context.delta[name]);
+  for (name in objectDelta) {
+    child = new PatchContext(
+      (context.left as Record<string, unknown>)[name],
+      objectDelta[name],
+    );
     context.push(child, name);
   }
   context.exit();
 };
 patchFilter.filterName = 'objects';
 
-export const collectChildrenPatchFilter = function collectChildrenPatchFilter(
-  context,
-) {
-  if (!context || !context.children) {
-    return;
-  }
-  if (context.delta._t) {
-    return;
-  }
-  const length = context.children.length;
-  let child;
-  for (let index = 0; index < length; index++) {
-    child = context.children[index];
-    if (
-      Object.prototype.hasOwnProperty.call(context.left, child.childName) &&
-      child.result === undefined
-    ) {
-      delete context.left[child.childName];
-    } else if (context.left[child.childName] !== child.result) {
-      context.left[child.childName] = child.result;
+export const collectChildrenPatchFilter: Filter<PatchContext> =
+  function collectChildrenPatchFilter(context) {
+    if (!context || !context.children) {
+      return;
     }
-  }
-  context.setResult(context.left).exit();
-};
+    const deltaWithChildren = context.delta as ObjectDelta | ArrayDelta;
+    if (deltaWithChildren._t) {
+      return;
+    }
+    const object = context.left as Record<string, unknown>;
+    const length = context.children.length;
+    let child;
+    for (let index = 0; index < length; index++) {
+      child = context.children[index];
+      const property = child.childName as string;
+      if (
+        Object.prototype.hasOwnProperty.call(context.left, property) &&
+        child.result === undefined
+      ) {
+        delete object[property];
+      } else if (object[property] !== child.result) {
+        object[property] = child.result;
+      }
+    }
+    context.setResult(object).exit();
+  };
 collectChildrenPatchFilter.filterName = 'collectChildren';
 
 export const reverseFilter = function nestedReverseFilter(context) {

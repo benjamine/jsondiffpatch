@@ -6,6 +6,8 @@ class PatchContext extends Context<unknown> {
   delta: Delta;
   pipe: 'patch';
 
+  nested?: boolean;
+
   constructor(left: unknown, delta: Delta) {
     super();
     this.left = left;
