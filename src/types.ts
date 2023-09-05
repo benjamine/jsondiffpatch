@@ -1,3 +1,4 @@
+import type Context from './contexts/context';
 import type DiffContext from './contexts/diff';
 
 export interface Options {
@@ -24,8 +25,7 @@ export interface ObjectDelta {
 
 export interface ArrayDelta {
   _t: 'a';
-  [index: number]: Delta;
-  [index: `${number}`]: Delta;
+  [index: number | `${number}`]: Delta;
   [index: `_${number}`]: DeletedDelta | MovedDelta;
 }
 
@@ -42,3 +42,8 @@ export type Delta =
   | MovedDelta
   | TextDiffDelta
   | undefined;
+
+export interface Filter<TContext extends Context<any>> {
+  (context: TContext): void;
+  filterName: string;
+}

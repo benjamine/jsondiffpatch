@@ -1,4 +1,4 @@
-import type { Filter } from '../pipe';
+import type { Filter } from '../types';
 import type DiffContext from '../contexts/diff';
 
 export const diffFilter: Filter<DiffContext> = function datesDiffFilter(

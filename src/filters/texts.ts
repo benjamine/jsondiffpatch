@@ -1,10 +1,11 @@
 import dmp from 'diff-match-patch';
-import type { Filter } from '../pipe';
 import type DiffContext from '../contexts/diff';
 import type PatchContext from '../contexts/patch';
+import type ReverseContext from '../contexts/reverse';
 import type {
   AddedDelta,
   DeletedDelta,
+  Filter,
   ModifiedDelta,
   MovedDelta,
   TextDiffDelta,
@@ -129,7 +130,7 @@ export const patchFilter: Filter<PatchContext> = function textsPatchFilter(
 };
 patchFilter.filterName = 'texts';
 
-const textDeltaReverse = function (delta) {
+const textDeltaReverse = function (delta: string) {
   let i;
   let l;
   let line;
@@ -142,7 +143,7 @@ const textDeltaReverse = function (delta) {
     line = lines[i];
     const lineStart = line.slice(0, 1);
     if (lineStart === '@') {
-      header = headerRegex.exec(line);
+      header = headerRegex.exec(line)!;
       lineHeader = i;
 
       // fix header
@@ -171,15 +172,25 @@ const textDeltaReverse = function (delta) {
   return lines.join('\n');
 };
 
-export const reverseFilter = function textsReverseFilter(context) {
-  if (context.nested) {
-    return;
-  }
-  if (context.delta[2] !== TEXT_DIFF) {
-    return;
-  }
+export const reverseFilter: Filter<ReverseContext> =
+  function textsReverseFilter(context) {
+    if (context.nested) {
+      return;
+    }
+    const nonNestedDelta = context.delta as
+      | AddedDelta
+      | ModifiedDelta
+      | DeletedDelta
+      | MovedDelta
+      | TextDiffDelta;
+    if (nonNestedDelta[2] !== TEXT_DIFF) {
+      return;
+    }
+    const textDiffDelta = nonNestedDelta as TextDiffDelta;
 
-  // text-diff, use a text-diff algorithm
-  context.setResult([textDeltaReverse(context.delta[0]), 0, TEXT_DIFF]).exit();
-};
+    // text-diff, use a text-diff algorithm
+    context
+      .setResult([textDeltaReverse(textDiffDelta[0]), 0, TEXT_DIFF])
+      .exit();
+  };
 reverseFilter.filterName = 'texts';

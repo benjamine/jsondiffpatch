@@ -1,6 +1,6 @@
-import type { Options } from './types';
-import type Pipe from './pipe';
 import type Context from './contexts/context';
+import type Pipe from './pipe';
+import type { Options } from './types';
 
 class Processor {
   selfOptions: Options;

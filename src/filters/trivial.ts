@@ -1,9 +1,10 @@
-import type { Filter } from '../pipe';
 import type DiffContext from '../contexts/diff';
 import type PatchContext from '../contexts/patch';
+import type ReverseContext from '../contexts/reverse';
 import type {
   AddedDelta,
   DeletedDelta,
+  Filter,
   ModifiedDelta,
   MovedDelta,
   TextDiffDelta,
@@ -104,25 +105,32 @@ export const patchFilter: Filter<PatchContext> =
   };
 patchFilter.filterName = 'trivial';
 
-export const reverseFilter = function trivialReferseFilter(context) {
-  if (typeof context.delta === 'undefined') {
-    context.setResult(context.delta).exit();
-    return;
-  }
-  context.nested = !Array.isArray(context.delta);
-  if (context.nested) {
-    return;
-  }
-  if (context.delta.length === 1) {
-    context.setResult([context.delta[0], 0, 0]).exit();
-    return;
-  }
-  if (context.delta.length === 2) {
-    context.setResult([context.delta[1], context.delta[0]]).exit();
-    return;
-  }
-  if (context.delta.length === 3 && context.delta[2] === 0) {
-    context.setResult([context.delta[0]]).exit();
-  }
-};
+export const reverseFilter: Filter<ReverseContext> =
+  function trivialReferseFilter(context) {
+    if (typeof context.delta === 'undefined') {
+      context.setResult(context.delta).exit();
+      return;
+    }
+    context.nested = !Array.isArray(context.delta);
+    if (context.nested) {
+      return;
+    }
+    const nonNestedDelta = context.delta as
+      | AddedDelta
+      | ModifiedDelta
+      | DeletedDelta
+      | MovedDelta
+      | TextDiffDelta;
+    if (nonNestedDelta.length === 1) {
+      context.setResult([nonNestedDelta[0], 0, 0]).exit();
+      return;
+    }
+    if (nonNestedDelta.length === 2) {
+      context.setResult([nonNestedDelta[1], nonNestedDelta[0]]).exit();
+      return;
+    }
+    if (nonNestedDelta.length === 3 && nonNestedDelta[2] === 0) {
+      context.setResult([nonNestedDelta[0]]).exit();
+    }
+  };
 reverseFilter.filterName = 'trivial';

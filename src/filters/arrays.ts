@@ -3,14 +3,17 @@ import PatchContext from '../contexts/patch';
 import ReverseContext from '../contexts/reverse';
 
 import lcs from './lcs';
-import type { Filter } from '../pipe';
+
 import type {
   AddedDelta,
   ArrayDelta,
   DeletedDelta,
   Delta,
+  Filter,
+  ModifiedDelta,
   MovedDelta,
   ObjectDelta,
+  TextDiffDelta,
 } from '../types';
 
 const ARRAY_MOVE = 3;
@@ -399,50 +402,64 @@ export const collectChildrenPatchFilter: Filter<PatchContext> =
   };
 collectChildrenPatchFilter.filterName = 'arraysCollectChildren';
 
-export const reverseFilter = function arraysReverseFilter(context) {
-  if (!context.nested) {
-    if (context.delta[2] === ARRAY_MOVE) {
-      context.newName = `_${context.delta[1]}`;
-      context
-        .setResult([
-          context.delta[0],
-          parseInt(context.childName.substring(1), 10),
-          ARRAY_MOVE,
-        ])
-        .exit();
+export const reverseFilter: Filter<ReverseContext> =
+  function arraysReverseFilter(context) {
+    if (!context.nested) {
+      const nonNestedDelta = context.delta as
+        | AddedDelta
+        | ModifiedDelta
+        | DeletedDelta
+        | MovedDelta
+        | TextDiffDelta;
+      if (nonNestedDelta[2] === ARRAY_MOVE) {
+        const arrayMoveDelta = nonNestedDelta as MovedDelta;
+        context.newName = `_${arrayMoveDelta[1]}`;
+        context
+          .setResult([
+            arrayMoveDelta[0],
+            parseInt((context.childName as `_${number}`).substring(1), 10),
+            ARRAY_MOVE,
+          ])
+          .exit();
+      }
+      return;
     }
-    return;
-  }
-  if (context.delta._t !== 'a') {
-    return;
-  }
-  let name;
-  let child;
-  for (name in context.delta) {
-    if (name === '_t') {
-      continue;
+    const nestedDelta = context.delta as ObjectDelta | ArrayDelta;
+    if (nestedDelta._t !== 'a') {
+      return;
     }
-    child = new ReverseContext(context.delta[name]);
-    context.push(child, name);
-  }
-  context.exit();
-};
+    const arrayDelta = nestedDelta as ArrayDelta;
+    let name;
+    let child;
+    for (name in arrayDelta) {
+      if (name === '_t') {
+        continue;
+      }
+      child = new ReverseContext(arrayDelta[name as `${number}`]);
+      context.push(child, name);
+    }
+    context.exit();
+  };
 reverseFilter.filterName = 'arrays';
 
-const reverseArrayDeltaIndex = (delta, index, itemDelta) => {
+const reverseArrayDeltaIndex = (
+  delta: ArrayDelta,
+  index: string | number,
+  itemDelta: Delta,
+) => {
   if (typeof index === 'string' && index[0] === '_') {
     return parseInt(index.substring(1), 10);
   } else if (Array.isArray(itemDelta) && itemDelta[2] === 0) {
-    return `_${index}`;
+    return `_${index as number}` as const;
   }
 
   let reverseIndex = +index;
   for (const deltaIndex in delta) {
-    const deltaItem = delta[deltaIndex];
+    const deltaItem = delta[deltaIndex as `${number}` | `_${number}`];
     if (Array.isArray(deltaItem)) {
       if (deltaItem[2] === ARRAY_MOVE) {
         const moveFromIndex = parseInt(deltaIndex.substring(1), 10);
-        const moveToIndex = deltaItem[1];
+        const moveToIndex = (deltaItem as MovedDelta)[1];
         if (moveToIndex === +index) {
           return moveFromIndex;
         }
@@ -459,7 +476,10 @@ const reverseArrayDeltaIndex = (delta, index, itemDelta) => {
         if (deleteIndex <= reverseIndex) {
           reverseIndex++;
         }
-      } else if (deltaItem.length === 1 && deltaIndex <= reverseIndex) {
+      } else if (
+        deltaItem.length === 1 &&
+        parseInt(deltaIndex, 10) <= reverseIndex
+      ) {
         reverseIndex--;
       }
     }
@@ -468,33 +488,33 @@ const reverseArrayDeltaIndex = (delta, index, itemDelta) => {
   return reverseIndex;
 };
 
-export function collectChildrenReverseFilter(context) {
+export const collectChildrenReverseFilter: Filter<ReverseContext> = (
+  context,
+) => {
   if (!context || !context.children) {
     return;
   }
-  if (context.delta._t !== 'a') {
+  const deltaWithChildren = context.delta as ObjectDelta | ArrayDelta;
+  if (deltaWithChildren._t !== 'a') {
     return;
   }
+  const arrayDelta = deltaWithChildren as ArrayDelta;
   const length = context.children.length;
   let child;
-  const delta = {
+  const delta: ArrayDelta = {
     _t: 'a',
   };
 
   for (let index = 0; index < length; index++) {
     child = context.children[index];
-    let name = child.newName;
+    let name: `_${number}` | number = child.newName!;
     if (typeof name === 'undefined') {
-      name = reverseArrayDeltaIndex(
-        context.delta,
-        child.childName,
-        child.result,
-      );
+      name = reverseArrayDeltaIndex(arrayDelta, child.childName!, child.result);
     }
     if (delta[name] !== child.result) {
       delta[name] = child.result;
     }
   }
   context.setResult(delta).exit();
-}
+};
 collectChildrenReverseFilter.filterName = 'arraysCollectChildren';
