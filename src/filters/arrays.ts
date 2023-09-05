@@ -512,8 +512,8 @@ export const collectChildrenReverseFilter: Filter<ReverseContext> = (
       name = reverseArrayDeltaIndex(arrayDelta, child.childName!, child.result);
     }
     if (delta[name] !== child.result) {
-      // TODO Is this right and, if so, how should it be expressed?
-      delta[name] = child.result as DeletedDelta | MovedDelta;
+      // There's no way to type this well.
+      delta[name as number] = child.result;
     }
   }
   context.setResult(delta).exit();
