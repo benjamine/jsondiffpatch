@@ -336,7 +336,7 @@ export default HtmlFormatter;
 
 let defaultInstance: HtmlFormatter | undefined;
 
-export function format(delta: Delta, left: unknown) {
+export function format(delta: Delta, left?: unknown) {
   if (!defaultInstance) {
     defaultInstance = new HtmlFormatter();
   }

@@ -97,7 +97,7 @@ abstract class BaseFormatter<
 > {
   includeMoveDestinations?: boolean;
 
-  format(delta: Delta, left: unknown): TFormatted {
+  format(delta: Delta, left?: unknown): TFormatted {
     const context: Partial<TContext> = {};
     this.prepareContext(context);
     const preparedContext = context as TContext;

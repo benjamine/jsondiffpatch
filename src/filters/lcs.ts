@@ -121,14 +121,14 @@ const backtrack = function (
 const get = function (
   array1: readonly unknown[],
   array2: readonly unknown[],
-  match: (
+  match?: (
     array1: readonly unknown[],
     array2: readonly unknown[],
     index1: number,
     index2: number,
     context: MatchContext,
   ) => boolean | undefined,
-  context: MatchContext,
+  context?: MatchContext,
 ) {
   const innerContext = context || {};
   const matrix = lengthMatrix(

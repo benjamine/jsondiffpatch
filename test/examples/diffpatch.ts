@@ -1,11 +1,22 @@
-const examples = {};
+import type { Delta, Options } from '../../src/main';
+
+interface Example {
+  name?: string;
+  options?: Options;
+  left: unknown;
+  right: unknown;
+  delta?: Delta;
+  reverse?: Delta;
+  exactReverse?: boolean;
+  noPatch?: boolean;
+  error?: RegExp;
+}
+
+type ExampleGroup = Example[];
 
 const exampleDate = () => new Date(2020, 10, 30, 15, 10, 3);
 
-/* jshint camelcase: false */
-/* jshint multistr: true */
-
-examples.atomicValues = [
+const atomicValues: ExampleGroup = [
   // undefined
   {
     left: undefined,
@@ -78,7 +89,7 @@ examples.atomicValues = [
   },
   {
     left: undefined,
-    right(x) {
+    right(x: number) {
       return x * x;
     },
     error: /not supported/,
@@ -144,7 +155,7 @@ examples.atomicValues = [
   },
   {
     left: null,
-    right(x) {
+    right(x: number) {
       return x * x;
     },
     error: /not supported/,
@@ -210,7 +221,7 @@ examples.atomicValues = [
   },
   {
     left: false,
-    right(x) {
+    right(x: number) {
       return x * x;
     },
     error: /not supported/,
@@ -270,7 +281,7 @@ examples.atomicValues = [
   },
   {
     left: true,
-    right(x) {
+    right(x: number) {
       return x * x;
     },
     error: /not supported/,
@@ -331,7 +342,7 @@ examples.atomicValues = [
   },
   {
     left: 42,
-    right(x) {
+    right(x: number) {
       return x * x;
     },
     error: /not supported/,
@@ -428,7 +439,7 @@ examples.atomicValues = [
   },
   {
     left: exampleDate(),
-    right(x) {
+    right(x: number) {
       return x * x;
     },
     error: /not supported/,
@@ -438,7 +449,7 @@ examples.atomicValues = [
   {
     name: 'string -> Function',
     left: 'some text',
-    right(x) {
+    right(x: number) {
       return x * x;
     },
     error: /not supported/,
@@ -493,7 +504,7 @@ examples.atomicValues = [
       a: 1,
       b: 2,
     },
-    right(x) {
+    right(x: number) {
       return x * x;
     },
     error: /not supported/,
@@ -509,12 +520,11 @@ examples.atomicValues = [
   },
   {
     left: [1, 2, 3],
-    right(x) {
+    right(x: number) {
       return x * x;
     },
     error: /not supported/,
   },
-  0,
 ];
 
 const shortText = `Madre,
@@ -563,7 +573,7 @@ quisiera hacer versos.
 (En dos ojos claros
 todo el Universo).`;
 
-examples.text = [
+const text: ExampleGroup = [
   {
     left: shortText,
     right: largeText,
@@ -615,10 +625,9 @@ examples.text = [
     reverse: ['-Padre,\ncua', '-Madre,\nc'],
     exactReverse: false,
   },
-  0,
 ];
 
-examples.objects = [
+const objects: ExampleGroup = [
   {
     name: 'first level',
     left: {
@@ -790,19 +799,16 @@ examples.objects = [
   },
   {
     name: 'hasOwnProperty',
-    /* jshint ignore:start */
     left: {
       hasOwnProperty: true,
     },
     right: {
       hasOwnProperty: true,
     },
-    /* jshint ignore:end */
   },
-  0,
 ];
 
-examples.arrays = [
+const arrays: ExampleGroup = [
   {
     name: 'simple values',
     left: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
@@ -873,7 +879,7 @@ examples.arrays = [
   {
     name: 'nested',
     options: {
-      objectHash(obj) {
+      objectHash(obj: { id?: string }) {
         if (obj && obj.id) {
           return obj.id;
         }
@@ -931,7 +937,7 @@ examples.arrays = [
   {
     name: 'nested with movement',
     options: {
-      objectHash(obj) {
+      objectHash(obj: { id?: string }) {
         if (obj && obj.id) {
           return obj.id;
         }
@@ -994,7 +1000,7 @@ examples.arrays = [
   {
     name: 'nested changes among array insertions and deletions',
     options: {
-      objectHash(obj) {
+      objectHash(obj: { id?: string }) {
         if (obj && obj.id) {
           return obj.id;
         }
@@ -1092,7 +1098,7 @@ examples.arrays = [
   {
     name: 'nested change with item moved above',
     options: {
-      objectHash(obj) {
+      objectHash(obj: { id?: string }) {
         if (obj && obj.id) {
           return obj.id;
         }
@@ -1166,7 +1172,7 @@ examples.arrays = [
   {
     name: 'nested change with item moved right above',
     options: {
-      objectHash(obj) {
+      objectHash(obj: { id?: string }) {
         if (obj && obj.id) {
           return obj.id;
         }
@@ -1223,7 +1229,7 @@ examples.arrays = [
   {
     name: 'nested change with item moved right below',
     options: {
-      objectHash(obj) {
+      objectHash(obj: { id?: string }) {
         if (obj && obj.id) {
           return obj.id;
         }
@@ -1285,7 +1291,7 @@ examples.arrays = [
   {
     name: 'nested with movements using custom objectHash',
     options: {
-      objectHash(obj) {
+      objectHash(obj: { itemKey?: string }) {
         if (obj && obj.itemKey) {
           return obj.itemKey;
         }
@@ -1378,7 +1384,12 @@ examples.arrays = [
     },
     noPatch: true,
   },
-  0,
 ];
 
+const examples: Record<string, ExampleGroup> = {
+  atomicValues,
+  text,
+  objects,
+  arrays,
+};
 export default examples;

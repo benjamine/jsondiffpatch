@@ -1,6 +1,10 @@
 import DiffPatcher from './diffpatcher';
 import dateReviver from './date-reviver';
 import type { Delta, Options } from './types';
+import type Context from './contexts/context';
+import type DiffContext from './contexts/diff';
+import type PatchContext from './contexts/patch';
+import type ReverseContext from './contexts/reverse';
 
 export { DiffPatcher, dateReviver };
 
@@ -9,6 +13,7 @@ export * as formatters from './formatters/index';
 export * as console from './formatters/console';
 
 export type * from './types';
+export type { Context, DiffContext, PatchContext, ReverseContext };
 
 export function create(options?: Options) {
   return new DiffPatcher(options);

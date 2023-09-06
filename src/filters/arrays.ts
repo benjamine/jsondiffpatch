@@ -36,10 +36,12 @@ function arraysHaveMatchByRef(
 }
 
 export interface MatchContext {
-  objectHash: ((item: object, index?: number) => string) | undefined;
-  matchByPosition: boolean | undefined;
-  hashCache1?: string[];
-  hashCache2?: string[];
+  objectHash?:
+    | ((item: object, index?: number) => string | undefined)
+    | undefined;
+  matchByPosition?: boolean | undefined;
+  hashCache1?: (string | undefined)[];
+  hashCache2?: (string | undefined)[];
 }
 
 function matchItems(

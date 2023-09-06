@@ -2,7 +2,7 @@ import type Context from './contexts/context';
 import type DiffContext from './contexts/diff';
 
 export interface Options {
-  objectHash?: (item: object, index?: number) => string;
+  objectHash?: (item: object, index?: number) => string | undefined;
   matchByPosition?: boolean;
   arrays?: {
     detectMove?: boolean;

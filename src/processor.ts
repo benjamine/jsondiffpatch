@@ -1,15 +1,25 @@
 import type Context from './contexts/context';
 import type Pipe from './pipe';
 import type { Options } from './types';
+import type DiffContext from './contexts/diff';
+import type PatchContext from './contexts/patch';
+import type ReverseContext from './contexts/reverse';
 
 class Processor {
   selfOptions: Options;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  pipes: { [pipeName: string]: Pipe<Context<any>> };
+  pipes: {
+    diff: Pipe<DiffContext>;
+    patch: Pipe<PatchContext>;
+    reverse: Pipe<ReverseContext>;
+  };
 
   constructor(options?: Options) {
     this.selfOptions = options || {};
-    this.pipes = {};
+    this.pipes = {} as {
+      diff: Pipe<DiffContext>;
+      patch: Pipe<PatchContext>;
+      reverse: Pipe<ReverseContext>;
+    };
   }
 
   options(options?: Options) {
@@ -27,10 +37,12 @@ class Processor {
     let pipe = pipeArg;
     if (typeof name === 'string') {
       if (typeof pipe === 'undefined') {
-        return this.pipes[name]!;
+        return this.pipes[name as keyof typeof this.pipes]!;
       } else {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        this.pipes[name] = pipe as Pipe<Context<any>>;
+        this.pipes[name as keyof typeof this.pipes] = pipe as Pipe<
+          Context<any>
+        >;
       }
     }
     if (name && (name as Pipe<TContext>).name) {
@@ -40,7 +52,9 @@ class Processor {
         return pipe;
       }
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      this.pipes[pipe.name] = pipe as Pipe<Context<any>>;
+      this.pipes[pipe.name as keyof typeof this.pipes] = pipe as Pipe<
+        Context<any>
+      >;
     }
     pipe!.processor = this;
     return pipe!;
@@ -64,7 +78,7 @@ class Processor {
       }
 
       if (typeof nextPipe === 'string') {
-        nextPipe = this.pipe(nextPipe);
+        nextPipe = this.pipe(nextPipe) as Pipe<TContext>;
       }
       nextPipe.process(context);
       lastPipe = nextPipe;
