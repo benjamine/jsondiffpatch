@@ -36,7 +36,10 @@ export default [
       }),
       resolve(),
       commonjs(),
-      typescript({ compilerOptions: { emitDeclarationOnly: true }, noForceEmit: true }),
+      typescript({
+        compilerOptions: { emitDeclarationOnly: true },
+        noForceEmit: true,
+      }),
     ],
   },
   {
@@ -67,7 +70,10 @@ export default [
       }),
       resolve(),
       commonjs(),
-      typescript({ compilerOptions: { emitDeclarationOnly: true }, noForceEmit: true }),
+      typescript({
+        compilerOptions: { emitDeclarationOnly: true },
+        noForceEmit: true,
+      }),
     ],
   },
   {
@@ -83,7 +89,10 @@ export default [
         babelHelpers: 'bundled',
         extensions: ['.js', '.jsx', '.es6', '.es', '.mjs', '.ts'],
       }),
-      typescript({ compilerOptions: { emitDeclarationOnly: true }, noForceEmit: true }),
+      typescript({
+        compilerOptions: { emitDeclarationOnly: true },
+        noForceEmit: true,
+      }),
       copyDocsFileToDist('formatters-styles/annotated.css'),
       copyDocsFileToDist('formatters-styles/html.css'),
     ],
