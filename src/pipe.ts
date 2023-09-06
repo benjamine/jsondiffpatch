@@ -1,10 +1,21 @@
-class Pipe {
-  constructor(name) {
+import type Context from './contexts/context';
+import type Processor from './processor';
+import type { Filter } from './types';
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+class Pipe<TContext extends Context<any>> {
+  name: string;
+  filters: Filter<TContext>[];
+  processor?: Processor;
+  debug?: boolean;
+  resultCheck?: ((context: TContext) => void) | null;
+
+  constructor(name: string) {
     this.name = name;
     this.filters = [];
   }
 
-  process(input) {
+  process(input: TContext) {
     if (!this.processor) {
       throw new Error('add this pipe to a processor before using it');
     }
@@ -27,21 +38,21 @@ class Pipe {
     }
   }
 
-  log(msg) {
+  log(msg: string) {
     console.log(`[jsondiffpatch] ${this.name} pipe, ${msg}`);
   }
 
-  append(...args) {
+  append(...args: Filter<TContext>[]) {
     this.filters.push(...args);
     return this;
   }
 
-  prepend(...args) {
+  prepend(...args: Filter<TContext>[]) {
     this.filters.unshift(...args);
     return this;
   }
 
-  indexOf(filterName) {
+  indexOf(filterName: string) {
     if (!filterName) {
       throw new Error('a filter name is required');
     }
@@ -58,40 +69,25 @@ class Pipe {
     return this.filters.map((f) => f.filterName);
   }
 
-  after(filterName) {
+  after(filterName: string, ...params: Filter<TContext>[]) {
     const index = this.indexOf(filterName);
-    const params = Array.prototype.slice.call(arguments, 1);
-    if (!params.length) {
-      throw new Error('a filter is required');
-    }
-    params.unshift(index + 1, 0);
-    Array.prototype.splice.apply(this.filters, params);
+    this.filters.splice(index + 1, 0, ...params);
     return this;
   }
 
-  before(filterName) {
+  before(filterName: string, ...params: Filter<TContext>[]) {
     const index = this.indexOf(filterName);
-    const params = Array.prototype.slice.call(arguments, 1);
-    if (!params.length) {
-      throw new Error('a filter is required');
-    }
-    params.unshift(index, 0);
-    Array.prototype.splice.apply(this.filters, params);
+    this.filters.splice(index, 0, ...params);
     return this;
   }
 
-  replace(filterName) {
+  replace(filterName: string, ...params: Filter<TContext>[]) {
     const index = this.indexOf(filterName);
-    const params = Array.prototype.slice.call(arguments, 1);
-    if (!params.length) {
-      throw new Error('a filter is required');
-    }
-    params.unshift(index, 1);
-    Array.prototype.splice.apply(this.filters, params);
+    this.filters.splice(index, 1, ...params);
     return this;
   }
 
-  remove(filterName) {
+  remove(filterName: string) {
     const index = this.indexOf(filterName);
     this.filters.splice(index, 1);
     return this;
@@ -102,7 +98,7 @@ class Pipe {
     return this;
   }
 
-  shouldHaveResult(should) {
+  shouldHaveResult(should?: boolean) {
     if (should === false) {
       this.resultCheck = null;
       return;
@@ -110,11 +106,12 @@ class Pipe {
     if (this.resultCheck) {
       return;
     }
-    const pipe = this;
     this.resultCheck = (context) => {
       if (!context.hasResult) {
         console.log(context);
-        const error = new Error(`${pipe.name} failed`);
+        const error: Error & { noResult?: boolean } = new Error(
+          `${this.name} failed`,
+        );
         error.noResult = true;
         throw error;
       }

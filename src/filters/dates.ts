@@ -1,4 +1,9 @@
-export const diffFilter = function datesDiffFilter(context) {
+import type { Filter } from '../types';
+import type DiffContext from '../contexts/diff';
+
+export const diffFilter: Filter<DiffContext> = function datesDiffFilter(
+  context,
+) {
   if (context.left instanceof Date) {
     if (context.right instanceof Date) {
       if (context.left.getTime() !== context.right.getTime()) {

@@ -1,15 +1,31 @@
 import BaseFormatter from './base';
+import type { BaseFormatterContext, DeltaType, NodeType } from './base';
+import type {
+  AddedDelta,
+  ArrayDelta,
+  DeletedDelta,
+  Delta,
+  ModifiedDelta,
+  MovedDelta,
+  ObjectDelta,
+  TextDiffDelta,
+} from '../types';
 
-class HtmlFormatter extends BaseFormatter {
-  typeFormattterErrorFormatter(context, err) {
+interface HtmlFormatterContext extends BaseFormatterContext {
+  hasArrows?: boolean;
+}
+
+class HtmlFormatter extends BaseFormatter<HtmlFormatterContext> {
+  typeFormattterErrorFormatter(context: HtmlFormatterContext, err: unknown) {
+    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
     context.out(`<pre class="jsondiffpatch-error">${err}</pre>`);
   }
 
-  formatValue(context, value) {
+  formatValue(context: HtmlFormatterContext, value: unknown) {
     context.out(`<pre>${htmlEscape(JSON.stringify(value, null, 2))}</pre>`);
   }
 
-  formatTextDiffString(context, value) {
+  formatTextDiffString(context: HtmlFormatterContext, value: string) {
     const lines = this.parseTextDiff(value);
     context.out('<ul class="jsondiffpatch-textdiff">');
     for (let i = 0, l = lines.length; i < l; i++) {
@@ -24,7 +40,6 @@ class HtmlFormatter extends BaseFormatter {
         pieceIndex < piecesLength;
         pieceIndex++
       ) {
-        /* global decodeURI */
         const piece = pieces[pieceIndex];
         context.out(
           `<span class="jsondiffpatch-textdiff-${piece.type}">${htmlEscape(
@@ -37,14 +52,18 @@ class HtmlFormatter extends BaseFormatter {
     context.out('</ul>');
   }
 
-  rootBegin(context, type, nodeType) {
+  rootBegin(
+    context: HtmlFormatterContext,
+    type: DeltaType,
+    nodeType: NodeType,
+  ) {
     const nodeClass = `jsondiffpatch-${type}${
       nodeType ? ` jsondiffpatch-child-node-type-${nodeType}` : ''
     }`;
     context.out(`<div class="jsondiffpatch-delta ${nodeClass}">`);
   }
 
-  rootEnd(context) {
+  rootEnd(context: HtmlFormatterContext) {
     context.out(
       `</div>${
         context.hasArrows
@@ -55,7 +74,13 @@ class HtmlFormatter extends BaseFormatter {
     );
   }
 
-  nodeBegin(context, key, leftKey, type, nodeType) {
+  nodeBegin(
+    context: HtmlFormatterContext,
+    key: string,
+    leftKey: string | number,
+    type: DeltaType,
+    nodeType: NodeType,
+  ) {
     const nodeClass = `jsondiffpatch-${type}${
       nodeType ? ` jsondiffpatch-child-node-type-${nodeType}` : ''
     }`;
@@ -65,14 +90,15 @@ class HtmlFormatter extends BaseFormatter {
     );
   }
 
-  nodeEnd(context) {
+  nodeEnd(context: HtmlFormatterContext) {
     context.out('</li>');
   }
 
-  /* jshint camelcase: false */
-  /* eslint-disable camelcase */
-
-  format_unchanged(context, delta, left) {
+  format_unchanged(
+    context: HtmlFormatterContext,
+    delta: undefined,
+    left: unknown,
+  ) {
     if (typeof left === 'undefined') {
       return;
     }
@@ -81,7 +107,11 @@ class HtmlFormatter extends BaseFormatter {
     context.out('</div>');
   }
 
-  format_movedestination(context, delta, left) {
+  format_movedestination(
+    context: HtmlFormatterContext,
+    delta: undefined,
+    left: unknown,
+  ) {
     if (typeof left === 'undefined') {
       return;
     }
@@ -90,7 +120,11 @@ class HtmlFormatter extends BaseFormatter {
     context.out('</div>');
   }
 
-  format_node(context, delta, left) {
+  format_node(
+    context: HtmlFormatterContext,
+    delta: ObjectDelta | ArrayDelta,
+    left: unknown,
+  ) {
     // recurse
     const nodeType = delta._t === 'a' ? 'array' : 'object';
     context.out(
@@ -100,13 +134,13 @@ class HtmlFormatter extends BaseFormatter {
     context.out('</ul>');
   }
 
-  format_added(context, delta) {
+  format_added(context: HtmlFormatterContext, delta: AddedDelta) {
     context.out('<div class="jsondiffpatch-value">');
     this.formatValue(context, delta[0]);
     context.out('</div>');
   }
 
-  format_modified(context, delta) {
+  format_modified(context: HtmlFormatterContext, delta: ModifiedDelta) {
     context.out('<div class="jsondiffpatch-value jsondiffpatch-left-value">');
     this.formatValue(context, delta[0]);
     context.out(
@@ -116,13 +150,13 @@ class HtmlFormatter extends BaseFormatter {
     context.out('</div>');
   }
 
-  format_deleted(context, delta) {
+  format_deleted(context: HtmlFormatterContext, delta: DeletedDelta) {
     context.out('<div class="jsondiffpatch-value">');
     this.formatValue(context, delta[0]);
     context.out('</div>');
   }
 
-  format_moved(context, delta) {
+  format_moved(context: HtmlFormatterContext, delta: MovedDelta) {
     context.out('<div class="jsondiffpatch-value">');
     this.formatValue(context, delta[0]);
     context.out(
@@ -153,16 +187,16 @@ class HtmlFormatter extends BaseFormatter {
     context.hasArrows = true;
   }
 
-  format_textdiff(context, delta) {
+  format_textdiff(context: HtmlFormatterContext, delta: TextDiffDelta) {
     context.out('<div class="jsondiffpatch-value">');
     this.formatTextDiffString(context, delta[0]);
     context.out('</div>');
   }
 }
 
-function htmlEscape(text) {
+function htmlEscape(text: string) {
   let html = text;
-  const replacements = [
+  const replacements: [RegExp, string][] = [
     [/&/g, '&amp;'],
     [/</g, '&lt;'],
     [/>/g, '&gt;'],
@@ -175,17 +209,26 @@ function htmlEscape(text) {
   return html;
 }
 
-const adjustArrows = function jsondiffpatchHtmlFormatterAdjustArrows(nodeArg) {
+const adjustArrows = function jsondiffpatchHtmlFormatterAdjustArrows(
+  nodeArg?: Element,
+) {
   const node = nodeArg || document;
-  const getElementText = ({ textContent, innerText }) =>
+  const getElementText = ({ textContent, innerText }: HTMLDivElement) =>
     textContent || innerText;
-  const eachByQuery = (el, query, fn) => {
+  const eachByQuery = (
+    el: Element | Document,
+    query: string,
+    fn: (element: HTMLElement) => void,
+  ) => {
     const elems = el.querySelectorAll(query);
     for (let i = 0, l = elems.length; i < l; i++) {
-      fn(elems[i]);
+      fn(elems[i] as HTMLElement);
     }
   };
-  const eachChildren = ({ children }, fn) => {
+  const eachChildren = (
+    { children }: ParentNode,
+    fn: (child: Element, index: number) => void,
+  ) => {
     for (let i = 0, l = children.length; i < l; i++) {
       fn(children[i], i);
     }
@@ -194,18 +237,18 @@ const adjustArrows = function jsondiffpatchHtmlFormatterAdjustArrows(nodeArg) {
     node,
     '.jsondiffpatch-arrow',
     ({ parentNode, children, style }) => {
-      const arrowParent = parentNode;
-      const svg = children[0];
-      const path = svg.children[1];
+      const arrowParent = parentNode as HTMLElement;
+      const svg = children[0] as SVGSVGElement;
+      const path = svg.children[1] as SVGPathElement;
       svg.style.display = 'none';
       const destination = getElementText(
-        arrowParent.querySelector('.jsondiffpatch-moved-destination'),
+        arrowParent.querySelector('.jsondiffpatch-moved-destination')!,
       );
-      const container = arrowParent.parentNode;
-      let destinationElem;
+      const container = arrowParent.parentNode!;
+      let destinationElem: HTMLElement | undefined;
       eachChildren(container, (child) => {
         if (child.getAttribute('data-key') === destination) {
-          destinationElem = child;
+          destinationElem = child as HTMLElement;
         }
       });
       if (!destinationElem) {
@@ -213,7 +256,7 @@ const adjustArrows = function jsondiffpatchHtmlFormatterAdjustArrows(nodeArg) {
       }
       try {
         const distance = destinationElem.offsetTop - arrowParent.offsetTop;
-        svg.setAttribute('height', Math.abs(distance) + 6);
+        svg.setAttribute('height', `${Math.abs(distance) + 6}`);
         style.top = `${-8 + (distance > 0 ? 0 : distance)}px`;
         const curve =
           distance > 0
@@ -221,15 +264,18 @@ const adjustArrows = function jsondiffpatchHtmlFormatterAdjustArrows(nodeArg) {
             : `M30,${-distance} Q-10,${Math.round(-distance / 2)} 26,4`;
         path.setAttribute('d', curve);
         svg.style.display = '';
-      } catch (err) {}
+      } catch (err) {
+        // continue regardless of error
+      }
     },
   );
 };
 
-/* jshint camelcase: true */
-/* eslint-enable camelcase */
-
-export const showUnchanged = (show, node, delay) => {
+export const showUnchanged = (
+  show?: boolean,
+  node?: Element,
+  delay?: number,
+) => {
   const el = node || document.body;
   const prefix = 'jsondiffpatch-unchanged-';
   const classes = {
@@ -283,13 +329,14 @@ export const showUnchanged = (show, node, delay) => {
   }, delay);
 };
 
-export const hideUnchanged = (node, delay) => showUnchanged(false, node, delay);
+export const hideUnchanged = (node?: Element, delay?: number) =>
+  showUnchanged(false, node, delay);
 
 export default HtmlFormatter;
 
-let defaultInstance;
+let defaultInstance: HtmlFormatter | undefined;
 
-export function format(delta, left) {
+export function format(delta: Delta, left: unknown) {
   if (!defaultInstance) {
     defaultInstance = new HtmlFormatter();
   }

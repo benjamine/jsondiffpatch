@@ -227,7 +227,6 @@
       }
     },
     getJson: function (url, callback) {
-      /* global XMLHttpRequest */
       let request = new XMLHttpRequest();
       request.open('GET', url, true);
       request.onreadystatechange = function () {
@@ -236,7 +235,6 @@
           try {
             data = JSON.parse(this.responseText, jsondiffpatch.dateReviver);
           } catch (parseError) {
-            // eslint-disable-next-line n/no-callback-literal
             return callback('parse error: ' + parseError);
           }
           if (this.status >= 200 && this.status < 400) {
