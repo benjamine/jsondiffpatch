@@ -2,6 +2,7 @@ import type Context from './contexts/context';
 import type Processor from './processor';
 import type { Filter } from './types';
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 class Pipe<TContext extends Context<any>> {
   name: string;
   filters: Filter<TContext>[];

@@ -43,6 +43,7 @@ export type Delta =
   | TextDiffDelta
   | undefined;
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export interface Filter<TContext extends Context<any>> {
   (context: TContext): void;
   filterName: string;

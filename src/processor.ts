@@ -4,6 +4,7 @@ import type { Options } from './types';
 
 class Processor {
   selfOptions: Options;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   pipes: { [pipeName: string]: Pipe<Context<any>> };
 
   constructor(options?: Options) {
@@ -18,6 +19,7 @@ class Processor {
     return this.selfOptions;
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   pipe<TContext extends Context<any>>(
     name: string | Pipe<TContext>,
     pipeArg?: Pipe<TContext>,
@@ -27,20 +29,24 @@ class Processor {
       if (typeof pipe === 'undefined') {
         return this.pipes[name]!;
       } else {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         this.pipes[name] = pipe as Pipe<Context<any>>;
       }
     }
     if (name && (name as Pipe<TContext>).name) {
-      pipe = name as Pipe<Context<unknown>>;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      pipe = name as Pipe<Context<any>>;
       if (pipe.processor === this) {
         return pipe;
       }
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       this.pipes[pipe.name] = pipe as Pipe<Context<any>>;
     }
     pipe!.processor = this;
     return pipe!;
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   process<TContext extends Context<any>>(
     input: TContext,
     pipe?: Pipe<TContext>,
@@ -70,6 +76,7 @@ class Processor {
         }
       }
     }
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     return context.hasResult ? context.result : undefined;
   }
 }
