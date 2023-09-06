@@ -295,12 +295,6 @@ const formatAnyChange = function <
   context.indent(-1);
 };
 
-AnnotatedFormatter.prototype.format_added = formatAnyChange;
-AnnotatedFormatter.prototype.format_modified = formatAnyChange;
-AnnotatedFormatter.prototype.format_deleted = formatAnyChange;
-AnnotatedFormatter.prototype.format_moved = formatAnyChange;
-AnnotatedFormatter.prototype.format_textdiff = formatAnyChange;
-
 export default AnnotatedFormatter;
 
 let defaultInstance: AnnotatedFormatter | undefined;
