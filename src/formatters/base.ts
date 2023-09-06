@@ -76,6 +76,21 @@ type Formatter<TContext extends BaseFormatterContext> = {
   ) => void;
 };
 
+interface LineOutputPiece {
+  type: 'context' | 'added' | 'deleted';
+  text: string;
+}
+
+interface LineOutputLocation {
+  line: string;
+  chr: string;
+}
+
+interface LineOutput {
+  pieces: LineOutputPiece[];
+  location: LineOutputLocation;
+}
+
 abstract class BaseFormatter<
   TContext extends BaseFormatterContext,
   TFormatted = string | undefined,
@@ -280,7 +295,7 @@ abstract class BaseFormatter<
     }
   }
 
-  getDeltaType(delta: Delta, movedFrom: MoveDestination | undefined) {
+  getDeltaType(delta: Delta, movedFrom?: MoveDestination | undefined) {
     if (typeof delta === 'undefined') {
       if (typeof movedFrom !== 'undefined') {
         return 'movedestination';
@@ -309,15 +324,18 @@ abstract class BaseFormatter<
     return 'unknown';
   }
 
-  parseTextDiff(value) {
+  parseTextDiff(value: string) {
     const output = [];
     const lines = value.split('\n@@ ');
     for (let i = 0, l = lines.length; i < l; i++) {
       const line = lines[i];
-      const lineOutput = {
+      const lineOutput: {
+        pieces: LineOutputPiece[];
+        location?: LineOutputLocation;
+      } = {
         pieces: [],
       };
-      const location = /^(?:@@ )?[-+]?(\d+),(\d+)/.exec(line).slice(1);
+      const location = /^(?:@@ )?[-+]?(\d+),(\d+)/.exec(line)!.slice(1);
       lineOutput.location = {
         line: location[0],
         chr: location[1],
@@ -332,7 +350,7 @@ abstract class BaseFormatter<
         if (!piece.length) {
           continue;
         }
-        const pieceOutput = {
+        const pieceOutput: Partial<LineOutputPiece> = {
           type: 'context',
         };
         if (piece.substring(0, 1) === '+') {
@@ -341,9 +359,9 @@ abstract class BaseFormatter<
           pieceOutput.type = 'deleted';
         }
         pieceOutput.text = piece.slice(1);
-        lineOutput.pieces.push(pieceOutput);
+        lineOutput.pieces.push(pieceOutput as LineOutputPiece);
       }
-      output.push(lineOutput);
+      output.push(lineOutput as LineOutput);
     }
     return output;
   }

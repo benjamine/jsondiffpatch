@@ -1,12 +1,30 @@
 import BaseFormatter from './base';
+import type { BaseFormatterContext, DeltaType, NodeType } from './base';
+import type {
+  AddedDelta,
+  ArrayDelta,
+  DeletedDelta,
+  Delta,
+  ModifiedDelta,
+  MovedDelta,
+  ObjectDelta,
+  TextDiffDelta,
+} from '../types';
 
-class AnnotatedFormatter extends BaseFormatter {
+interface AnnotatedFormatterContext extends BaseFormatterContext {
+  indentLevel?: number;
+  indentPad?: string;
+  indent: (levels?: number) => void;
+  row: (json: string, htmlNote?: string) => void;
+}
+
+class AnnotatedFormatter extends BaseFormatter<AnnotatedFormatterContext> {
   constructor() {
     super();
     this.includeMoveDestinations = false;
   }
 
-  prepareContext(context) {
+  prepareContext(context: Partial<AnnotatedFormatterContext>) {
     super.prepareContext(context);
     context.indent = function (levels) {
       this.indentLevel =
@@ -14,25 +32,29 @@ class AnnotatedFormatter extends BaseFormatter {
       this.indentPad = new Array(this.indentLevel + 1).join('&nbsp;&nbsp;');
     };
     context.row = (json, htmlNote) => {
-      context.out(
+      context.out!(
         '<tr><td style="white-space: nowrap;">' +
           '<pre class="jsondiffpatch-annotated-indent"' +
           ' style="display: inline-block">',
       );
-      context.out(context.indentPad);
-      context.out('</pre><pre style="display: inline-block">');
-      context.out(json);
-      context.out('</pre></td><td class="jsondiffpatch-delta-note"><div>');
-      context.out(htmlNote);
-      context.out('</div></td></tr>');
+      context.out!(context.indentPad);
+      context.out!('</pre><pre style="display: inline-block">');
+      context.out!(json);
+      context.out!('</pre></td><td class="jsondiffpatch-delta-note"><div>');
+      context.out!(htmlNote);
+      context.out!('</div></td></tr>');
     };
   }
 
-  typeFormattterErrorFormatter(context, err) {
+  typeFormattterErrorFormatter(
+    context: AnnotatedFormatterContext,
+    err: unknown,
+  ) {
+    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
     context.row('', `<pre class="jsondiffpatch-error">${err}</pre>`);
   }
 
-  formatTextDiffString(context, value) {
+  formatTextDiffString(context: AnnotatedFormatterContext, value: string) {
     const lines = this.parseTextDiff(value);
     context.out('<ul class="jsondiffpatch-textdiff">');
     for (let i = 0, l = lines.length; i < l; i++) {
@@ -57,7 +79,11 @@ class AnnotatedFormatter extends BaseFormatter {
     context.out('</ul>');
   }
 
-  rootBegin(context, type, nodeType) {
+  rootBegin(
+    context: AnnotatedFormatterContext,
+    type: DeltaType,
+    nodeType: NodeType,
+  ) {
     context.out('<table class="jsondiffpatch-annotated-delta">');
     if (type === 'node') {
       context.row('{');
@@ -71,7 +97,7 @@ class AnnotatedFormatter extends BaseFormatter {
     }
   }
 
-  rootEnd(context, type) {
+  rootEnd(context: AnnotatedFormatterContext, type: DeltaType) {
     if (type === 'node') {
       context.indent(-1);
       context.row('}');
@@ -79,7 +105,13 @@ class AnnotatedFormatter extends BaseFormatter {
     context.out('</table>');
   }
 
-  nodeBegin(context, key, leftKey, type, nodeType) {
+  nodeBegin(
+    context: AnnotatedFormatterContext,
+    key: string,
+    leftKey: string | number,
+    type: DeltaType,
+    nodeType: NodeType,
+  ) {
     context.row(`&quot;${key}&quot;: {`);
     if (type === 'node') {
       context.indent();
@@ -92,32 +124,103 @@ class AnnotatedFormatter extends BaseFormatter {
     }
   }
 
-  nodeEnd(context, key, leftKey, type, nodeType, isLast) {
+  nodeEnd(
+    context: AnnotatedFormatterContext,
+    key: string,
+    leftKey: string | number,
+    type: DeltaType,
+    nodeType: NodeType,
+    isLast: boolean,
+  ) {
     if (type === 'node') {
       context.indent(-1);
     }
     context.row(`}${isLast ? '' : ','}`);
   }
 
-  /* jshint camelcase: false */
-
-  /* eslint-disable camelcase */
   format_unchanged() {}
 
   format_movedestination() {}
 
-  format_node(context, delta, left) {
+  format_node(
+    context: AnnotatedFormatterContext,
+    delta: ObjectDelta | ArrayDelta,
+    left: unknown,
+  ) {
     // recurse
     this.formatDeltaChildren(context, delta, left);
   }
+
+  format_added(
+    context: AnnotatedFormatterContext,
+    delta: AddedDelta,
+    left: unknown,
+    key: string | undefined,
+    leftKey: string | number | undefined,
+  ) {
+    formatAnyChange.call(this, context, delta, left, key, leftKey);
+  }
+
+  format_modified(
+    context: AnnotatedFormatterContext,
+    delta: ModifiedDelta,
+    left: unknown,
+    key: string | undefined,
+    leftKey: string | number | undefined,
+  ) {
+    formatAnyChange.call(this, context, delta, left, key, leftKey);
+  }
+
+  format_deleted(
+    context: AnnotatedFormatterContext,
+    delta: DeletedDelta,
+    left: unknown,
+    key: string | undefined,
+    leftKey: string | number | undefined,
+  ) {
+    formatAnyChange.call(this, context, delta, left, key, leftKey);
+  }
+
+  format_moved(
+    context: AnnotatedFormatterContext,
+    delta: MovedDelta,
+    left: unknown,
+    key: string | undefined,
+    leftKey: string | number | undefined,
+  ) {
+    formatAnyChange.call(this, context, delta, left, key, leftKey);
+  }
+
+  format_textdiff(
+    context: AnnotatedFormatterContext,
+    delta: TextDiffDelta,
+    left: unknown,
+    key: string | undefined,
+    leftKey: string | number | undefined,
+  ) {
+    formatAnyChange.call(this, context, delta, left, key, leftKey);
+  }
 }
 
-/* eslint-enable camelcase */
-
-const wrapPropertyName = (name) =>
+const wrapPropertyName = (name: string | number | undefined) =>
   `<pre style="display:inline-block">&quot;${name}&quot;</pre>`;
 
-const deltaAnnotations = {
+interface DeltaTypeAnnotationsMap {
+  added: AddedDelta;
+  modified: ModifiedDelta;
+  deleted: DeletedDelta;
+  moved: MovedDelta;
+  textdiff: TextDiffDelta;
+}
+
+const deltaAnnotations: {
+  [DeltaType in keyof DeltaTypeAnnotationsMap]: (
+    delta: DeltaTypeAnnotationsMap[DeltaType],
+    left: unknown,
+    key: string | undefined,
+    leftKey: string | number | undefined,
+  ) => string;
+} = {
   added(delta, left, key, leftKey) {
     const formatLegend = ' <pre>([newValue])</pre>';
     if (typeof leftKey === 'undefined') {
@@ -169,12 +272,19 @@ const deltaAnnotations = {
   },
 };
 
-const formatAnyChange = function (context, delta) {
-  const deltaType = this.getDeltaType(delta);
+const formatAnyChange = function <
+  TDeltaType extends keyof DeltaTypeAnnotationsMap,
+>(
+  this: AnnotatedFormatter,
+  context: AnnotatedFormatterContext,
+  delta: DeltaTypeAnnotationsMap[TDeltaType],
+  left: unknown,
+  key: string | undefined,
+  leftKey: string | number | undefined,
+) {
+  const deltaType = this.getDeltaType(delta) as TDeltaType;
   const annotator = deltaAnnotations[deltaType];
-  const htmlNote =
-    annotator &&
-    annotator.apply(annotator, Array.prototype.slice.call(arguments, 1));
+  const htmlNote = annotator && annotator(delta, left, key, leftKey);
   let json = JSON.stringify(delta, null, 2);
   if (deltaType === 'textdiff') {
     // split text diffs lines
@@ -185,21 +295,17 @@ const formatAnyChange = function (context, delta) {
   context.indent(-1);
 };
 
-/* eslint-disable camelcase */
 AnnotatedFormatter.prototype.format_added = formatAnyChange;
 AnnotatedFormatter.prototype.format_modified = formatAnyChange;
 AnnotatedFormatter.prototype.format_deleted = formatAnyChange;
 AnnotatedFormatter.prototype.format_moved = formatAnyChange;
 AnnotatedFormatter.prototype.format_textdiff = formatAnyChange;
-/* eslint-enable camelcase */
-
-/* jshint camelcase: true */
 
 export default AnnotatedFormatter;
 
-let defaultInstance;
+let defaultInstance: AnnotatedFormatter | undefined;
 
-export function format(delta, left) {
+export function format(delta: Delta, left: unknown) {
   if (!defaultInstance) {
     defaultInstance = new AnnotatedFormatter();
   }
