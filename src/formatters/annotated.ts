@@ -37,11 +37,11 @@ class AnnotatedFormatter extends BaseFormatter<AnnotatedFormatterContext> {
           '<pre class="jsondiffpatch-annotated-indent"' +
           ' style="display: inline-block">',
       );
-      context.out!(context.indentPad);
+      if (context.indentPad != null) context.out!(context.indentPad);
       context.out!('</pre><pre style="display: inline-block">');
       context.out!(json);
       context.out!('</pre></td><td class="jsondiffpatch-delta-note"><div>');
-      context.out!(htmlNote);
+      if (htmlNote != null) context.out!(htmlNote);
       context.out!('</div></td></tr>');
     };
   }
