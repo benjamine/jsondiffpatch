@@ -9,12 +9,11 @@ import { visualizer } from 'rollup-plugin-visualizer';
 
 import pkg from './package.json' assert { type: 'json' };
 
-const copySrcFileToDist = copyFromFolderToDist('src');
 const copyDocsFileToDist = copyFromFolderToDist('docs');
 
 export default [
   {
-    input: 'src/main.js',
+    input: 'src/main.ts',
     external: ['chalk'],
     output: {
       name: pkg.name,
@@ -32,13 +31,14 @@ export default [
       babel({
         exclude: 'node_modules/**',
         babelHelpers: 'bundled',
+        extensions: ['.js', '.jsx', '.es6', '.es', '.mjs', '.ts'],
       }),
-      resolve(), // so Rollup can find node modules
-      commonjs(), // so Rollup can convert node modules to ES modules
+      resolve({ extensions: ['.mjs', '.js', '.json', '.node', '.ts'] }),
+      commonjs(),
     ],
   },
   {
-    input: 'src/main.js',
+    input: 'src/main.ts',
     external: ['chalk', 'diff-match-patch'],
     output: {
       name: pkg.name,
@@ -61,13 +61,14 @@ export default [
       babel({
         exclude: 'node_modules/**',
         babelHelpers: 'bundled',
+        extensions: ['.js', '.jsx', '.es6', '.es', '.mjs', '.ts'],
       }),
-      resolve(), // so Rollup can find node modules
-      commonjs(), // so Rollup can convert node modules to ES modules
+      resolve({ extensions: ['.mjs', '.js', '.json', '.node', '.ts'] }),
+      commonjs(),
     ],
   },
   {
-    input: 'src/main.js',
+    input: 'src/main.ts',
     external: [
       // external node modules
       'diff-match-patch',
@@ -77,8 +78,9 @@ export default [
       babel({
         exclude: 'node_modules/**',
         babelHelpers: 'bundled',
+        extensions: ['.js', '.jsx', '.es6', '.es', '.mjs', '.ts'],
       }),
-      copySrcFileToDist('index.d.ts'),
+      resolve({ extensions: ['.mjs', '.js', '.json', '.node', '.ts'] }),
       copyDocsFileToDist('formatters-styles/annotated.css'),
       copyDocsFileToDist('formatters-styles/html.css'),
     ],
