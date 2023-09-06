@@ -5,6 +5,7 @@ import { fileURLToPath } from 'node:url';
 import babel from '@rollup/plugin-babel';
 import resolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
+import typescript from '@rollup/plugin-typescript';
 import { visualizer } from 'rollup-plugin-visualizer';
 
 import pkg from './package.json' assert { type: 'json' };
@@ -33,8 +34,9 @@ export default [
         babelHelpers: 'bundled',
         extensions: ['.js', '.jsx', '.es6', '.es', '.mjs', '.ts'],
       }),
-      resolve({ extensions: ['.mjs', '.js', '.json', '.node', '.ts'] }),
+      resolve(),
       commonjs(),
+      typescript({ compilerOptions: { emitDeclarationOnly: true }, noForceEmit: true }),
     ],
   },
   {
@@ -63,8 +65,9 @@ export default [
         babelHelpers: 'bundled',
         extensions: ['.js', '.jsx', '.es6', '.es', '.mjs', '.ts'],
       }),
-      resolve({ extensions: ['.mjs', '.js', '.json', '.node', '.ts'] }),
+      resolve(),
       commonjs(),
+      typescript({ compilerOptions: { emitDeclarationOnly: true }, noForceEmit: true }),
     ],
   },
   {
@@ -80,7 +83,7 @@ export default [
         babelHelpers: 'bundled',
         extensions: ['.js', '.jsx', '.es6', '.es', '.mjs', '.ts'],
       }),
-      resolve({ extensions: ['.mjs', '.js', '.json', '.node', '.ts'] }),
+      typescript({ compilerOptions: { emitDeclarationOnly: true }, noForceEmit: true }),
       copyDocsFileToDist('formatters-styles/annotated.css'),
       copyDocsFileToDist('formatters-styles/html.css'),
     ],

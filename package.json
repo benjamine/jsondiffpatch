@@ -9,7 +9,7 @@
   "browser": "dist/jsondiffpatch.umd.js",
   "main": "dist/jsondiffpatch.cjs.js",
   "module": "dist/jsondiffpatch.esm.js",
-  "types": "./dist/index",
+  "types": "dist/types/main.d.ts",
   "files": [
     "dist",
     "bin"
@@ -19,7 +19,7 @@
   },
   "scripts": {
     "build": "rollup -c",
-    "type-check": "tsc",
+    "type-check": "tsc --noEmit",
     "lint": "eslint src",
     "test": "jest --coverage",
     "format": "prettier . --write",
@@ -48,6 +48,7 @@
     "@rollup/plugin-commonjs": "^25.0.4",
     "@rollup/plugin-node-resolve": "^15.2.0",
     "@rollup/plugin-replace": "^5.0.2",
+    "@rollup/plugin-typescript": "^11.1.3",
     "@typescript-eslint/eslint-plugin": "^6.6.0",
     "@typescript-eslint/parser": "^6.6.0",
     "eslint": "^8.47.0",
@@ -56,6 +57,7 @@
     "prettier": "^3.0.2",
     "rollup": "^3.28.0",
     "rollup-plugin-visualizer": "^5.9.2",
+    "tslib": "^2.6.2",
     "typescript": "~5.2.2"
   },
   "license": "MIT",

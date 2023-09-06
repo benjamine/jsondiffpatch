@@ -1,16 +1,10 @@
 {
   "compilerOptions": {
     "target": "es2016",
-    // "lib": [],
     "module": "node16",
     "types": [],
-    // "resolveJsonModule": true,
-    // "declaration": true,
-    // "declarationMap": true,
-    // "emitDeclarationOnly": true,
-    // "outFile": "./",
-    // "outDir": "./",
-    "noEmit": true,
+    "declaration": true,
+    "outDir": "./dist/types",
     "isolatedModules": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,

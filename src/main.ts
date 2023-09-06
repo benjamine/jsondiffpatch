@@ -8,6 +8,8 @@ export * as formatters from './formatters/index';
 
 export * as console from './formatters/console';
 
+export type * from './types';
+
 export function create(options?: Options) {
   return new DiffPatcher(options);
 }
