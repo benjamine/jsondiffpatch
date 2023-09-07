@@ -39,8 +39,8 @@ class Processor {
       if (typeof pipe === 'undefined') {
         return this.pipes[name as keyof typeof this.pipes]!;
       } else {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         this.pipes[name as keyof typeof this.pipes] = pipe as Pipe<
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           Context<any>
         >;
       }
@@ -51,8 +51,8 @@ class Processor {
       if (pipe.processor === this) {
         return pipe;
       }
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       this.pipes[pipe.name as keyof typeof this.pipes] = pipe as Pipe<
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         Context<any>
       >;
     }

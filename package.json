@@ -20,7 +20,7 @@
   "scripts": {
     "build": "rollup -c",
     "type-check": "tsc",
-    "lint": "eslint src",
+    "lint": "eslint . --ext .ts",
     "test": "jest --coverage",
     "format": "prettier . --write",
     "format-check": "prettier . --check",
