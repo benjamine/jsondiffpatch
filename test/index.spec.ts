@@ -1,3 +1,4 @@
+/// <reference types="../src/diff-match-patch" />
 import * as jsondiffpatch from '../src/main';
 import lcs from '../src/filters/lcs';
 
@@ -11,12 +12,7 @@ describe('jsondiffpatch', () => {
 
 const DiffPatcher = jsondiffpatch.DiffPatcher;
 
-const isArray =
-  typeof Array.isArray === 'function'
-    ? Array.isArray
-    : (a) => typeof a === 'object' && a instanceof Array;
-
-const valueDescription = (value) => {
+const valueDescription = (value: unknown) => {
   if (value === null) {
     return 'null';
   }
@@ -29,7 +25,7 @@ const valueDescription = (value) => {
   if (value instanceof RegExp) {
     return 'RegExp';
   }
-  if (isArray(value)) {
+  if (Array.isArray(value)) {
     return 'array';
   }
   if (typeof value === 'string') {
@@ -40,35 +36,11 @@ const valueDescription = (value) => {
   return typeof value;
 };
 
-// Object.keys polyfill
-const objectKeys =
-  typeof Object.keys === 'function'
-    ? (obj) => Object.keys(obj)
-    : (obj) => {
-        const keys = [];
-        for (const key in obj) {
-          if (Object.prototype.hasOwnProperty.call(obj, key)) {
-            keys.push(key);
-          }
-        }
-        return keys;
-      };
-
-// Array.prototype.forEach polyfill
-const arrayForEach =
-  typeof Array.prototype.forEach === 'function'
-    ? (array, fn) => array.forEach(fn)
-    : (array, fn) => {
-        for (let index = 0, length = array.length; index < length; index++) {
-          fn(array[index], index, array);
-        }
-      };
-
 describe('DiffPatcher', () => {
-  arrayForEach(objectKeys(examples), (groupName) => {
+  Object.keys(examples).forEach((groupName) => {
     const group = examples[groupName];
     describe(groupName, () => {
-      arrayForEach(group, (example) => {
+      group.forEach((example) => {
         if (!example) {
           return;
         }
@@ -78,7 +50,7 @@ describe('DiffPatcher', () => {
             example.right,
           )}`;
         describe(name, () => {
-          let instance;
+          let instance: jsondiffpatch.DiffPatcher;
           beforeAll(function () {
             instance = new DiffPatcher(example.options);
           });
@@ -166,7 +138,7 @@ describe('DiffPatcher', () => {
   });
 
   describe('using cloneDiffValues', () => {
-    let instance;
+    let instance: jsondiffpatch.DiffPatcher;
     beforeAll(function () {
       instance = new DiffPatcher({
         cloneDiffValues: true,
@@ -213,7 +185,7 @@ describe('DiffPatcher', () => {
   });
 
   describe('plugins', () => {
-    let instance;
+    let instance: jsondiffpatch.DiffPatcher;
 
     beforeAll(function () {
       instance = new DiffPatcher();
@@ -235,19 +207,30 @@ describe('DiffPatcher', () => {
     describe('supporting numeric deltas', () => {
       const NUMERIC_DIFFERENCE = -8;
 
+      type NumericDifferenceDelta = [0, number, -8];
+      type DeltaWithNumericDifference =
+        | jsondiffpatch.Delta
+        | NumericDifferenceDelta;
+
       it('diff', function () {
         // a constant to identify the custom delta type
-        function numericDiffFilter(context) {
+        const numericDiffFilter: jsondiffpatch.Filter<
+          jsondiffpatch.DiffContext
+        > = (context) => {
           if (
             typeof context.left === 'number' &&
             typeof context.right === 'number'
           ) {
             // store number delta, eg. useful for distributed counters
             context
-              .setResult([0, context.right - context.left, NUMERIC_DIFFERENCE])
+              .setResult([
+                0,
+                context.right - context.left,
+                NUMERIC_DIFFERENCE,
+              ] as unknown as jsondiffpatch.Delta)
               .exit();
           }
-        }
+        };
         // a filterName is useful if I want to allow other filters to
         // be inserted before/after this one
         numericDiffFilter.filterName = 'numeric';
@@ -260,42 +243,71 @@ describe('DiffPatcher', () => {
       });
 
       it('patch', function () {
-        function numericPatchFilter(context) {
+        const numericPatchFilter: jsondiffpatch.Filter<
+          jsondiffpatch.PatchContext
+        > = (context) => {
+          const deltaWithNumericDifference =
+            context.delta as DeltaWithNumericDifference;
           if (
-            context.delta &&
-            Array.isArray(context.delta) &&
-            context.delta[2] === NUMERIC_DIFFERENCE
+            deltaWithNumericDifference &&
+            Array.isArray(deltaWithNumericDifference) &&
+            deltaWithNumericDifference[2] === NUMERIC_DIFFERENCE
           ) {
-            context.setResult(context.left + context.delta[1]).exit();
+            context
+              .setResult(
+                (context.left as number) +
+                  (deltaWithNumericDifference as NumericDifferenceDelta)[1],
+              )
+              .exit();
           }
-        }
+        };
         numericPatchFilter.filterName = 'numeric';
         instance.processor.pipes.patch.before('trivial', numericPatchFilter);
 
-        const delta = { population: [0, 3, NUMERIC_DIFFERENCE] };
+        const delta = {
+          population: [
+            0,
+            3,
+            NUMERIC_DIFFERENCE,
+          ] as unknown as jsondiffpatch.Delta,
+        };
         const right = instance.patch({ population: 600 }, delta);
         expect(right).toEqual({ population: 603 });
       });
 
       it('unpatch', function () {
-        function numericReverseFilter(context) {
+        const numericReverseFilter: jsondiffpatch.Filter<
+          jsondiffpatch.ReverseContext
+        > = (context) => {
           if (context.nested) {
             return;
           }
+          const deltaWithNumericDifference =
+            context.delta as DeltaWithNumericDifference;
           if (
-            context.delta &&
-            Array.isArray(context.delta) &&
-            context.delta[2] === NUMERIC_DIFFERENCE
+            deltaWithNumericDifference &&
+            Array.isArray(deltaWithNumericDifference) &&
+            deltaWithNumericDifference[2] === NUMERIC_DIFFERENCE
           ) {
             context
-              .setResult([0, -context.delta[1], NUMERIC_DIFFERENCE])
+              .setResult([
+                0,
+                -(deltaWithNumericDifference as NumericDifferenceDelta)[1],
+                NUMERIC_DIFFERENCE,
+              ] as unknown as jsondiffpatch.Delta)
               .exit();
           }
-        }
+        };
         numericReverseFilter.filterName = 'numeric';
         instance.processor.pipes.reverse.after('trivial', numericReverseFilter);
 
-        const delta = { population: [0, 3, NUMERIC_DIFFERENCE] };
+        const delta = {
+          population: [
+            0,
+            3,
+            NUMERIC_DIFFERENCE,
+          ] as unknown as jsondiffpatch.Delta,
+        };
         const reverseDelta = instance.reverse(delta);
         expect(reverseDelta).toEqual({
           population: [0, -3, NUMERIC_DIFFERENCE],
@@ -329,9 +341,11 @@ describe('DiffPatcher', () => {
       });
 
       it('replaces specified filter', function () {
-        function fooFilter(context) {
+        const fooFilter: jsondiffpatch.Filter<jsondiffpatch.DiffContext> = (
+          context,
+        ) => {
           context.setResult(['foo']).exit();
-        }
+        };
         fooFilter.filterName = 'foo';
         expect(instance.processor.pipes.diff.list()).toEqual([
           'collectChildren',
@@ -356,38 +370,53 @@ describe('DiffPatcher', () => {
 
   describe('formatters', () => {
     describe('jsonpatch', () => {
-      let instance;
-      let formatter;
+      let instance: jsondiffpatch.DiffPatcher;
+      let formatter: typeof jsondiffpatch.formatters.jsonpatch;
 
       beforeAll(() => {
         instance = new DiffPatcher();
         formatter = jsondiffpatch.formatters.jsonpatch;
       });
 
-      const expectFormat = (before, after, expected) => {
+      const expectFormat = (
+        before: unknown,
+        after: unknown,
+        expected: jsondiffpatch.formatters.jsonpatch.Op[],
+      ) => {
         const diff = instance.diff(before, after);
         const format = formatter.format(diff);
         expect(format).toEqual(expected);
       };
 
-      const removeOp = (path) => ({
+      const removeOp = (
+        path: string,
+      ): jsondiffpatch.formatters.jsonpatch.RemoveOp => ({
         op: 'remove',
         path,
       });
 
-      const moveOp = (from, path) => ({
+      const moveOp = (
+        from: string,
+        path: string,
+      ): jsondiffpatch.formatters.jsonpatch.MoveOp => ({
         op: 'move',
         from,
         path,
       });
 
-      const addOp = (path, value) => ({
+      const addOp = (
+        path: string,
+        value: unknown,
+      ): jsondiffpatch.formatters.jsonpatch.AddOp => ({
         op: 'add',
         path,
         value,
       });
 
-      const replaceOp = (path, value) => ({
+      const replaceOp = (
+        path: string,
+        value: unknown,
+      ): jsondiffpatch.formatters.jsonpatch.ReplaceOp => ({
         op: 'replace',
         path,
         value,
@@ -434,7 +463,7 @@ describe('DiffPatcher', () => {
       describe('patcher with comparator', () => {
         beforeAll(() => {
           instance = new DiffPatcher({
-            objectHash(obj) {
+            objectHash(obj: { id?: string }) {
               if (obj && obj.id) {
                 return obj.id;
               }
@@ -442,7 +471,7 @@ describe('DiffPatcher', () => {
           });
         });
 
-        const anObjectWithId = (id) => ({
+        const anObjectWithId = (id: string) => ({
           id,
         });
 
@@ -548,7 +577,7 @@ describe('DiffPatcher', () => {
             },
           ],
         };
-        const diff = [
+        const diff: jsondiffpatch.formatters.jsonpatch.Op[] = [
           {
             op: 'move',
             from: '/referenceNumbers/1',
@@ -571,7 +600,7 @@ describe('DiffPatcher', () => {
           },
         ];
         instance = new DiffPatcher({
-          objectHash(obj) {
+          objectHash(obj: { id?: string }) {
             return obj.id;
           },
         });
@@ -580,23 +609,33 @@ describe('DiffPatcher', () => {
     });
 
     describe('html', () => {
-      let instance;
-      let formatter;
+      let instance: jsondiffpatch.DiffPatcher;
+      let formatter: typeof jsondiffpatch.formatters.html;
 
       beforeAll(() => {
         instance = new DiffPatcher({ textDiff: { minLength: 10 } });
         formatter = jsondiffpatch.formatters.html;
       });
 
-      const expectFormat = (before, after, expected) => {
+      const expectFormat = (
+        before: unknown,
+        after: unknown,
+        expected: string,
+      ) => {
         const diff = instance.diff(before, after);
         const format = formatter.format(diff);
         expect(format).toEqual(expected);
       };
 
-      const expectedHtml = (expectedDiff) => {
-        const html = [];
-        arrayForEach(expectedDiff, function (diff) {
+      const expectedHtml = (
+        expectedDiff: {
+          start: number;
+          length: number;
+          data: { type: string; text: string }[];
+        }[],
+      ) => {
+        const html: string[] = [];
+        expectedDiff.forEach(function (diff) {
           html.push('<li>');
           html.push('<div class="jsondiffpatch-textdiff-location">');
           html.push(
@@ -608,7 +647,7 @@ describe('DiffPatcher', () => {
           html.push('</div>');
           html.push('<div class="jsondiffpatch-textdiff-line">');
 
-          arrayForEach(diff.data, function (data) {
+          diff.data.forEach(function (data) {
             html.push(
               `<span class="jsondiffpatch-textdiff-${data.type}">${data.text}</span>`,
             );

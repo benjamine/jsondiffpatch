@@ -225,13 +225,13 @@ export default ConsoleFormatter;
 
 let defaultInstance: ConsoleFormatter | undefined;
 
-export const format = (delta: Delta, left: unknown) => {
+export const format = (delta: Delta, left?: unknown) => {
   if (!defaultInstance) {
     defaultInstance = new ConsoleFormatter();
   }
   return defaultInstance.format(delta, left);
 };
 
-export function log(delta: Delta, left: unknown) {
+export function log(delta: Delta, left?: unknown) {
   console.log(format(delta, left));
 }

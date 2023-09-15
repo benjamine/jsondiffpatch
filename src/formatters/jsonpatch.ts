@@ -16,30 +16,30 @@ const OPERATIONS = {
   move: 'move',
 } as const;
 
-interface AddOp {
+export interface AddOp {
   op: 'add';
   path: string;
   value: unknown;
 }
 
-interface RemoveOp {
+export interface RemoveOp {
   op: 'remove';
   path: string;
 }
 
-interface ReplaceOp {
+export interface ReplaceOp {
   op: 'replace';
   path: string;
   value: unknown;
 }
 
-interface MoveOp {
+export interface MoveOp {
   op: 'move';
   from: string;
   path: string;
 }
 
-type Op = AddOp | RemoveOp | ReplaceOp | MoveOp;
+export type Op = AddOp | RemoveOp | ReplaceOp | MoveOp;
 
 interface JSONFormatterContext extends BaseFormatterContext {
   result: Op[];
@@ -153,7 +153,7 @@ class JSONFormatter extends BaseFormatter<JSONFormatterContext, Op[]> {
     throw new Error('Not implemented');
   }
 
-  format(delta: Delta, left: unknown) {
+  format(delta: Delta, left?: unknown) {
     const context = {};
     this.prepareContext(context);
     const preparedContext = context as JSONFormatterContext;
@@ -223,13 +223,13 @@ const reorderOps = (diff: Op[]) => {
 
 let defaultInstance: JSONFormatter | undefined;
 
-export const format = (delta: Delta, left: unknown) => {
+export const format = (delta: Delta, left?: unknown) => {
   if (!defaultInstance) {
     defaultInstance = new JSONFormatter();
   }
   return reorderOps(defaultInstance.format(delta, left));
 };
 
-export const log = (delta: Delta, left: unknown) => {
+export const log = (delta: Delta, left?: unknown) => {
   console.log(format(delta, left));
 };

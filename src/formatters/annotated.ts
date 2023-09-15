@@ -299,7 +299,7 @@ export default AnnotatedFormatter;
 
 let defaultInstance: AnnotatedFormatter | undefined;
 
-export function format(delta: Delta, left: unknown) {
+export function format(delta: Delta, left?: unknown) {
   if (!defaultInstance) {
     defaultInstance = new AnnotatedFormatter();
   }
