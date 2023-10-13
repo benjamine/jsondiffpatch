@@ -777,7 +777,7 @@ describe('DiffPatcher', () => {
 
         const delta = instance.diff(left, right);
         const diff = formatter.format(delta, left);
-        console.log(diff);
+        // console.log(diff); // remove to see in console with colors.
         
         // this check feels a little brittle but can't think of a better option..
         expect(diff).toEqual(`\
@@ -810,7 +810,7 @@ describe('DiffPatcher', () => {
 
         const delta = instance.diff(left, right);
         const diff = formatter.format(delta, left);
-        console.log(diff);
+        // console.log(diff); remove to see in console with colors
 
         // this check feels a little brittle but can't think of a better option..
         expect(diff).toEqual(`\
