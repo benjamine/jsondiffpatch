@@ -3,6 +3,8 @@ import * as jsondiffpatch from '../src/main';
 import lcs from '../src/filters/lcs';
 
 import examples from './examples/diffpatch';
+import ConsoleFormatter from '../src/formatters/console';
+import { format } from '../src/formatters/html';
 
 describe('jsondiffpatch', () => {
   it('has a diff method', () => {
@@ -746,6 +748,84 @@ describe('DiffPatcher', () => {
         expectFormat(before, after, expectedHtml(expectedDiff));
       });
     });
+
+    describe('console', () => {
+      let instance: jsondiffpatch.DiffPatcher;
+      let formatter: ConsoleFormatter;
+
+      beforeAll(() => {
+        instance = new DiffPatcher();
+        formatter = new ConsoleFormatter({
+          omitUnchangedAfter: 5
+        })
+      });
+
+      const unchanged = (value: string): string => formatter.options.colors.unchanged(value);
+      const deleted = (value: string): string => formatter.options.colors.deleted(value);
+      const added = (value: string): string => formatter.options.colors.added(value);
+
+      it('should format diffs', () => {
+        const left = {
+          foo: 'foo',
+          bar: 'bar',
+          baz: 'baz',
+        };
+        const right = {
+          foo: 'baz',
+          bar: 'bar',
+        }
+
+        const delta = instance.diff(left, right);
+        const diff = formatter.format(delta, left);
+        // console.log(diff); // remove to see in console with colors.
+        
+        // this check feels a little brittle but can't think of a better option..
+        expect(diff).toEqual(`\
+{
+  ${unchanged('bar: ')}${unchanged('"bar"')}
+  ${deleted('baz: ')}${deleted('"baz"')}
+  foo: ${deleted('"foo"')} => ${added('"baz"')}
+}`)
+      });
+
+      it('should omit unchanged lines', () => {
+        const lots = {} as any;
+        for (let i = 0; i < 1000; i++) {
+          const v = `baz${i.toString().padStart(3, '0')}`
+          lots[v] = v;
+        }
+
+        const left = {
+          foo: 'foo',
+          ...lots,
+          bar: 'bar',
+          baz: 'baz',
+        };
+        const right = {
+          foo: 'baz',
+          ...lots,
+          bar: 'bar',
+          baz: 'foo',
+        }
+
+        const delta = instance.diff(left, right);
+        const diff = formatter.format(delta, left);
+        // console.log(diff); remove to see in console with colors
+
+        // this check feels a little brittle but can't think of a better option..
+        expect(diff).toEqual(`\
+{
+  ${unchanged('bar: ')}${unchanged('"bar"')}
+  baz: ${deleted('"baz"')} => ${added('"foo"')}
+  ${unchanged('baz000: ')}${unchanged('"baz000"')}
+  ${unchanged('baz001: ')}${unchanged('"baz001"')}
+  ${unchanged('baz002: ')}${unchanged('"baz002"')}
+  ${unchanged('baz003: ')}${unchanged('"baz003"')}
+  ${unchanged('... omitted 996 unchanged fields')}
+  foo: ${deleted('"foo"')} => ${added('"baz"')}
+}`)
+      });
+    })
   });
 });
 

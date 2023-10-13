@@ -12,19 +12,42 @@ import type {
   TextDiffDelta,
 } from '../types';
 
-const colors: { [key: string]: chalk.Chalk | undefined } = {
-  added: chalk.green,
-  deleted: chalk.red,
-  movedestination: chalk.gray,
-  moved: chalk.yellow,
-  unchanged: chalk.gray,
-  error: chalk.white.bgRed,
-  textDiffLine: chalk.gray,
-};
+export interface ConsoleFormatterOptions {
+  colors: {
+    added: chalk.Chalk;
+    deleted: chalk.Chalk;
+    movedestination: chalk.Chalk;
+    moved: chalk.Chalk;
+    unchanged: chalk.Chalk;
+    error: chalk.Chalk;
+    textDiffLine: chalk.Chalk;
+
+    // TODO: should all of the DeltaType's have a color?
+    [key: string]: chalk.Chalk | undefined
+  };
+
+  omitUnchangedAfter?: number;
+}
+
+const defaultOptions: ConsoleFormatterOptions = {
+  omitUnchangedAfter: undefined,
+  colors: {
+    added: chalk.green,
+    deleted: chalk.red,
+    movedestination: chalk.gray,
+    moved: chalk.yellow,
+    unchanged: chalk.gray,
+    error: chalk.white.bgRed,
+    textDiffLine: chalk.gray,
+  }
+}
+
 
 interface ConsoleFormatterContext extends BaseFormatterContext {
   indentLevel?: number;
   indentPad?: string;
+  unchangedCounter: number;
+  omittedCount: number;
   outLine: () => void;
   indent: (levels?: number) => void;
   color?: (chalk.Chalk | undefined)[];
@@ -33,13 +56,21 @@ interface ConsoleFormatterContext extends BaseFormatterContext {
 }
 
 class ConsoleFormatter extends BaseFormatter<ConsoleFormatterContext> {
-  constructor() {
+
+  public readonly options: ConsoleFormatterOptions;
+  constructor(options?: Partial<ConsoleFormatterOptions>) {
     super();
     this.includeMoveDestinations = false;
+    this.options = {
+      ...defaultOptions,
+      ...options,
+    };
   }
 
   prepareContext(context: Partial<ConsoleFormatterContext>) {
     super.prepareContext(context);
+    context.unchangedCounter = 0;
+    context.omittedCount = 0;
     context.indent = function (levels) {
       this.indentLevel =
         (this.indentLevel || 0) + (typeof levels === 'undefined' ? 1 : levels);
@@ -70,7 +101,7 @@ class ConsoleFormatter extends BaseFormatter<ConsoleFormatterContext> {
   }
 
   typeFormattterErrorFormatter(context: ConsoleFormatterContext, err: unknown) {
-    context.pushColor(colors.error);
+    context.pushColor(this.options.colors.error);
     // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
     context.out(`[ERROR]${err}`);
     context.popColor();
@@ -85,7 +116,7 @@ class ConsoleFormatter extends BaseFormatter<ConsoleFormatterContext> {
     context.indent();
     for (let i = 0, l = lines.length; i < l; i++) {
       const line = lines[i];
-      context.pushColor(colors.textDiffLine);
+      context.pushColor(this.options.colors.textDiffLine);
       context.out(`${line.location.line},${line.location.chr} `);
       context.popColor();
       const pieces = line.pieces;
@@ -95,7 +126,7 @@ class ConsoleFormatter extends BaseFormatter<ConsoleFormatterContext> {
         pieceIndex++
       ) {
         const piece = pieces[pieceIndex];
-        context.pushColor(colors[piece.type]);
+        context.pushColor(this.options.colors[piece.type]);
         context.out(piece.text);
         context.popColor();
       }
@@ -111,7 +142,7 @@ class ConsoleFormatter extends BaseFormatter<ConsoleFormatterContext> {
     type: DeltaType,
     nodeType: NodeType,
   ) {
-    context.pushColor(colors[type]);
+    context.pushColor(this.options.colors[type]);
     if (type === 'node') {
       context.out(nodeType === 'array' ? '[' : '{');
       context.indent();
@@ -137,7 +168,27 @@ class ConsoleFormatter extends BaseFormatter<ConsoleFormatterContext> {
     type: DeltaType,
     nodeType: NodeType,
   ) {
-    context.pushColor(colors[type]);
+    if (this.options.omitUnchangedAfter && this.options.omitUnchangedAfter > 0) {
+      if (type === 'unchanged') {
+        context.unchangedCounter++;
+        if (context.unchangedCounter >= this.options.omitUnchangedAfter) {
+          context.omittedCount++;
+          return;
+        }
+      } else {
+        if (context.omittedCount > 0) {
+          context.pushColor(this.options.colors.unchanged);
+          context.out(`... omitted ${context.omittedCount} unchanged fields`);
+          context.outLine();
+          context.popColor();
+        }
+  
+        context.omittedCount = 0
+        context.unchangedCounter = 0;
+      }
+    }
+
+    context.pushColor(this.options.colors[type]);
     context.out(`${leftKey}: `);
     if (type === 'node') {
       context.out(nodeType === 'array' ? '[' : '{');
@@ -153,6 +204,10 @@ class ConsoleFormatter extends BaseFormatter<ConsoleFormatterContext> {
     nodeType: NodeType,
     isLast: boolean,
   ) {
+    if (context.omittedCount > 0) {
+      return; // skip node end when omitting unchanged...
+    }
+
     if (type === 'node') {
       context.indent(-1);
       context.out(nodeType === 'array' ? ']' : `}${isLast ? '' : ','}`);
@@ -171,6 +226,11 @@ class ConsoleFormatter extends BaseFormatter<ConsoleFormatterContext> {
     if (typeof left === 'undefined') {
       return;
     }
+
+    if (context.omittedCount > 0) {
+      return; // skip node end when omitting unchanged...
+    }
+
     this.formatValue(context, left);
   }
 
@@ -199,11 +259,11 @@ class ConsoleFormatter extends BaseFormatter<ConsoleFormatterContext> {
   }
 
   format_modified(context: ConsoleFormatterContext, delta: ModifiedDelta) {
-    context.pushColor(colors.deleted);
+    context.pushColor(this.options.colors.deleted);
     this.formatValue(context, delta[0]);
     context.popColor();
     context.out(' => ');
-    context.pushColor(colors.added);
+    context.pushColor(this.options.colors.added);
     this.formatValue(context, delta[1]);
     context.popColor();
   }
