@@ -10,8 +10,6 @@ import { visualizer } from 'rollup-plugin-visualizer';
 
 import pkg from './package.json' assert { type: 'json' };
 
-const copyDocsFileToDist = copyFromFolderToDist('docs');
-
 export default [
   {
     input: 'src/main.ts',
@@ -91,8 +89,8 @@ export default [
         },
         noForceEmit: true,
       }),
-      copyDocsFileToDist('formatters-styles/annotated.css'),
-      copyDocsFileToDist('formatters-styles/html.css'),
+      copyStylesToDist(),
+      copyStylesToDist(),
     ],
     output: [
       {
@@ -109,32 +107,20 @@ export default [
   },
 ];
 
-function copyFromFolderToDist(folder) {
-  return function (filename) {
-    let executed = false;
-    return {
-      name: 'copy-from-folder-to-dist',
-      generateBundle() {
-        if (executed) {
-          return;
-        }
-        const distFileURL = new URL(
-          path.join('dist', filename),
-          import.meta.url,
-        );
-        fs.mkdirSync(path.dirname(fileURLToPath(distFileURL)), {
-          recursive: true,
-        });
-        fs.writeFileSync(
-          distFileURL,
-          fs.readFileSync(
-            new URL(path.join(folder, filename), import.meta.url),
-          ),
-        );
-        console.log(`${folder}/${filename} → dist/${filename} (copied)`);
-        executed = true;
-      },
-    };
+function copyStylesToDist() {
+  let executed = false;
+  return {
+    name: 'copy-from-folder-to-dist',
+    generateBundle() {
+      if (executed) {
+        return;
+      }
+      const srcFolder = 'src/formatters/styles';
+      const distFolder = 'dist/formatters-styles';
+      fs.cpSync(srcFolder, distFolder, { recursive: true });
+      console.log(`${srcFolder} → ${distFolder} (copied)`);
+      executed = true;
+    },
   };
 }
 

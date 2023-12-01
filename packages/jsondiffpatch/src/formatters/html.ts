@@ -273,7 +273,7 @@ const adjustArrows = function jsondiffpatchHtmlFormatterAdjustArrows(
 
 export const showUnchanged = (
   show?: boolean,
-  node?: Element,
+  node?: Element | null,
   delay?: number,
 ) => {
   const el = node || document.body;

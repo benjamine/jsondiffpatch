@@ -1,12 +1,35 @@
-const jsondiffpatch = require('../../dist/jsondiffpatch.cjs.js');
+import jsondiffpatch from 'jsondiffpatch';
 
 const instance = jsondiffpatch.create({
   objectHash: function (obj) {
-    return obj._id || obj.id || obj.name || JSON.stringify(obj);
+    const objRecord = obj as Record<string, string>;
+    return (
+      objRecord._id ||
+      objRecord.id ||
+      objRecord.name ||
+      JSON.stringify(objRecord)
+    );
   },
 });
 
-const data = {
+interface Data {
+  name: string;
+  summary: string;
+  surface?: number;
+  timezone: number[];
+  demographics: { population: number; largestCities: string[] };
+  languages: string[];
+  countries: {
+    name: string;
+    capital?: string;
+    independence?: Date;
+    unasur: boolean;
+    population?: number;
+  }[];
+  spanishName?: string;
+}
+
+const data: Data = {
   name: 'South America',
   summary:
     'South America (Spanish: América del Sur, Sudamérica or Suramérica;' +

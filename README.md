@@ -275,12 +275,12 @@ For more details check [Formatters documentation](docs/formatters.md)
 
 ```sh
 # diff two json files, colored output (using chalk lib)
-./node_modules/.bin/jsondiffpatch ./left.json ./right.json
+./node_modules/.bin/jsondiffpatch ./docs/demo/left.json ./docs/demo/right.json
 
 # or install globally
 npm install -g jsondiffpatch
 
-jsondiffpatch ./demo/left.json ./demo/right.json
+jsondiffpatch ./docs/demo/left.json ./docs/demo/right.json
 ```
 
 ![console_demo!](docs/demo/consoledemo.png)

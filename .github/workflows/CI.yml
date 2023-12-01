@@ -18,6 +18,15 @@ jobs:
           cache: 'npm'
       - run: npm ci
       - run: npm run build
+        working-directory: ./packages/jsondiffpatch
       - run: npm run test
+        working-directory: ./packages/jsondiffpatch
       - run: npm run lint
+        working-directory: ./packages/jsondiffpatch
       - run: npm run format-check
+      - run: npm run start
+        working-directory: ./demos/console-demo
+      - run: npm run build
+        working-directory: ./demos/html-demo
+      - run: npm run start
+        working-directory: ./demos/numeric-plugin-demo
