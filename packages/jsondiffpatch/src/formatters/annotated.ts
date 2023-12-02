@@ -263,8 +263,8 @@ const deltaAnnotations: {
       typeof leftKey === 'undefined'
         ? ''
         : typeof leftKey === 'number'
-        ? ` at index ${leftKey}`
-        : ` at property ${wrapPropertyName(leftKey)}`;
+          ? ` at index ${leftKey}`
+          : ` at property ${wrapPropertyName(leftKey)}`;
     return (
       `text diff${location}, format is <a href="https://code.google.com/` +
       'p/google-diff-match-patch/wiki/Unidiff">a variation of Unidiff</a>'
