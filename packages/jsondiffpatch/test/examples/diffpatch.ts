@@ -1,4 +1,4 @@
-import type { Delta, Options } from '../../src/main';
+import type { Delta, Options } from '../../src/index.js';
 
 interface Example {
   name?: string;

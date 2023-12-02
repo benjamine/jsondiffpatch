@@ -16,6 +16,7 @@ coverage
 .nyc_output
 dist
 build
+lib
 
 npm-debug.log
 .idea/

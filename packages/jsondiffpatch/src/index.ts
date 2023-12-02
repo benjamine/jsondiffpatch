@@ -1,18 +1,14 @@
-import DiffPatcher from './diffpatcher';
-import dateReviver from './date-reviver';
-import type { Delta, Options } from './types';
-import type Context from './contexts/context';
-import type DiffContext from './contexts/diff';
-import type PatchContext from './contexts/patch';
-import type ReverseContext from './contexts/reverse';
+import DiffPatcher from './diffpatcher.js';
+import dateReviver from './date-reviver.js';
+import type { Delta, Options } from './types.js';
+import type Context from './contexts/context.js';
+import type DiffContext from './contexts/diff.js';
+import type PatchContext from './contexts/patch.js';
+import type ReverseContext from './contexts/reverse.js';
 
 export { DiffPatcher, dateReviver };
 
-export * as formatters from './formatters/index';
-
-export * as console from './formatters/console';
-
-export type * from './types';
+export type * from './types.js';
 export type { Context, DiffContext, PatchContext, ReverseContext };
 
 export function create(options?: Options) {

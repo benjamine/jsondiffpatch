@@ -1,7 +1,7 @@
-import DiffContext from '../contexts/diff';
-import PatchContext from '../contexts/patch';
-import ReverseContext from '../contexts/reverse';
-import type { ArrayDelta, Delta, Filter, ObjectDelta } from '../types';
+import DiffContext from '../contexts/diff.js';
+import PatchContext from '../contexts/patch.js';
+import ReverseContext from '../contexts/reverse.js';
+import type { ArrayDelta, Delta, Filter, ObjectDelta } from '../types.js';
 
 export const collectChildrenDiffFilter: Filter<DiffContext> = (context) => {
   if (!context || !context.children) {

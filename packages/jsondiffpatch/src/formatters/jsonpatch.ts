@@ -1,13 +1,13 @@
-import BaseFormatter from './base';
-import type { BaseFormatterContext } from './base';
+import BaseFormatter from './base.js';
+import type { BaseFormatterContext } from './base.js';
 import type {
   AddedDelta,
   ArrayDelta,
   Delta,
   ModifiedDelta,
+  MovedDelta,
   ObjectDelta,
-} from '../types';
-import { MovedDelta } from '../types';
+} from '../types.js';
 
 const OPERATIONS = {
   add: 'add',

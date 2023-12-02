@@ -1,6 +1,6 @@
-import type Context from './contexts/context';
-import type Processor from './processor';
-import type { Filter } from './types';
+import type Context from './contexts/context.js';
+import type Processor from './processor.js';
+import type { Filter } from './types.js';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 class Pipe<TContext extends Context<any>> {

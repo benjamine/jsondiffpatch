@@ -1,8 +1,8 @@
-import DiffContext from '../contexts/diff';
-import PatchContext from '../contexts/patch';
-import ReverseContext from '../contexts/reverse';
+import DiffContext from '../contexts/diff.js';
+import PatchContext from '../contexts/patch.js';
+import ReverseContext from '../contexts/reverse.js';
 
-import lcs from './lcs';
+import lcs from './lcs.js';
 
 import type {
   AddedDelta,
@@ -14,7 +14,7 @@ import type {
   MovedDelta,
   ObjectDelta,
   TextDiffDelta,
-} from '../types';
+} from '../types.js';
 
 const ARRAY_MOVE = 3;
 

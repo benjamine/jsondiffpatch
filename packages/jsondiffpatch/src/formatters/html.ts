@@ -1,5 +1,5 @@
-import BaseFormatter from './base';
-import type { BaseFormatterContext, DeltaType, NodeType } from './base';
+import BaseFormatter from './base.js';
+import type { BaseFormatterContext, DeltaType, NodeType } from './base.js';
 import type {
   AddedDelta,
   ArrayDelta,
@@ -9,7 +9,7 @@ import type {
   MovedDelta,
   ObjectDelta,
   TextDiffDelta,
-} from '../types';
+} from '../types.js';
 
 interface HtmlFormatterContext extends BaseFormatterContext {
   hasArrows?: boolean;

@@ -1,9 +1,9 @@
-import type Context from './contexts/context';
-import type Pipe from './pipe';
-import type { Options } from './types';
-import type DiffContext from './contexts/diff';
-import type PatchContext from './contexts/patch';
-import type ReverseContext from './contexts/reverse';
+import type Context from './contexts/context.js';
+import type Pipe from './pipe.js';
+import type { Options } from './types.js';
+import type DiffContext from './contexts/diff.js';
+import type PatchContext from './contexts/patch.js';
+import type ReverseContext from './contexts/reverse.js';
 
 class Processor {
   selfOptions: Options;

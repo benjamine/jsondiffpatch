@@ -1,8 +1,8 @@
-/// <reference types="../src/diff-match-patch" />
-import * as jsondiffpatch from '../src/main';
-import lcs from '../src/filters/lcs';
+/// <reference types="../src/diff-match-patch.cjs" />
+import * as jsondiffpatch from '../src/index.js';
+import lcs from '../src/filters/lcs.js';
 
-import examples from './examples/diffpatch';
+import examples from './examples/diffpatch.js';
 
 describe('jsondiffpatch', () => {
   it('has a diff method', () => {

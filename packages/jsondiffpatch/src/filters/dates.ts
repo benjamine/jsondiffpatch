@@ -1,5 +1,5 @@
-import type { Filter } from '../types';
-import type DiffContext from '../contexts/diff';
+import type { Filter } from '../types.js';
+import type DiffContext from '../contexts/diff.js';
 
 export const diffFilter: Filter<DiffContext> = function datesDiffFilter(
   context,

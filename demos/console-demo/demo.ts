@@ -1,4 +1,5 @@
-import jsondiffpatch from 'jsondiffpatch';
+import * as jsondiffpatch from 'jsondiffpatch';
+import * as consoleFormatter from 'jsondiffpatch/formatters/console';
 
 const instance = jsondiffpatch.create({
   objectHash: function (obj) {
@@ -181,4 +182,4 @@ data.demographics.population += 2342;
 
 const right = data;
 const delta = instance.diff(left, right);
-jsondiffpatch.console.log(delta);
+consoleFormatter.log(delta);

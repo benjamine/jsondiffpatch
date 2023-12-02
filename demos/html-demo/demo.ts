@@ -1,5 +1,9 @@
 import * as jsondiffpatch from 'jsondiffpatch';
-import Editor = CodeMirror.Editor;
+import * as annotatedFormatter from 'jsondiffpatch/formatters/annotated';
+import * as htmlFormatter from 'jsondiffpatch/formatters/html';
+
+import 'jsondiffpatch/formatters/styles/html.css';
+import 'jsondiffpatch/formatters/styles/annotated.css';
 
 declare namespace CodeMirror {
   function fromTextArea(
@@ -291,7 +295,7 @@ const trim = function (str: string) {
 class JsonArea {
   element: HTMLTextAreaElement;
   container: HTMLElement;
-  editor?: Editor;
+  editor?: CodeMirror.Editor;
 
   constructor(element: HTMLTextAreaElement) {
     this.element = element;
@@ -428,21 +432,17 @@ const compare = function () {
     } else {
       switch (selectedType) {
         case 'visual':
-          visualdiff.innerHTML = jsondiffpatch.formatters.html.format(
-            delta,
-            left,
-          )!;
+          visualdiff.innerHTML = htmlFormatter.format(delta, left)!;
           if (
             !(document.getElementById('showunchanged') as HTMLInputElement)
               .checked
           ) {
-            jsondiffpatch.formatters.html.hideUnchanged();
+            htmlFormatter.hideUnchanged();
           }
           dom.runScriptTags(visualdiff);
           break;
         case 'annotated':
-          annotateddiff.innerHTML =
-            jsondiffpatch.formatters.annotated.format(delta)!;
+          annotateddiff.innerHTML = annotatedFormatter.format(delta)!;
           break;
         case 'json':
           areas.delta.setValue(JSON.stringify(delta, null, 2));
@@ -531,7 +531,7 @@ document.getElementById('clear')!.addEventListener('click', function () {
 document
   .getElementById('showunchanged')!
   .addEventListener('change', function () {
-    jsondiffpatch.formatters.html.showUnchanged(
+    htmlFormatter.showUnchanged(
       (document.getElementById('showunchanged') as HTMLInputElement).checked,
       null,
       800,

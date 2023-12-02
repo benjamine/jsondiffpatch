@@ -1,16 +1,16 @@
-import Processor from './processor';
-import Pipe from './pipe';
-import DiffContext from './contexts/diff';
-import PatchContext from './contexts/patch';
-import ReverseContext from './contexts/reverse';
-import clone from './clone';
+import Processor from './processor.js';
+import Pipe from './pipe.js';
+import DiffContext from './contexts/diff.js';
+import PatchContext from './contexts/patch.js';
+import ReverseContext from './contexts/reverse.js';
+import clone from './clone.js';
 
-import * as trivial from './filters/trivial';
-import * as nested from './filters/nested';
-import * as arrays from './filters/arrays';
-import * as dates from './filters/dates';
-import * as texts from './filters/texts';
-import type { Delta, Options } from './types';
+import * as trivial from './filters/trivial.js';
+import * as nested from './filters/nested.js';
+import * as arrays from './filters/arrays.js';
+import * as dates from './filters/dates.js';
+import * as texts from './filters/texts.js';
+import type { Delta, Options } from './types.js';
 
 class DiffPatcher {
   processor: Processor;

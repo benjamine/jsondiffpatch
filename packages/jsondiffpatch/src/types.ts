@@ -1,5 +1,5 @@
-import type Context from './contexts/context';
-import type DiffContext from './contexts/diff';
+import type Context from './contexts/context.js';
+import type DiffContext from './contexts/diff.js';
 
 export interface Options {
   objectHash?: (item: object, index?: number) => string | undefined;

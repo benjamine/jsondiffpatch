@@ -1,5 +1,5 @@
-import Context from './context';
-import type { Delta } from '../types';
+import Context from './context.js';
+import type { Delta } from '../types.js';
 
 class PatchContext extends Context<unknown> {
   left: unknown;

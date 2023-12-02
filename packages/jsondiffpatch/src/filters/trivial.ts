@@ -1,6 +1,6 @@
-import type DiffContext from '../contexts/diff';
-import type PatchContext from '../contexts/patch';
-import type ReverseContext from '../contexts/reverse';
+import type DiffContext from '../contexts/diff.js';
+import type PatchContext from '../contexts/patch.js';
+import type ReverseContext from '../contexts/reverse.js';
 import type {
   AddedDelta,
   DeletedDelta,
@@ -8,7 +8,7 @@ import type {
   ModifiedDelta,
   MovedDelta,
   TextDiffDelta,
-} from '../types';
+} from '../types.js';
 
 export const diffFilter: Filter<DiffContext> =
   function trivialMatchesDiffFilter(context) {

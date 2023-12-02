@@ -6,20 +6,24 @@
   "contributors": [
     "Benjamin Eidelman <beneidel@gmail.com>"
   ],
-  "browser": "dist/jsondiffpatch.umd.js",
-  "main": "dist/jsondiffpatch.cjs.js",
-  "module": "dist/jsondiffpatch.esm.js",
-  "types": "dist/types/main.d.ts",
+  "type": "module",
+  "main": "./lib/index.js",
+  "types": "./lib/index.d.ts",
+  "exports": {
+    ".": "./lib/index.js",
+    "./formatters/*": "./lib/formatters/*.js",
+    "./formatters/styles/*.css": "./lib/formatters/styles/*.css"
+  },
   "files": [
-    "dist",
-    "bin"
+    "bin",
+    "lib"
   ],
   "bin": {
     "jsondiffpatch": "./bin/jsondiffpatch"
   },
   "scripts": {
-    "build": "rollup -c",
-    "type-check": "tsc",
+    "build": "tsc && ncp ./src/formatters/styles/ ./lib/formatters/styles/",
+    "type-check": "tsc --noEmit",
     "lint": "eslint . --ext .ts",
     "test": "jest --coverage",
     "prepack": "npm run build",
@@ -39,6 +43,7 @@
     "diff-match-patch": "^1.0.5"
   },
   "devDependencies": {
+    "@babel/cli": "^7.23.4",
     "@babel/core": "^7.22.20",
     "@babel/preset-env": "^7.22.20",
     "@babel/preset-typescript": "^7.22.15",
@@ -53,6 +58,7 @@
     "eslint": "^8.50.0",
     "eslint-config-prettier": "^9.0.0",
     "jest": "^29.7.0",
+    "ncp": "^2.0.0",
     "rollup": "^3.29.3",
     "rollup-plugin-visualizer": "^5.9.2",
     "ts-jest": "^29.1.1",

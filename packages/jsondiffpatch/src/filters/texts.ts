@@ -1,7 +1,7 @@
 import dmp from 'diff-match-patch';
-import type DiffContext from '../contexts/diff';
-import type PatchContext from '../contexts/patch';
-import type ReverseContext from '../contexts/reverse';
+import type DiffContext from '../contexts/diff.js';
+import type PatchContext from '../contexts/patch.js';
+import type ReverseContext from '../contexts/reverse.js';
 import type {
   AddedDelta,
   DeletedDelta,
@@ -9,7 +9,7 @@ import type {
   ModifiedDelta,
   MovedDelta,
   TextDiffDelta,
-} from '../types';
+} from '../types.js';
 
 declare global {
   const diff_match_patch: typeof dmp | undefined;

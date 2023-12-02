@@ -7,7 +7,7 @@ import type {
   MovedDelta,
   ObjectDelta,
   TextDiffDelta,
-} from '../types';
+} from '../types.js';
 
 const trimUnderscore = (str: string) => {
   if (str.substring(0, 1) === '_') {

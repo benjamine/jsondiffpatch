@@ -1,6 +1,6 @@
 import chalk from 'chalk';
-import BaseFormatter from './base';
-import type { BaseFormatterContext, DeltaType, NodeType } from './base';
+import BaseFormatter from './base.js';
+import type { BaseFormatterContext, DeltaType, NodeType } from './base.js';
 import type {
   AddedDelta,
   ArrayDelta,
@@ -10,7 +10,7 @@ import type {
   MovedDelta,
   ObjectDelta,
   TextDiffDelta,
-} from '../types';
+} from '../types.js';
 
 const colors: { [key: string]: chalk.Chalk | undefined } = {
   added: chalk.green,

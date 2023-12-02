@@ -6,7 +6,7 @@ reference: http://en.wikipedia.org/wiki/Longest_common_subsequence_problem
 
 */
 
-import type { MatchContext } from './arrays';
+import type { MatchContext } from './arrays.js';
 
 const defaultMatch = function (
   array1: readonly unknown[],

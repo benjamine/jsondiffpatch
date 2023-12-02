@@ -1,6 +1,6 @@
-import Context from './context';
-import defaultClone from '../clone';
-import type { Delta } from '../types';
+import Context from './context.js';
+import defaultClone from '../clone.js';
+import type { Delta } from '../types.js';
 
 class DiffContext extends Context<Delta> {
   left: unknown;

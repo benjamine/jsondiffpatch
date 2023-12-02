@@ -1,4 +1,4 @@
-import type { Options } from '../types';
+import type { Options } from '../types.js';
 
 export default abstract class Context<TResult> {
   abstract pipe: string;

@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "es2016",
+    "target": "es6",
     "module": "node16",
     "types": ["jest"],
     "isolatedModules": true,
