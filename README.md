@@ -241,19 +241,23 @@ const jsondiffpatchInstance = jsondiffpatch.create({
     <hr />
     <div id="annotated"></div>
     <script type="module">
-      import * as jsondiffpatch from "https://cdn.skypack.dev/jsondiffpatch";
-      import * as annotatedFormatter from "https://cdn.skypack.dev/jsondiffpatch/formatters/annotated";
-      import * as htmlFormatter from "https://cdn.skypack.dev/jsondiffpatch/formatters/html";
+      import * as jsondiffpatch from 'https://cdn.skypack.dev/jsondiffpatch';
+      import * as annotatedFormatter from 'https://cdn.skypack.dev/jsondiffpatch/formatters/annotated';
+      import * as htmlFormatter from 'https://cdn.skypack.dev/jsondiffpatch/formatters/html';
 
       const left = { a: 3, b: 4 };
       const right = { a: 5, c: 9 };
       const delta = jsondiffpatch.diff(left, right);
 
       // beautiful html diff
-      document.getElementById('visual').innerHTML = htmlFormatter.format(delta, left);
+      document.getElementById('visual').innerHTML = htmlFormatter.format(
+        delta,
+        left,
+      );
 
       // self-explained json
-      document.getElementById('annotated').innerHTML = annotatedFormatter.format(delta, left);
+      document.getElementById('annotated').innerHTML =
+        annotatedFormatter.format(delta, left);
     </script>
   </body>
 </html>
