@@ -1,4 +1,5 @@
 import chalk from 'chalk';
+import type { ChalkInstance } from 'chalk';
 import BaseFormatter from './base.js';
 import type { BaseFormatterContext, DeltaType, NodeType } from './base.js';
 import type {
@@ -12,7 +13,7 @@ import type {
   TextDiffDelta,
 } from '../types.js';
 
-const colors: { [key: string]: chalk.Chalk | undefined } = {
+const colors: { [key: string]: ChalkInstance | undefined } = {
   added: chalk.green,
   deleted: chalk.red,
   movedestination: chalk.gray,
@@ -27,8 +28,8 @@ interface ConsoleFormatterContext extends BaseFormatterContext {
   indentPad?: string;
   outLine: () => void;
   indent: (levels?: number) => void;
-  color?: (chalk.Chalk | undefined)[];
-  pushColor: (color: chalk.Chalk | undefined) => void;
+  color?: (ChalkInstance | undefined)[];
+  pushColor: (color: ChalkInstance | undefined) => void;
   popColor: () => void;
 }
 
