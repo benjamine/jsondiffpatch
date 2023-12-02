@@ -15,7 +15,7 @@ Diff & patch JavaScript objects
 ## **[Live Demo](http://benjamine.github.io/jsondiffpatch/demo/index.html)**
 
 - min+gzipped ~ 16KB
-- browser and server (`/dist` folder with bundles for UMD, commonjs, or ES modules)
+- browser and server (ESM-only)
 - (optionally) uses [google-diff-match-patch](http://code.google.com/p/google-diff-match-patch/) for long text diffs (diff at character level)
 - smart array diffing using [LCS](http://en.wikipedia.org/wiki/Longest_common_subsequence_problem), **_IMPORTANT NOTE:_** to match objects inside an array you must provide an `objectHash` function (this is how objects are matched, otherwise a dumb match by position is used). For more details, check [Array diff documentation](docs/arrays.md)
 - reverse a delta
@@ -31,19 +31,14 @@ Diff & patch JavaScript objects
 
 ## Supported platforms
 
-- Any modern browser and IE8+
-
-[![Testling Status](https://ci.testling.com/benjamine/jsondiffpatch.png)](https://ci.testling.com/benjamine/jsondiffpatch)
-
-And you can test your current browser visiting the [test page](http://benjamine.github.io/jsondiffpatch/test/index.html).
-
-- Node.js [![Build Status](https://secure.travis-ci.org/benjamine/jsondiffpatch.svg)](http://travis-ci.org/benjamine/jsondiffpatch) v8+
+- Any browser that supports ES6
+- Node.js 18, 20+
 
 ## Usage
 
 ```javascript
 // sample data
-var country = {
+const country = {
   name: 'Argentina',
   capital: 'Buenos Aires',
   independence: new Date(1816, 6, 9),
@@ -51,14 +46,14 @@ var country = {
 };
 
 // clone country, using dateReviver for Date objects
-var country2 = JSON.parse(JSON.stringify(country), jsondiffpatch.dateReviver);
+const country2 = JSON.parse(JSON.stringify(country), jsondiffpatch.dateReviver);
 
 // make some changes
 country2.name = 'Republica Argentina';
 country2.population = 41324992;
 delete country2.capital;
 
-var delta = jsondiffpatch.diff(country, country2);
+const delta = jsondiffpatch.diff(country, country2);
 
 assertSame(delta, {
   name: ['Argentina', 'Republica Argentina'], // old value, new value
@@ -70,10 +65,10 @@ assertSame(delta, {
 jsondiffpatch.patch(country, delta);
 
 // reverse diff
-var reverseDelta = jsondiffpatch.reverse(delta);
+const reverseDelta = jsondiffpatch.reverse(delta);
 // also country2 can be return to original value with: jsondiffpatch.unpatch(country2, delta);
 
-var delta2 = jsondiffpatch.diff(country, country2);
+const delta2 = jsondiffpatch.diff(country, country2);
 assert(delta2 === undefined);
 // undefined => no difference
 ```
@@ -82,7 +77,7 @@ Array diffing:
 
 ```javascript
 // sample data
-var country = {
+const country = {
   name: 'Argentina',
   cities: [
     {
@@ -109,7 +104,7 @@ var country = {
 };
 
 // clone country
-var country2 = JSON.parse(JSON.stringify(country));
+const country2 = JSON.parse(JSON.stringify(country));
 
 // delete Cordoba
 country.cities.splice(1, 1);
@@ -120,18 +115,18 @@ country.cities.splice(4, 0, {
 });
 
 // modify Rosario, and move it
-var rosario = country.cities.splice(1, 1)[0];
+const rosario = country.cities.splice(1, 1)[0];
 rosario.population += 1234;
 country.cities.push(rosario);
 
 // create a configured instance, match objects by name
-var diffpatcher = jsondiffpatch.create({
+const diffpatcher = jsondiffpatch.create({
   objectHash: function (obj) {
     return obj.name;
   },
 });
 
-var delta = diffpatcher.diff(country, country2);
+const delta = diffpatcher.diff(country, country2);
 
 assertSame(delta, {
   cities: {
@@ -165,7 +160,7 @@ assertSame(delta, {
 });
 ```
 
-For more example cases (nested objects or arrays, long text diffs) check `test/examples/`
+For more example cases (nested objects or arrays, long text diffs) check `packages/jsondiffpatch/test/examples/`
 
 If you want to understand deltas, see [delta format documentation](docs/deltas.md)
 
@@ -180,20 +175,19 @@ npm install jsondiffpatch
 ```
 
 ```js
-var jsondiffpatch = require('jsondiffpatch');
-var jsondiffpatchInstance = jsondiffpatch.create(options);
+import * as jsondiffpatch from 'jsondiffpatch';
+const jsondiffpatchInstance = jsondiffpatch.create(options);
 ```
-
-Some properties are available only from static main module (e.g. formatters, console), so we need to keep the reference to it if we want to use them.
 
 ### browser
 
-In a browser, you could load directly a bundle in `/dist`, eg. `/dist/jsondiffpatch.umd.js`.
+In a browser, you can load a bundle using a tool like [esm.sh](https://esm.sh) or [Skypack](https://www.skypack.dev).
 
 ## Options
 
 ```javascript
-var jsondiffpatchInstance = require('jsondiffpatch').create({
+import * as jsondiffpatch from 'jsondiffpatch';
+const jsondiffpatchInstance = jsondiffpatch.create({
   // used to match objects when diffing arrays, by default only === operator is used
   objectHash: function (obj) {
     // this function is used only to when objects are not equal by ref
@@ -230,19 +224,15 @@ var jsondiffpatchInstance = require('jsondiffpatch').create({
 <!doctype html>
 <html>
   <head>
-    <script
-      type="text/javascript"
-      src="https://cdn.jsdelivr.net/npm/jsondiffpatch/dist/jsondiffpatch.umd.min.js"
-    ></script>
     <link rel="stylesheet" href="./style.css" type="text/css" />
     <link
       rel="stylesheet"
-      href="../formatters-styles/html.css"
+      href="https://cdn.skypack.dev/jsondiffpatch/formatters/styles/html.css"
       type="text/css"
     />
     <link
       rel="stylesheet"
-      href="../formatters-styles/annotated.css"
+      href="https://cdn.skypack.dev/jsondiffpatch/formatters/styles/annotated.css"
       type="text/css"
     />
   </head>
@@ -250,18 +240,20 @@ var jsondiffpatchInstance = require('jsondiffpatch').create({
     <div id="visual"></div>
     <hr />
     <div id="annotated"></div>
-    <script>
-      var left = { a: 3, b: 4 };
-      var right = { a: 5, c: 9 };
-      var delta = jsondiffpatch.diff(left, right);
+    <script type="module">
+      import * as jsondiffpatch from "https://cdn.skypack.dev/jsondiffpatch";
+      import * as annotatedFormatter from "https://cdn.skypack.dev/jsondiffpatch/formatters/annotated";
+      import * as htmlFormatter from "https://cdn.skypack.dev/jsondiffpatch/formatters/html";
+
+      const left = { a: 3, b: 4 };
+      const right = { a: 5, c: 9 };
+      const delta = jsondiffpatch.diff(left, right);
 
       // beautiful html diff
-      document.getElementById('visual').innerHTML =
-        jsondiffpatch.formatters.html.format(delta, left);
+      document.getElementById('visual').innerHTML = htmlFormatter.format(delta, left);
 
       // self-explained json
-      document.getElementById('annotated').innerHTML =
-        jsondiffpatch.formatters.annotated.format(delta, left);
+      document.getElementById('annotated').innerHTML = annotatedFormatter.format(delta, left);
     </script>
   </body>
 </html>
