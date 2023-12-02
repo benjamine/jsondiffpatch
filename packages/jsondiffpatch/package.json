@@ -6,6 +6,7 @@
   "contributors": [
     "Benjamin Eidelman <beneidel@gmail.com>"
   ],
+  "browser": "dist/jsondiffpatch.umd.js",
   "main": "dist/jsondiffpatch.cjs.js",
   "module": "dist/jsondiffpatch.esm.js",
   "types": "dist/types/main.d.ts",
