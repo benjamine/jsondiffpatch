@@ -203,18 +203,16 @@ const getExampleJson = function () {
 };
 
 const instance = jsondiffpatch.create({
-  objectHash: function (
-    obj: { _id?: string; id?: string; name?: string },
-    index,
-  ) {
-    if (typeof obj._id !== 'undefined') {
-      return obj._id;
+  objectHash: function (obj, index) {
+    const objRecord = obj as Record<string, string>;
+    if (typeof objRecord._id !== 'undefined') {
+      return objRecord._id;
     }
-    if (typeof obj.id !== 'undefined') {
-      return obj.id;
+    if (typeof objRecord.id !== 'undefined') {
+      return objRecord.id;
     }
-    if (typeof obj.name !== 'undefined') {
-      return obj.name;
+    if (typeof objRecord.name !== 'undefined') {
+      return objRecord.name;
     }
     return '$$index:' + index;
   },

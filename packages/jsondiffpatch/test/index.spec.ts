@@ -1,5 +1,7 @@
 /// <reference types="../src/diff-match-patch.cjs" />
 import * as jsondiffpatch from '../src/index.js';
+import * as jsonpatchFormatter from '../src/formatters/jsonpatch.js';
+import * as htmlFormatter from '../src/formatters/html.js';
 import lcs from '../src/filters/lcs.js';
 
 import examples from './examples/diffpatch.js';
@@ -371,26 +373,24 @@ describe('DiffPatcher', () => {
   describe('formatters', () => {
     describe('jsonpatch', () => {
       let instance: jsondiffpatch.DiffPatcher;
-      let formatter: typeof jsondiffpatch.formatters.jsonpatch;
+      let formatter: typeof jsonpatchFormatter;
 
       beforeAll(() => {
         instance = new DiffPatcher();
-        formatter = jsondiffpatch.formatters.jsonpatch;
+        formatter = jsonpatchFormatter;
       });
 
       const expectFormat = (
         before: unknown,
         after: unknown,
-        expected: jsondiffpatch.formatters.jsonpatch.Op[],
+        expected: jsonpatchFormatter.Op[],
       ) => {
         const diff = instance.diff(before, after);
         const format = formatter.format(diff);
         expect(format).toEqual(expected);
       };
 
-      const removeOp = (
-        path: string,
-      ): jsondiffpatch.formatters.jsonpatch.RemoveOp => ({
+      const removeOp = (path: string): jsonpatchFormatter.RemoveOp => ({
         op: 'remove',
         path,
       });
@@ -398,7 +398,7 @@ describe('DiffPatcher', () => {
       const moveOp = (
         from: string,
         path: string,
-      ): jsondiffpatch.formatters.jsonpatch.MoveOp => ({
+      ): jsonpatchFormatter.MoveOp => ({
         op: 'move',
         from,
         path,
@@ -407,7 +407,7 @@ describe('DiffPatcher', () => {
       const addOp = (
         path: string,
         value: unknown,
-      ): jsondiffpatch.formatters.jsonpatch.AddOp => ({
+      ): jsonpatchFormatter.AddOp => ({
         op: 'add',
         path,
         value,
@@ -416,7 +416,7 @@ describe('DiffPatcher', () => {
       const replaceOp = (
         path: string,
         value: unknown,
-      ): jsondiffpatch.formatters.jsonpatch.ReplaceOp => ({
+      ): jsonpatchFormatter.ReplaceOp => ({
         op: 'replace',
         path,
         value,
@@ -577,7 +577,7 @@ describe('DiffPatcher', () => {
             },
           ],
         };
-        const diff: jsondiffpatch.formatters.jsonpatch.Op[] = [
+        const diff: jsonpatchFormatter.Op[] = [
           {
             op: 'move',
             from: '/referenceNumbers/1',
@@ -610,11 +610,11 @@ describe('DiffPatcher', () => {
 
     describe('html', () => {
       let instance: jsondiffpatch.DiffPatcher;
-      let formatter: typeof jsondiffpatch.formatters.html;
+      let formatter: typeof htmlFormatter;
 
       beforeAll(() => {
         instance = new DiffPatcher({ textDiff: { minLength: 10 } });
-        formatter = jsondiffpatch.formatters.html;
+        formatter = htmlFormatter;
       });
 
       const expectFormat = (
