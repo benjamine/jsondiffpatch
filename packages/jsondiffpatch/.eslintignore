@@ -1,0 +1,7 @@
+**/*{.,-}min.js
+node_modules
+build
+.git
+coverage
+dist
+lib
