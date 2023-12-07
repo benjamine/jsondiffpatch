@@ -7,7 +7,9 @@
     "Benjamin Eidelman <beneidel@gmail.com>"
   ],
   "type": "module",
-  "sideEffects": ["*.css"],
+  "sideEffects": [
+    "*.css"
+  ],
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",
   "exports": {
