@@ -23,7 +23,7 @@
     "lib"
   ],
   "bin": {
-    "jsondiffpatch": "./bin/jsondiffpatch"
+    "jsondiffpatch": "./bin/jsondiffpatch.js"
   },
   "scripts": {
     "build": "tsc && ncp ./src/formatters/styles/ ./lib/formatters/styles/",
