@@ -1,3 +1,4 @@
+import DiffMatchPatch from 'diff-match-patch';
 import * as jsondiffpatch from '../src/index.js';
 import * as jsonpatchFormatter from '../src/formatters/jsonpatch.js';
 import * as htmlFormatter from '../src/formatters/html.js';
@@ -612,7 +613,9 @@ describe('DiffPatcher', () => {
       let formatter: typeof htmlFormatter;
 
       beforeAll(() => {
-        instance = new DiffPatcher({ textDiff: { minLength: 10 } });
+        instance = new DiffPatcher({
+          textDiff: { diffMatchPatch: DiffMatchPatch, minLength: 10 },
+        });
         formatter = htmlFormatter;
       });
 

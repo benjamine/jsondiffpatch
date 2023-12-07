@@ -11,6 +11,7 @@
   "types": "./lib/index.d.ts",
   "exports": {
     ".": "./lib/index.js",
+    "./with-text-diffs": "./lib/with-text-diffs.js",
     "./formatters/*": "./lib/formatters/*.js",
     "./formatters/styles/*.css": "./lib/formatters/styles/*.css"
   },

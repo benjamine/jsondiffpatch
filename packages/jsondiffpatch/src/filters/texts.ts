@@ -1,4 +1,4 @@
-import dmp from 'diff-match-patch';
+import type dmp from 'diff-match-patch';
 import type DiffContext from '../contexts/diff.js';
 import type PatchContext from '../contexts/patch.js';
 import type ReverseContext from '../contexts/reverse.js';
@@ -8,12 +8,9 @@ import type {
   Filter,
   ModifiedDelta,
   MovedDelta,
+  Options,
   TextDiffDelta,
 } from '../types.js';
-
-declare global {
-  const diff_match_patch: typeof dmp | undefined;
-}
 
 interface DiffPatch {
   diff: (txt1: string, txt2: string) => string;
@@ -24,30 +21,25 @@ const TEXT_DIFF = 2;
 const DEFAULT_MIN_LENGTH = 60;
 let cachedDiffPatch: DiffPatch | null = null;
 
-function getDiffMatchPatch(required: true): DiffPatch;
-function getDiffMatchPatch(required?: boolean): DiffPatch;
-function getDiffMatchPatch(required?: boolean) {
+function getDiffMatchPatch(
+  options: Options | undefined,
+  required: true,
+): DiffPatch;
+function getDiffMatchPatch(
+  options: Options | undefined,
+  required?: boolean,
+): DiffPatch | null;
+function getDiffMatchPatch(options: Options | undefined, required?: boolean) {
   if (!cachedDiffPatch) {
-    let instance: dmp | null | undefined;
-    if (typeof diff_match_patch !== 'undefined') {
-      // already loaded, probably a browser
-      instance =
-        typeof diff_match_patch === 'function'
-          ? new diff_match_patch()
-          : new (diff_match_patch as typeof dmp).diff_match_patch();
-    } else if (dmp) {
-      try {
-        instance = dmp && new dmp();
-      } catch (err) {
-        instance = null;
-      }
-    }
-    if (!instance) {
+    let instance: dmp;
+    if (options?.textDiff?.diffMatchPatch) {
+      instance = new options.textDiff.diffMatchPatch();
+    } else {
       if (!required) {
         return null;
       }
       const error: Error & { diff_match_patch_not_found?: boolean } = new Error(
-        'text diff_match_patch library not found',
+        'The diff-match-patch library was not provided. Pass the library in through the options or use the `jsondiffpatch/with-text-diffs` entry-point.',
       );
       // eslint-disable-next-line camelcase
       error.diff_match_patch_not_found = true;
@@ -55,11 +47,11 @@ function getDiffMatchPatch(required?: boolean) {
     }
     cachedDiffPatch = {
       diff: function (txt1, txt2) {
-        return instance!.patch_toText(instance!.patch_make(txt1, txt2));
+        return instance.patch_toText(instance.patch_make(txt1, txt2));
       },
       patch: function (txt1, patch) {
-        const results = instance!.patch_apply(
-          instance!.patch_fromText(patch),
+        const results = instance.patch_apply(
+          instance.patch_fromText(patch),
           txt1,
         );
         for (let i = 0; i < results[1].length; i++) {
@@ -95,7 +87,7 @@ export const diffFilter: Filter<DiffContext> = function textsDiffFilter(
     return;
   }
   // large text, try to use a text-diff algorithm
-  const diffMatchPatch = getDiffMatchPatch();
+  const diffMatchPatch = getDiffMatchPatch(context.options);
   if (!diffMatchPatch) {
     // diff-match-patch library not available,
     // fallback to regular string replace
@@ -125,7 +117,7 @@ export const patchFilter: Filter<PatchContext> = function textsPatchFilter(
   const textDiffDelta = nonNestedDelta as TextDiffDelta;
 
   // text-diff, use a text-patch algorithm
-  const patch = getDiffMatchPatch(true).patch;
+  const patch = getDiffMatchPatch(context.options, true).patch;
   context.setResult(patch(context.left as string, textDiffDelta[0])).exit();
 };
 patchFilter.filterName = 'texts';

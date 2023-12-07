@@ -1,4 +1,4 @@
-import * as jsondiffpatch from 'jsondiffpatch';
+import * as jsondiffpatch from 'jsondiffpatch/with-text-diffs';
 import * as annotatedFormatter from 'jsondiffpatch/formatters/annotated';
 import * as htmlFormatter from 'jsondiffpatch/formatters/html';
 
