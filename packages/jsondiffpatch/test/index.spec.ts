@@ -1,4 +1,3 @@
-/// <reference types="../src/diff-match-patch.cjs" />
 import * as jsondiffpatch from '../src/index.js';
 import * as jsonpatchFormatter from '../src/formatters/jsonpatch.js';
 import * as htmlFormatter from '../src/formatters/html.js';

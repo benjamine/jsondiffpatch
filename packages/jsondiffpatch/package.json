@@ -39,6 +39,7 @@
     "patch"
   ],
   "dependencies": {
+    "@types/diff-match-patch": "^1.0.36",
     "chalk": "^5.3.0",
     "diff-match-patch": "^1.0.5"
   },
