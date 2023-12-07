@@ -12,7 +12,11 @@ export { DiffPatcher, dateReviver };
 export type * from './types.js';
 export type { Context, DiffContext, PatchContext, ReverseContext };
 
-export function create(options?: Options) {
+export function create(
+  options?: Omit<Options, 'textDiff'> & {
+    textDiff?: Omit<Options['textDiff'], 'diffMatchPatch'>;
+  },
+) {
   return new DiffPatcher({
     ...options,
     textDiff: { ...options?.textDiff, diffMatchPatch: DiffMatchPatch },
