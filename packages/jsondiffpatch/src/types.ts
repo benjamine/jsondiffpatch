@@ -1,3 +1,4 @@
+import type dmp from 'diff-match-patch';
 import type Context from './contexts/context.js';
 import type DiffContext from './contexts/diff.js';
 
@@ -9,6 +10,7 @@ export interface Options {
     includeValueOnMove?: boolean;
   };
   textDiff?: {
+    diffMatchPatch: typeof dmp;
     minLength?: number;
   };
   propertyFilter?: (name: string, context: DiffContext) => boolean;

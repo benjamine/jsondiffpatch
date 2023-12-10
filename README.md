@@ -187,6 +187,10 @@ In a browser, you can load a bundle using a tool like [esm.sh](https://esm.sh) o
 
 ```javascript
 import * as jsondiffpatch from 'jsondiffpatch';
+
+// Only import if you want text diffs using diff-match-patch
+import DiffMatchPatch from 'diff-match-patch';
+
 const jsondiffpatchInstance = jsondiffpatch.create({
   // used to match objects when diffing arrays, by default only === operator is used
   objectHash: function (obj) {
@@ -200,6 +204,9 @@ const jsondiffpatchInstance = jsondiffpatch.create({
     includeValueOnMove: false,
   },
   textDiff: {
+    // If using text diffs, it's required to pass in the diff-match-patch library in through this proprty.
+    // Alternatively, you can import jsondiffpatch using `jsondiffpatch/with-text-diffs` to avoid having to pass in diff-match-patch through the options.
+    diffMatchPatch: DiffMatchPatch,
     // default 60, minimum string length (left and right sides) to use text diff algorythm: google-diff-match-patch
     minLength: 60,
   },

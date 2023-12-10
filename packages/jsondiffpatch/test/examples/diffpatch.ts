@@ -1,3 +1,4 @@
+import DiffMatchPatch from 'diff-match-patch';
 import type { Delta, Options } from '../../src/index.js';
 
 interface Example {
@@ -579,6 +580,7 @@ const text: ExampleGroup = [
     right: largeText,
     delta: [shortText, largeText],
     reverse: [largeText, shortText],
+    options: { textDiff: { diffMatchPatch: DiffMatchPatch } },
   },
   {
     left: largeText,
@@ -598,11 +600,13 @@ const text: ExampleGroup = [
       2,
     ],
     exactReverse: false,
+    options: { textDiff: { diffMatchPatch: DiffMatchPatch } },
   },
   {
     name: 'larger than min length',
     options: {
       textDiff: {
+        diffMatchPatch: DiffMatchPatch,
         minLength: 10,
       },
     },
@@ -616,6 +620,7 @@ const text: ExampleGroup = [
     name: 'shorter than min length',
     options: {
       textDiff: {
+        diffMatchPatch: DiffMatchPatch,
         minLength: 10,
       },
     },

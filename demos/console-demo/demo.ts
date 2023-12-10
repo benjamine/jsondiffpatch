@@ -1,4 +1,4 @@
-import * as jsondiffpatch from 'jsondiffpatch';
+import * as jsondiffpatch from 'jsondiffpatch/with-text-diffs';
 import * as consoleFormatter from 'jsondiffpatch/formatters/console';
 
 const instance = jsondiffpatch.create({

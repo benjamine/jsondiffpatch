@@ -7,10 +7,14 @@
     "Benjamin Eidelman <beneidel@gmail.com>"
   ],
   "type": "module",
+  "sideEffects": [
+    "*.css"
+  ],
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",
   "exports": {
     ".": "./lib/index.js",
+    "./with-text-diffs": "./lib/with-text-diffs.js",
     "./formatters/*": "./lib/formatters/*.js",
     "./formatters/styles/*.css": "./lib/formatters/styles/*.css"
   },
@@ -19,7 +23,7 @@
     "lib"
   ],
   "bin": {
-    "jsondiffpatch": "./bin/jsondiffpatch"
+    "jsondiffpatch": "./bin/jsondiffpatch.js"
   },
   "scripts": {
     "build": "tsc && ncp ./src/formatters/styles/ ./lib/formatters/styles/",
@@ -39,6 +43,7 @@
     "patch"
   ],
   "dependencies": {
+    "@types/diff-match-patch": "^1.0.36",
     "chalk": "^5.3.0",
     "diff-match-patch": "^1.0.5"
   },
