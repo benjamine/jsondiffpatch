@@ -49,12 +49,16 @@
   },
   "devDependencies": {
     "@types/jest": "^29.5.10",
+    "@types/react": "^18.2.46",
+    "@types/react-dom": "^18.2.18",
     "@typescript-eslint/eslint-plugin": "^6.13.1",
     "@typescript-eslint/parser": "^6.13.1",
     "eslint": "^8.55.0",
     "eslint-config-prettier": "^9.1.0",
     "jest": "^29.7.0",
     "ncp": "^2.0.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
     "ts-jest": "^29.1.1",
     "tslib": "^2.6.2",
     "typescript": "~5.3.2"
