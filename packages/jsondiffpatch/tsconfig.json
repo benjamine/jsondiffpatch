@@ -10,7 +10,7 @@
     "forceConsistentCasingInFileNames": true,
     "strict": true,
     "skipLibCheck": false,
-    "jsx": "react",
+    "jsx": "react"
   },
   "include": ["src"]
 }
