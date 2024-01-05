@@ -12,7 +12,7 @@ Diff & patch JavaScript objects
 
 ---
 
-## **[Live Demo](http://benjamine.github.io/jsondiffpatch/demo/index.html)**
+## **[Live Demo](http://benjamine.github.io/jsondiffpatch/index.html)**
 
 - min+gzipped ~ 16KB
 - browser and server (ESM-only)
@@ -22,7 +22,7 @@ Diff & patch JavaScript objects
 - unpatch (eg. revert object to its original state using a delta)
 - simplistic, pure JSON, low footprint [delta format](docs/deltas.md)
 - multiple output formatters:
-  - html (check it at the [Live Demo](http://benjamine.github.io/jsondiffpatch/demo/index.html))
+  - html (check it at the [Live Demo](http://benjamine.github.io/jsondiffpatch/index.html))
   - annotated json (html), makes the JSON delta format self-explained
   - console (colored), try running `./node_modules/.bin/jsondiffpatch left.json right.json`
   - JSON Patch format RFC 6902 support
@@ -270,7 +270,7 @@ const jsondiffpatchInstance = jsondiffpatch.create({
 </html>
 ```
 
-To see formatters in action check the [Live Demo](http://benjamine.github.io/jsondiffpatch/demo/index.html).
+To see formatters in action check the [Live Demo](http://benjamine.github.io/jsondiffpatch/index.html).
 
 For more details check [Formatters documentation](docs/formatters.md)
 
