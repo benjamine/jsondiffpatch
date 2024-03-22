@@ -234,12 +234,12 @@ const jsondiffpatchInstance = jsondiffpatch.create({
     <link rel="stylesheet" href="./style.css" type="text/css" />
     <link
       rel="stylesheet"
-      href="https://cdn.skypack.dev/jsondiffpatch/formatters/styles/html.css"
+      href="https://esm.sh/jsondiffpatch@0.6.0/lib/formatters/styles/html.css"
       type="text/css"
     />
     <link
       rel="stylesheet"
-      href="https://cdn.skypack.dev/jsondiffpatch/formatters/styles/annotated.css"
+      href="https://esm.sh/jsondiffpatch@0.6.0/lib/formatters/styles/annotated.css"
       type="text/css"
     />
   </head>
@@ -248,9 +248,9 @@ const jsondiffpatchInstance = jsondiffpatch.create({
     <hr />
     <div id="annotated"></div>
     <script type="module">
-      import * as jsondiffpatch from 'https://cdn.skypack.dev/jsondiffpatch';
-      import * as annotatedFormatter from 'https://cdn.skypack.dev/jsondiffpatch/formatters/annotated';
-      import * as htmlFormatter from 'https://cdn.skypack.dev/jsondiffpatch/formatters/html';
+      import * as jsondiffpatch from 'https://esm.sh/jsondiffpatch@0.6.0';
+      import * as annotatedFormatter from 'https://esm.sh/jsondiffpatch@0.6.0/formatters/annotated';
+      import * as htmlFormatter from 'https://esm.sh/jsondiffpatch@0.6.0/formatters/html';
 
       const left = { a: 3, b: 4 };
       const right = { a: 5, c: 9 };
