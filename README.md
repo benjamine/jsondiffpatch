@@ -41,7 +41,7 @@ Diff & patch JavaScript objects
 const country = {
   name: 'Argentina',
   capital: 'Buenos Aires',
-  independence: new Date(1816, 6, 9),
+  independence: new Date(1816, 7, 9),
   unasur: true,
 };
 
