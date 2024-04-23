@@ -48,11 +48,11 @@ This introduces a few benefits:
 moves are detected by default, you can turn move detection off with:
 
 ```javascript
-  var customDiffPatch = jsondiffpatch.create({
-    arrays: {
-      detectMove: false
-    }
-  };
+var customDiffPatch = jsondiffpatch.create({
+  arrays: {
+    detectMove: false,
+  },
+});
 ```
 
 ### Representation
