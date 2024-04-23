@@ -52,7 +52,7 @@ moves are detected by default, you can turn move detection off with:
     arrays: {
       detectMove: false
     }
-  };
+  });
 ```
 
 ### Representation
