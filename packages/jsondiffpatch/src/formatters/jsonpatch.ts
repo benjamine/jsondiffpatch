@@ -101,7 +101,7 @@ class JSONFormatter extends BaseFormatter<JSONFormatterContext, Op[]> {
     };
 
     context.buildPath = function (path: (string | number)[]) {
-      return path.map((path) => this.escapePath!(path)).join('/')
+      return path.map((path) => this.escapePath!(path)).join('/');
     }
   
     context.escapePath = function (path: string | number) {
