@@ -102,13 +102,13 @@ class JSONFormatter extends BaseFormatter<JSONFormatterContext, Op[]> {
 
     context.buildPath = function (path: (string | number)[]) {
       return path.map((path) => this.escapePath!(path)).join('/');
-    }
-  
+    };
+
     context.escapePath = function (path: string | number) {
       if (typeof path !== 'string') return path.toString();
       if (path.indexOf('/') === -1 && path.indexOf('~') === -1) return path;
       return path.replace(/~/g, '~0').replace(/\//g, '~1');
-    }
+    };
   }
 
   typeFormattterErrorFormatter(context: JSONFormatterContext, err: unknown) {
