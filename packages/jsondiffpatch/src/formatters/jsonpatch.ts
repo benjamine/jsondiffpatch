@@ -53,6 +53,8 @@ interface JSONFormatterContext extends BaseFormatterContext {
   pushMoveOp: (to: number) => void;
   currentPath: () => string;
   toPath: (to: number) => string;
+  buildPath: (path: (string | number)[]) => string;
+  escapePath: (path: string | number) => string;
 }
 
 class JSONFormatter extends BaseFormatter<JSONFormatterContext, Op[]> {
@@ -89,14 +91,24 @@ class JSONFormatter extends BaseFormatter<JSONFormatterContext, Op[]> {
     };
 
     context.currentPath = function () {
-      return `/${this.path!.join('/')}`;
+      return `/${this.buildPath!(this.path!)}`;
     };
 
     context.toPath = function (toPath) {
       const to = this.path!.slice();
       to[to.length - 1] = toPath;
-      return `/${to.join('/')}`;
+      return `/${this.buildPath!(to)}`;
     };
+
+    context.buildPath = function (path: (string | number)[]) {
+      return path.map((path) => this.escapePath!(path)).join('/')
+    }
+  
+    context.escapePath = function (path: string | number) {
+      if (typeof path !== 'string') return path.toString();
+      if (path.indexOf('/') === -1 && path.indexOf('~') === -1) return path;
+      return path.replace(/~/g, '~0').replace(/\//g, '~1');
+    }
   }
 
   typeFormattterErrorFormatter(context: JSONFormatterContext, err: unknown) {
