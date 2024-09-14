@@ -455,39 +455,36 @@ const reverseArrayDeltaIndex = (
     return `_${index as number}` as const;
   }
 
-  let reverseIndex = +index;
-  for (const deltaIndex in delta) {
-    const deltaItem = delta[deltaIndex as `${number}` | `_${number}`];
-    if (Array.isArray(deltaItem)) {
-      if (deltaItem[2] === ARRAY_MOVE) {
-        const moveFromIndex = parseInt(deltaIndex.substring(1), 10);
-        const moveToIndex = (deltaItem as MovedDelta)[1];
-        if (moveToIndex === +index) {
-          return moveFromIndex;
-        }
-        if (moveFromIndex <= reverseIndex && moveToIndex > reverseIndex) {
-          reverseIndex++;
-        } else if (
-          moveFromIndex >= reverseIndex &&
-          moveToIndex < reverseIndex
-        ) {
-          reverseIndex--;
-        }
-      } else if (deltaItem[2] === 0) {
-        const deleteIndex = parseInt(deltaIndex.substring(1), 10);
-        if (deleteIndex <= reverseIndex) {
-          reverseIndex++;
-        }
-      } else if (
-        deltaItem.length === 1 &&
-        parseInt(deltaIndex, 10) <= reverseIndex
-      ) {
-        reverseIndex--;
+  index = parseInt(index as string);
+
+  const remove = [] as Array<number>;
+  const insert = [] as Array<number>;
+  for (const key in delta) {
+    if (key === '_t') {
+      continue;
+    }
+    const value = delta[key as `${number}` | `_${number}`];
+    if (!Array.isArray(value)) {
+      continue;
+    }
+    if (key[0] === '_') {
+      if (value[1] === index) { // "_555": [old,x,3]
+        return parseInt(key.substring(1));
       }
+      insert.push(parseInt(key.substring(1)));
+      if (value[2] === ARRAY_MOVE) { // "_555": [old,x,3]
+        remove.push((value as MovedDelta)[1]);
+      }
+      continue;
+    }
+    if (value.length === 1) { // "555": [new]
+      remove.push(parseInt(key));
     }
   }
 
-  return reverseIndex;
+  let out = index - remove.reduce((a,v) => a + (v < (index as number) ? 1 : 0), 0);
+  insert.sort((a,b) => a - b).forEach(v => out += (v <= out ? 1 : 0));
+  return out;
 };
 
 export const collectChildrenReverseFilter: Filter<ReverseContext> = (
