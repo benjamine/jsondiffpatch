@@ -468,22 +468,26 @@ const reverseArrayDeltaIndex = (
       continue;
     }
     if (key[0] === '_') {
-      if (value[1] === index) { // "_555": [old,x,3]
+      if (value[1] === index) {
+        // "_555": [old,x,3]
         return parseInt(key.substring(1));
       }
       insert.push(parseInt(key.substring(1)));
-      if (value[2] === ARRAY_MOVE) { // "_555": [old,x,3]
+      if (value[2] === ARRAY_MOVE) {
+        // "_555": [old,x,3]
         remove.push((value as MovedDelta)[1]);
       }
       continue;
     }
-    if (value.length === 1) { // "555": [new]
+    if (value.length === 1) {
+      // "555": [new]
       remove.push(parseInt(key));
     }
   }
 
-  let out = index - remove.reduce((a,v) => a + (v < (index as number) ? 1 : 0), 0);
-  insert.sort((a,b) => a - b).forEach(v => out += (v <= out ? 1 : 0));
+  let out =
+    index - remove.reduce((a, v) => a + (v < (index as number) ? 1 : 0), 0);
+  insert.sort((a, b) => a - b).forEach((v) => (out += v <= out ? 1 : 0));
   return out;
 };
 
