@@ -66,4 +66,4 @@ _Don't use with `textDiff` as it isn't suppported_
 
 Of course, first step to create a formatters is understanding the [delta format](deltas.md).
 
-To simplify the creation of new formatters, you can base yours in the `BaseFormatter` included. All the builtin formatters do, check the [formatters](../src/formatters) folder to get started.
+To simplify the creation of new formatters, you can base yours in the `BaseFormatter` included. All the builtin formatters do, check the [formatters](../packages/jsondiffpatch/src/formatters/) folder to get started.
