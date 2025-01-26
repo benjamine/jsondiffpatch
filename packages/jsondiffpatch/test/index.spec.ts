@@ -606,6 +606,12 @@ describe('DiffPatcher', () => {
         });
         expectFormat(before, after, diff);
       });
+
+      it('should escape the property name', () => {
+        expectFormat({ 'tree/item': 1 }, { 'tree/item': 2 }, [
+          replaceOp('/tree~1item', 2),
+        ]);
+      });
     });
 
     describe('html', () => {
