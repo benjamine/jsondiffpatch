@@ -50,3 +50,43 @@ export interface Filter<TContext extends Context<any>> {
   (context: TContext): void;
   filterName: string;
 }
+
+export function isAddedDelta(delta: Delta): delta is AddedDelta {
+  return Array.isArray(delta) && delta.length === 1;
+}
+
+export function isModifiedDelta(delta: Delta): delta is ModifiedDelta {
+  return Array.isArray(delta) && delta.length === 2;
+}
+
+export function isDeletedDelta(delta: Delta): delta is DeletedDelta {
+  return (
+    Array.isArray(delta) &&
+    delta.length === 3 &&
+    delta[1] === 0 &&
+    delta[2] === 0
+  );
+}
+
+export function isObjectDelta(delta: Delta): delta is ObjectDelta {
+  return (
+    delta !== undefined && typeof delta === 'object' && !Array.isArray(delta)
+  );
+}
+
+export function isArrayDelta(delta: Delta): delta is ArrayDelta {
+  return (
+    delta !== undefined &&
+    typeof delta === 'object' &&
+    '_t' in delta &&
+    delta._t === 'a'
+  );
+}
+
+export function isMovedDelta(delta: Delta): delta is MovedDelta {
+  return Array.isArray(delta) && delta.length === 3 && delta[2] === 3;
+}
+
+export function isTextDiffDelta(delta: Delta): delta is TextDiffDelta {
+  return Array.isArray(delta) && delta.length === 3 && delta[2] === 2;
+}
