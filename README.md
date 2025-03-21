@@ -1,28 +1,34 @@
-# jsondiffpatch
+<p align="center">
+  <h1 align="center">jsondiffpatch</h1>
+  <p align="center">
+    <a href="https://jsondiffpatch.com">jsondiffpatch.com</a>
+    <br/>
+    Diff & patch JavaScript objects
+  </p>
+</p>
 
 <!--- badges -->
-
-[![Build Status](https://secure.travis-ci.org/benjamine/jsondiffpatch.svg)](http://travis-ci.org/benjamine/jsondiffpatch)
-[![Code Climate](https://codeclimate.com/github/benjamine/jsondiffpatch/badges/gpa.svg)](https://codeclimate.com/github/benjamine/jsondiffpatch)
-[![Test Coverage](https://codeclimate.com/github/benjamine/jsondiffpatch/badges/coverage.svg)](https://codeclimate.com/github/benjamine/jsondiffpatch)
-[![NPM version](https://badge.fury.io/js/jsondiffpatch.svg)](http://badge.fury.io/js/jsondiffpatch)
-[![NPM dependencies](https://david-dm.org/benjamine/jsondiffpatch.svg)](https://david-dm.org/benjamine/jsondiffpatch)
-
-Diff & patch JavaScript objects
+<p align="center">
+  <a href="https://github.com/benjamine/jsondiffpatch/actions?query=branch%3Amaster"><img src="https://github.com/benjamine/jsondiffpatch/actions/workflows/CI.yml/badge.svg?event=push&branch=master" alt="JsonDiffPatch CI status" /></a>
+  <a href="https://twitter.com/beneidel" rel="nofollow"><img src="https://img.shields.io/badge/created%20by-@beneidel-BACABA.svg" alt="Created by Benjamin Eidelman"></a>
+  <a href="https://opensource.org/licenses/MIT" rel="nofollow"><img src="https://img.shields.io/github/license/benjamine/jsondiffpatch" alt="License"></a>
+  <a href="https://www.npmjs.com/package/jsondiffpatch" rel="nofollow"><img src="https://img.shields.io/npm/dw/jsondiffpatch.svg" alt="npm"></a>
+  <a href="https://github.com/benjamine/jsondiffpatch" rel="nofollow"><img src="https://img.shields.io/github/stars/benjamine/jsondiffpatch" alt="stars"></a>
+</p>
 
 ---
 
-## **[Live Demo](http://benjamine.github.io/jsondiffpatch/index.html)**
+## **[Live Demo](https://jsondiffpatch.com)**
 
 - min+gzipped ~ 16KB
 - browser and server (ESM-only)
+- deep diff, use delta to patch
 - (optionally) uses [google-diff-match-patch](http://code.google.com/p/google-diff-match-patch/) for long text diffs (diff at character level)
 - smart array diffing using [LCS](http://en.wikipedia.org/wiki/Longest_common_subsequence_problem), **_IMPORTANT NOTE:_** to match objects inside an array you must provide an `objectHash` function (this is how objects are matched, otherwise a dumb match by position is used). For more details, check [Array diff documentation](docs/arrays.md)
-- reverse a delta
-- unpatch (eg. revert object to its original state using a delta)
+- reverse a delta, unpatch (eg. revert object to its original state using a delta)
 - simplistic, pure JSON, low footprint [delta format](docs/deltas.md)
 - multiple output formatters:
-  - html (check it at the [Live Demo](http://benjamine.github.io/jsondiffpatch/index.html))
+  - html (check it at the [Live Demo](https://jsondiffpatch.com))
   - annotated json (html), makes the JSON delta format self-explained
   - console (colored), try running `./node_modules/.bin/jsondiffpatch left.json right.json`
   - JSON Patch format RFC 6902 support
@@ -31,7 +37,7 @@ Diff & patch JavaScript objects
 
 ## Supported platforms
 
-- Any browser that supports ES6
+- Any browser that [supports ES6](https://caniuse.com/es6)
 - Node.js 18, 20+
 
 ## Usage
@@ -270,7 +276,7 @@ const jsondiffpatchInstance = jsondiffpatch.create({
 </html>
 ```
 
-To see formatters in action check the [Live Demo](http://benjamine.github.io/jsondiffpatch/index.html).
+To see formatters in action check the [Live Demo](https://jsondiffpatch.com).
 
 For more details check [Formatters documentation](docs/formatters.md)
 

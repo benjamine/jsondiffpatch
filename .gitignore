@@ -20,3 +20,8 @@ lib
 
 npm-debug.log
 .idea/
+
+packages/jsondiffpatch/README.md
+packages/jsondiffpatch/MIT-LICENSE.txt
+
+*.local.*
