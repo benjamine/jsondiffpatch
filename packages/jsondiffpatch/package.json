@@ -1,6 +1,6 @@
 {
   "name": "jsondiffpatch",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "author": "Benjamin Eidelman <beneidel@gmail.com>",
   "description": "Diff & Patch for Javascript objects",
   "contributors": [
@@ -30,7 +30,7 @@
     "type-check": "tsc --noEmit",
     "lint": "eslint . --ext .ts",
     "test": "jest --coverage",
-    "prepack": "npm run build",
+    "prepack": "npm run build && cp ../../MIT-LICENSE.txt . && cp ../../README.md .",
     "prepublishOnly": "npm run test && npm run lint"
   },
   "repository": {

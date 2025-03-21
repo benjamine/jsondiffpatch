@@ -1,6 +1,6 @@
 # Formatters
 
-Some formatters are included that let you convert a JSON delta into other formats, you can see some of these used in the [Live Demo](https://benjamine.github.io/jsondiffpatch/index.html)
+Some formatters are included that let you convert a JSON delta into other formats, you can see some of these used in the [Live Demo](https://jsondiffpatch.com))
 
 ## Html
 
