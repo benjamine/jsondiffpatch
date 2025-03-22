@@ -494,7 +494,10 @@ const compare = function () {
   const jsondifflength = document.getElementById('jsondifflength')!;
   try {
     const delta = instance.diff(left, right);
-    resultsSections.setAttribute("data-diff", typeof delta === 'undefined' ? "no-diff"  : "has-diff");
+    resultsSections.setAttribute(
+      'data-diff',
+      typeof delta === 'undefined' ? 'no-diff' : 'has-diff',
+    );
 
     if (typeof delta === 'undefined') {
       switch (selectedType) {
@@ -541,7 +544,7 @@ const compare = function () {
       console.error(err);
       console.error((err as Error).stack);
     }
-    resultsSections.removeAttribute("data-diff");
+    resultsSections.removeAttribute('data-diff');
   }
   document.getElementById('results')!.style.display = '';
 };
@@ -720,7 +723,7 @@ const load: Load = {
 
       const gistData = data as GistData;
 
-      const files: GistData["files"][string][] = [];
+      const files: GistData['files'][string][] = [];
 
       for (const filename in gistData.files) {
         const file = gistData.files[filename];
@@ -740,7 +743,7 @@ const load: Load = {
           language: 'JSON',
           filename: 'missing.json',
           content: '"only 1 JSON files found in the gist, need 2 to compare"',
-        })
+        });
       }
       /* jshint camelcase: false */
       load.data({
@@ -929,18 +932,21 @@ interface GistData {
   owner: { login: string };
 }
 
-document.querySelector("#gist-link")?.addEventListener("input", (e) => {
-  const match = /^(?:https?:\/\/)?gist\.github\.com\/([^/]+)\/([0-9a-f]+)/i.exec((e.target as HTMLInputElement).value);
+document.querySelector('#gist-link')?.addEventListener('input', (e) => {
+  const match =
+    /^(?:https?:\/\/)?gist\.github\.com\/([^/]+)\/([0-9a-f]+)/i.exec(
+      (e.target as HTMLInputElement).value,
+    );
   if (!match) return;
   load.gist(match[2], (gist) => {
-    window.history.pushState({}, "", `?${gist.owner.login}/${gist.id}`);
-    document.querySelector("h1")?.scrollIntoView({
-      behavior: "smooth",
-      block: "start",
-    })
-    const input = document.querySelector("#gist-link") as HTMLInputElement;
+    window.history.pushState({}, '', `?${gist.owner.login}/${gist.id}`);
+    document.querySelector('h1')?.scrollIntoView({
+      behavior: 'smooth',
+      block: 'start',
+    });
+    const input = document.querySelector('#gist-link') as HTMLInputElement;
     if (input) {
-      input.value = "";
+      input.value = '';
       input.blur();
     }
   });
