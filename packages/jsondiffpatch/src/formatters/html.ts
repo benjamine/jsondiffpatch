@@ -1,5 +1,3 @@
-import BaseFormatter from './base.js';
-import type { BaseFormatterContext, DeltaType, NodeType } from './base.js';
 import type {
   AddedDelta,
   ArrayDelta,
@@ -10,6 +8,8 @@ import type {
   ObjectDelta,
   TextDiffDelta,
 } from '../types.js';
+import type { BaseFormatterContext, DeltaType, NodeType } from './base.js';
+import BaseFormatter from './base.js';
 
 interface HtmlFormatterContext extends BaseFormatterContext {
   hasArrows?: boolean;
@@ -172,7 +172,7 @@ class HtmlFormatter extends BaseFormatter<HtmlFormatterContext> {
         `style="position: absolute; display: none;">
           <defs>
               <marker id="markerArrow" markerWidth="8" markerHeight="8"
-                 refx="2" refy="4"
+                 refx="2" refy="4" stroke="#88f"
                      orient="auto" markerUnits="userSpaceOnUse">
                   <path d="M1,1 L1,7 L7,4 L1,1" style="fill: #339;" />
               </marker>
