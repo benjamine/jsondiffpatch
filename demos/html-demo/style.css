@@ -3,27 +3,36 @@ body {
   min-width: 600px;
 }
 
-h1 {
-  margin: 4px;
-}
-
 header {
   display: flex;
   justify-content: space-between;
 }
 
-header > div {
+header>div {
+  position: relative;
   padding: 1rem;
 }
 
-header > nav {
+h1 {
+  margin: 4px;
+}
+
+#diffed-h1 {
+  position: absolute;
+  left: 1rem;
+  margin: 4px;
+  font-size: 2em;
+  font-weight: bold;
+}
+
+header>nav {
   display: flex;
   gap: 8px;
   align-items: center;
-  padding-right: 60px;
+  padding-right: 80px;
 }
 
-header > div > * {
+header>div>* {
   display: inline-block;
 }
 
@@ -40,7 +49,11 @@ header > div > * {
 
 h2 {
   display: inline-block;
-  margin: 5px 0;
+  margin: 0.3rem 0;
+}
+
+section h2 {
+  margin: 15px 20px;
 }
 
 a#fork_me {
@@ -49,12 +62,16 @@ a#fork_me {
   right: 0;
 }
 
-.json-input > div {
+.json-input h2 {
+  font-family: monospace;
+}
+
+.json-input>div {
   float: left;
   width: 50%;
 }
 
-.json-input > div {
+.json-input>div {
   text-align: center;
 }
 
@@ -63,7 +80,7 @@ a#fork_me {
   border: 1px solid #ccc;
 }
 
-.json-input > div > textarea {
+.json-input>div>textarea {
   width: 95%;
   height: 200px;
 }
@@ -80,7 +97,7 @@ a#fork_me {
   height: 20px;
 }
 
-.buttons > div {
+.buttons>div {
   margin: 0 auto;
 }
 
@@ -123,8 +140,16 @@ a#fork_me {
   height: 200px;
 }
 
-#delta-panel-json > p {
+#delta-panel-json>p {
   margin: 4px;
+}
+
+#features {
+  margin-bottom: 6rem;
+}
+
+#features li {
+  margin: 0.7rem;
 }
 
 footer {
@@ -133,15 +158,12 @@ footer {
   margin: 40px;
 }
 
-.credits {
-  font-size: smaller;
-}
-
-.credits a {
+.library-link {
+  font-family: monospace;
   text-decoration: none;
 }
 
-.credits a:hover {
+.library-link:hover {
   text-decoration: underline;
 }
 
@@ -157,9 +179,20 @@ a:hover {
   margin-top: 20px;
 }
 
-.results > div {
+.results>div {
   vertical-align: top;
   display: inline-block;
+}
+
+[data-diff="no-diff"] .header-options {
+  display: none;
+}
+
+[data-diff="no-diff"] #delta-panel-visual,
+[data-diff="no-diff"] #delta-panel-annotated {
+  padding: 1rem 1.3rem;
+  font-size: larger;
+  font-family: monospace;
 }
 
 html {
@@ -234,6 +267,7 @@ body[data-color-scheme='dark'] button#color-scheme-toggle:hover {
 }
 
 body[data-color-scheme='dark'] {
+
   .jsondiffpatch-added .jsondiffpatch-property-name,
   .jsondiffpatch-added .jsondiffpatch-value pre,
   .jsondiffpatch-modified .jsondiffpatch-right-value pre,
