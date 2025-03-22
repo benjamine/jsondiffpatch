@@ -7,7 +7,23 @@ h1 {
   margin: 4px;
 }
 
-header > * {
+header {
+  display: flex;
+  justify-content: space-between;
+}
+
+header>div {
+  padding: 1rem;
+}
+
+header>nav {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  padding-right: 60px;
+}
+
+header>div>* {
   display: inline-block;
 }
 
@@ -33,12 +49,12 @@ a#fork_me {
   right: 0;
 }
 
-.json-input > div {
+.json-input>div {
   float: left;
   width: 50%;
 }
 
-.json-input > div {
+.json-input>div {
   text-align: center;
 }
 
@@ -47,7 +63,7 @@ a#fork_me {
   border: 1px solid #ccc;
 }
 
-.json-input > div > textarea {
+.json-input>div>textarea {
   width: 95%;
   height: 200px;
 }
@@ -61,10 +77,10 @@ a#fork_me {
 .buttons {
   width: 100%;
   text-align: center;
-  height: 1px;
+  height: 20px;
 }
 
-.buttons > div {
+.buttons>div {
   margin: 0 auto;
 }
 
@@ -107,7 +123,7 @@ a#fork_me {
   height: 200px;
 }
 
-#delta-panel-json > p {
+#delta-panel-json>p {
   margin: 4px;
 }
 
@@ -123,10 +139,17 @@ footer {
 
 .credits a {
   text-decoration: none;
-  color: black;
 }
 
 .credits a:hover {
+  text-decoration: underline;
+}
+
+a {
+  color: inherit;
+}
+
+a:hover {
   text-decoration: underline;
 }
 
@@ -134,7 +157,99 @@ footer {
   margin-top: 20px;
 }
 
-.results > div {
+.results>div {
   vertical-align: top;
   display: inline-block;
+}
+
+html {
+  color-scheme: only light;
+}
+
+body {
+  color-scheme: only light;
+}
+
+body {
+  background-color: #f8f8ff;
+  color: black;
+}
+
+/* dark/light toggle */
+
+.go-light-icon {
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  top: 0;
+  left: 0;
+  position: 0 0 0 0;
+  opacity: 0;
+  transition: all 0.5s;
+}
+
+.go-dark-icon {
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  top: 0;
+  left: 0;
+  opacity: 1;
+  transition: all 0.5s;
+}
+
+body[data-color-scheme="dark"] {
+  background-color: #151515;
+  color: #eee;
+
+  .go-light-icon {
+    opacity: 1;
+  }
+
+  .go-dark-icon {
+    opacity: 0;
+  }
+}
+
+button#color-scheme-toggle {
+  position: relative;
+  width: 24px;
+  height: 24px;
+  appearance: none;
+  border: none;
+  background-color: transparent;
+  color: inherit;
+  cursor: pointer;
+  border-radius: 100%;
+  transition: all 0.5s;
+  box-shadow: transparent 0 0 1px;
+}
+
+button#color-scheme-toggle:hover {
+  box-shadow: black 0 0 15px;
+}
+
+body[data-color-scheme="dark"] button#color-scheme-toggle:hover {
+  box-shadow: white 0 0 15px;
+}
+
+body[data-color-scheme="dark"] {
+
+  .jsondiffpatch-added .jsondiffpatch-property-name,
+  .jsondiffpatch-added .jsondiffpatch-value pre,
+  .jsondiffpatch-modified .jsondiffpatch-right-value pre,
+  .jsondiffpatch-textdiff-added {
+    background: #00601e;
+  }
+
+  .jsondiffpatch-deleted .jsondiffpatch-property-name,
+  .jsondiffpatch-deleted pre,
+  .jsondiffpatch-modified .jsondiffpatch-left-value pre,
+  .jsondiffpatch-textdiff-deleted {
+    background: #590000;
+  }
+
+  .jsondiffpatch-moved .jsondiffpatch-moved-destination {
+    background: #373900;
+  }
 }

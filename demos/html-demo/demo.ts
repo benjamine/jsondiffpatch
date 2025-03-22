@@ -1,9 +1,11 @@
-import * as jsondiffpatch from 'jsondiffpatch/with-text-diffs';
+import { parse as json5Parse } from 'json5';
+
 import * as annotatedFormatter from 'jsondiffpatch/formatters/annotated';
 import * as htmlFormatter from 'jsondiffpatch/formatters/html';
+import * as jsondiffpatch from 'jsondiffpatch/with-text-diffs';
 
-import 'jsondiffpatch/formatters/styles/html.css';
 import 'jsondiffpatch/formatters/styles/annotated.css';
+import 'jsondiffpatch/formatters/styles/html.css';
 
 declare namespace CodeMirror {
   function fromTextArea(
@@ -15,12 +17,15 @@ declare namespace CodeMirror {
     mode?: string;
     json?: boolean;
     readOnly?: boolean;
+    theme?: string;
   }
 
   interface Editor {
     getValue(): string;
     setValue(content: string): void;
     on(eventName: 'change', handler: () => void): void;
+    refresh(): void;
+    setOption(option: 'theme', value: string): void;
   }
 }
 
@@ -42,6 +47,45 @@ interface Country {
   unasur: boolean;
   population?: number;
 }
+
+const colorSchemeIsDark = () => {
+  const colorSchemaMeta = (document.querySelector('meta[name="color-scheme"]') as HTMLMetaElement || null).content || "default";
+  return colorSchemaMeta === "only dark" || (
+    colorSchemaMeta !== "only light" &&
+    window.matchMedia('(prefers-color-scheme: dark)').matches 
+  );
+}
+
+const onColorSchemeChange = (handler: (dark?: boolean) => void) => {
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+    handler(colorSchemeIsDark());
+  });
+  // also detect changes to the meta tag content
+  const colorSchemaMeta = document.querySelector('meta[name="color-scheme"]') as HTMLMetaElement;
+  if (colorSchemaMeta) {
+    const observer = new MutationObserver((mutationsList) => {
+      for (const mutation of mutationsList) {
+        if (mutation.type === 'attributes' && mutation.attributeName === 'content') {
+          handler(colorSchemeIsDark());
+        }
+      }
+    });
+    observer.observe(colorSchemaMeta, { attributes: true });
+  }
+}
+
+document.body.setAttribute('data-color-scheme', colorSchemeIsDark() ? 'dark' : 'light');
+onColorSchemeChange((dark) => {
+  document.body.setAttribute('data-color-scheme', dark ? 'dark' : 'light');
+});
+
+const parseJson = (text: string) => {
+  try {
+    return JSON.parse(text, jsondiffpatch.dateReviver);
+  } catch {
+    return json5Parse(text, jsondiffpatch.dateReviver);
+  }
+};
 
 const getExampleJson = function () {
   const data: Continent = {
@@ -256,13 +300,16 @@ const dom = {
     url: string,
     callback: (error: Error | string | null, data?: unknown) => void,
   ) {
+    if (!url.startsWith('https://api.github.com/gists')) {
+      return callback(null, 'invalid url, for security reasons only gists are allowed');
+    }
     let request: XMLHttpRequest | null = new XMLHttpRequest();
     request.open('GET', url, true);
     request.onreadystatechange = function () {
       if (this.readyState === 4) {
         let data;
         try {
-          data = JSON.parse(this.responseText, jsondiffpatch.dateReviver);
+          data = parseJson(this.responseText);
         } catch (parseError) {
           return callback('parse error: ' + parseError);
         }
@@ -337,7 +384,7 @@ class JsonArea {
         /^["].*["]$/.test(txt) ||
         /^[{[](.|\n)*[}\]]$/.test(txt)
       ) {
-        return JSON.parse(txt, jsondiffpatch.dateReviver);
+        return parseJson(txt);
       }
       return this.getValue();
     } catch (err) {
@@ -366,11 +413,22 @@ class JsonArea {
     if (typeof CodeMirror === 'undefined') {
       return;
     }
-    this.editor = CodeMirror.fromTextArea(this.element, {
+
+    // Function to get current theme based on browser's interpreted scheme
+    const getTheme = () => colorSchemeIsDark() ? 'monokai' : 'default';
+
+    const editor = CodeMirror.fromTextArea(this.element, {
       mode: 'javascript',
       json: true,
       readOnly,
+      theme: getTheme(),
     });
+    this.editor = editor;
+
+    onColorSchemeChange(() => {
+      editor.setOption('theme', getTheme());
+    });
+
     if (!readOnly) {
       this.editor.on('change', compare);
     }
@@ -465,6 +523,7 @@ const compare = function () {
 
 areas.left.makeEditor();
 areas.right.makeEditor();
+areas.delta.makeEditor(true);
 
 areas.left.element.addEventListener('change', compare);
 areas.right.element.addEventListener('change', compare);
@@ -501,6 +560,9 @@ const showSelectedDeltaType = function () {
   document.getElementById('delta-panel-json')!.style.display =
     type === 'json' ? '' : 'none';
   compare();
+  if (type === "json") {
+    areas.delta.editor!.refresh();
+  }
 };
 
 document
@@ -819,18 +881,6 @@ if (urlQuery) {
               "don't": 'use',
               with: ['>', 2, 'KB urls'],
             }),
-          );
-        break;
-      case 'urls':
-        document.location =
-          '?desc=http%20raw%20file%20urls&left=' +
-          encodeURIComponent(
-            'https://rawgithub.com/benjamine/JsonDiffPatch/' +
-              'c83e942971c627f61ef874df3cfdd50a95f1c5a2/package.json',
-          ) +
-          '&right=' +
-          encodeURIComponent(
-            'https://rawgithub.com/benjamine/JsonDiffPatch/master/package.json',
           );
         break;
       default:
