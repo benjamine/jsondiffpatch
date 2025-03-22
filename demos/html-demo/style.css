@@ -12,18 +12,18 @@ header {
   justify-content: space-between;
 }
 
-header>div {
+header > div {
   padding: 1rem;
 }
 
-header>nav {
+header > nav {
   display: flex;
   gap: 8px;
   align-items: center;
   padding-right: 60px;
 }
 
-header>div>* {
+header > div > * {
   display: inline-block;
 }
 
@@ -49,12 +49,12 @@ a#fork_me {
   right: 0;
 }
 
-.json-input>div {
+.json-input > div {
   float: left;
   width: 50%;
 }
 
-.json-input>div {
+.json-input > div {
   text-align: center;
 }
 
@@ -63,7 +63,7 @@ a#fork_me {
   border: 1px solid #ccc;
 }
 
-.json-input>div>textarea {
+.json-input > div > textarea {
   width: 95%;
   height: 200px;
 }
@@ -80,7 +80,7 @@ a#fork_me {
   height: 20px;
 }
 
-.buttons>div {
+.buttons > div {
   margin: 0 auto;
 }
 
@@ -123,7 +123,7 @@ a#fork_me {
   height: 200px;
 }
 
-#delta-panel-json>p {
+#delta-panel-json > p {
   margin: 4px;
 }
 
@@ -157,7 +157,7 @@ a:hover {
   margin-top: 20px;
 }
 
-.results>div {
+.results > div {
   vertical-align: top;
   display: inline-block;
 }
@@ -198,7 +198,7 @@ body {
   transition: all 0.5s;
 }
 
-body[data-color-scheme="dark"] {
+body[data-color-scheme='dark'] {
   background-color: #151515;
   color: #eee;
 
@@ -229,12 +229,11 @@ button#color-scheme-toggle:hover {
   box-shadow: black 0 0 15px;
 }
 
-body[data-color-scheme="dark"] button#color-scheme-toggle:hover {
+body[data-color-scheme='dark'] button#color-scheme-toggle:hover {
   box-shadow: white 0 0 15px;
 }
 
-body[data-color-scheme="dark"] {
-
+body[data-color-scheme='dark'] {
   .jsondiffpatch-added .jsondiffpatch-property-name,
   .jsondiffpatch-added .jsondiffpatch-value pre,
   .jsondiffpatch-modified .jsondiffpatch-right-value pre,

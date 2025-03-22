@@ -49,32 +49,48 @@ interface Country {
 }
 
 const colorSchemeIsDark = () => {
-  const colorSchemaMeta = (document.querySelector('meta[name="color-scheme"]') as HTMLMetaElement || null).content || "default";
-  return colorSchemaMeta === "only dark" || (
-    colorSchemaMeta !== "only light" &&
-    window.matchMedia('(prefers-color-scheme: dark)').matches 
+  const colorSchemaMeta =
+    (
+      (document.querySelector(
+        'meta[name="color-scheme"]',
+      ) as HTMLMetaElement) || null
+    ).content || 'default';
+  return (
+    colorSchemaMeta === 'only dark' ||
+    (colorSchemaMeta !== 'only light' &&
+      window.matchMedia('(prefers-color-scheme: dark)').matches)
   );
-}
+};
 
 const onColorSchemeChange = (handler: (dark?: boolean) => void) => {
-  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
-    handler(colorSchemeIsDark());
-  });
+  window
+    .matchMedia('(prefers-color-scheme: dark)')
+    .addEventListener('change', (e) => {
+      handler(colorSchemeIsDark());
+    });
   // also detect changes to the meta tag content
-  const colorSchemaMeta = document.querySelector('meta[name="color-scheme"]') as HTMLMetaElement;
+  const colorSchemaMeta = document.querySelector(
+    'meta[name="color-scheme"]',
+  ) as HTMLMetaElement;
   if (colorSchemaMeta) {
     const observer = new MutationObserver((mutationsList) => {
       for (const mutation of mutationsList) {
-        if (mutation.type === 'attributes' && mutation.attributeName === 'content') {
+        if (
+          mutation.type === 'attributes' &&
+          mutation.attributeName === 'content'
+        ) {
           handler(colorSchemeIsDark());
         }
       }
     });
     observer.observe(colorSchemaMeta, { attributes: true });
   }
-}
+};
 
-document.body.setAttribute('data-color-scheme', colorSchemeIsDark() ? 'dark' : 'light');
+document.body.setAttribute(
+  'data-color-scheme',
+  colorSchemeIsDark() ? 'dark' : 'light',
+);
 onColorSchemeChange((dark) => {
   document.body.setAttribute('data-color-scheme', dark ? 'dark' : 'light');
 });
@@ -301,7 +317,10 @@ const dom = {
     callback: (error: Error | string | null, data?: unknown) => void,
   ) {
     if (!url.startsWith('https://api.github.com/gists')) {
-      return callback(null, 'invalid url, for security reasons only gists are allowed');
+      return callback(
+        null,
+        'invalid url, for security reasons only gists are allowed',
+      );
     }
     let request: XMLHttpRequest | null = new XMLHttpRequest();
     request.open('GET', url, true);
@@ -415,7 +434,7 @@ class JsonArea {
     }
 
     // Function to get current theme based on browser's interpreted scheme
-    const getTheme = () => colorSchemeIsDark() ? 'monokai' : 'default';
+    const getTheme = () => (colorSchemeIsDark() ? 'monokai' : 'default');
 
     const editor = CodeMirror.fromTextArea(this.element, {
       mode: 'javascript',
@@ -560,7 +579,7 @@ const showSelectedDeltaType = function () {
   document.getElementById('delta-panel-json')!.style.display =
     type === 'json' ? '' : 'none';
   compare();
-  if (type === "json") {
+  if (type === 'json') {
     areas.delta.editor!.refresh();
   }
 };
