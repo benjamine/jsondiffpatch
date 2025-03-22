@@ -4,14 +4,43 @@
     <title>JsonDiffPatch</title>
     <meta
       name="description"
-      content="JsonDiffPatch is javascript/typescript library to deep diff json or text"
+      content="JsonDiffPatch is a free online json diff tool and npm library to compare json and get a json diff"
     />
-    <meta content="width=device-width, initial-scale=1" name="viewport" />
-    <meta name="color-scheme" content="dark light" />
-    <meta content="text/html;charset=utf-8" http-equiv="Content-Type" />
-    <meta content="utf-8" http-equiv="encoding" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="canonical" href="https://jsondiffpatch.com/" />
+    <link rel="icon" href="logo.svg" type="image/svg+xml" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:creator" content="@beneidel" />
+    <meta name="twitter:title" content="JsonDiffPatch" />
+    <meta
+      name="twitter:description"
+      content="JsonDiffPatch is a free online json diff tool and npm library to compare json and get a json diff."
+    />
+    <meta
+      name="twitter:image"
+      content="https://jsondiffpatch.com/jsondiffpatch-visual-diff.png"
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="JsonDiffPatch" />
+    <meta
+      property="og:description"
+      content="JsonDiffPatch is a free online json diff tool and npm library to compare json and get a json diff."
+    />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:url" content="http://jsondiffpatch/" />
+    <meta
+      property="og:image"
+      content="https://jsondiffpatch.com/jsondiffpatch-visual-diff.png"
+    />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content="774" />
+    <meta property="og:image:height" content="774" />
+
+    <meta name="color-scheme" content="dark light" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta content="utf-8" http-equiv="encoding" />
+    <meta content="text/html;charset=utf-8" http-equiv="Content-Type" />
     <link rel="stylesheet" href="style.css" type="text/css" media="screen" />
     <link
       rel="stylesheet"
@@ -130,13 +159,14 @@
     </style>
     <header>
       <div>
-        <h1>
+        <h1>JsonDiffPatch</h1>
+        <div aria-hidden="true" id="diffed-h1">
           Js<span class="jsondiffpatch-textdiff-deleted"><span>on</span></span
           ><span class="jsondiffpatch-textdiff-added"><span>Diff</span></span
           >Patch
-        </h1>
+        </div>
         <span id="description"></span>
-        <a id="external-link" style="display: none">source</a>
+        <a id="external-link" style="display: none" target="_blank">source</a>
       </div>
       <nav>
         <button id="color-scheme-toggle" title="Toggle theme">
@@ -243,7 +273,7 @@
         <span class="error-message"></span>
       </div>
     </div>
-    <div id="results">
+    <section id="results">
       <h2>Delta</h2>
       <label>
         <input
@@ -281,13 +311,79 @@
         <textarea id="json-delta" readonly> </textarea>
         <span class="error-message"></span>
       </div>
-    </div>
+    </section>
+    <section id="features">
+      <h2>Features</h2>
+      <ul>
+        <li>
+          compare 2 json. also supports json5, json with comments, or plain text
+        </li>
+        <li>
+          json diff as visual diff or json (see
+          <a
+            href="https://github.com/benjamine/jsondiffpatch/blob/master/docs/deltas.md"
+            rel="nofollow"
+            target="_blank"
+            >delta format</a
+          >)
+        </li>
+        <li>
+          compare json from a gist (<a href="/?benjamine/9188826">example</a
+          >)<br />
+          <ol>
+            <li>
+              <a href="https://gist.github.com/" rel="nofollow"
+                >create a gist</a
+              >
+            </li>
+            <li>add 2 json files on the gist</li>
+            <li>
+              paste the gist url here: <input id="gist-link" type="text" />
+            </li>
+          </ol>
+        </li>
+        <li>
+          smart diff arrays/lists. if items are objects a "key", "id", or "name"
+          is automatically used to match
+        </li>
+        <li>
+          text diff. for long string or text, a text diff is done at characther
+          level (using
+          <a href="https://github.com/google/diff-match-patch" target="_blank"
+            >google/diff-match-patch</a
+          >)
+        </li>
+      </ul>
+    </section>
     <footer>
-      <a href="https://github.com/benjamine/jsondiffpatch">Get JsonDiffPatch</a>
-      <br />
-      <p class="credits">
-        JsonDiffPatch was developed by
-        <a href="https://twitter.com/beneidel">Benjamin Eidelman</a>
+      <p>
+        powered by the
+        <a
+          class="library-link"
+          href="https://github.com/benjamine/jsondiffpatch"
+          >jsondiffpatch</a
+        >
+        library
+      </p>
+      <p align="center">
+        <a href="https://twitter.com/beneidel" rel="nofollow"
+          ><img
+            src="https://img.shields.io/badge/created%20by-@beneidel-BACABA.svg"
+            alt="Created by Benjamin Eidelman"
+        /></a>
+        <a href="https://opensource.org/licenses/MIT" rel="nofollow"
+          ><img
+            src="https://img.shields.io/github/license/benjamine/jsondiffpatch"
+            alt="License"
+        /></a>
+        <a href="https://www.npmjs.com/package/jsondiffpatch" rel="nofollow"
+          ><img src="https://img.shields.io/npm/dw/jsondiffpatch.svg" alt="npm"
+        /></a>
+        <a href="https://github.com/benjamine/jsondiffpatch" rel="nofollow"
+          ><img
+            src="https://img.shields.io/github/stars/benjamine/jsondiffpatch"
+            alt="stars"
+        /></a>
       </p>
     </footer>
     <script src="build/demo.js" type="module"></script>

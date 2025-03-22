@@ -1,4 +1,5 @@
 <p align="center">
+  <img src="demos/html-demo/logo.svg" width="48px" align="center" alt="jsondiffpatch logo" />
   <h1 align="center">jsondiffpatch</h1>
   <p align="center">
     <a href="https://jsondiffpatch.com">jsondiffpatch.com</a>

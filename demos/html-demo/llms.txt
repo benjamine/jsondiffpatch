@@ -1,0 +1,32 @@
+# https://jsondiffpatch.com llms.txt
+
+jsondiffpatch is an npm package.
+it compares 2 json (or any 2 objects in javascript or typescript), and get a json diff with the changes.
+
+``` ts
+import { diff } from "jsondiffpatch";
+
+const delta = diff(left, right);
+```
+
+## features
+
+- deep diff json or objects, get a compact json diff delta
+- use delta to patch
+- smart array diffing using [LCS](http://en.wikipedia.org/wiki/Longest_common_subsequence_problem), **_IMPORTANT NOTE:_** to match objects inside an array you must provide an `objectHash` function (this is how objects are matched, otherwise a dumb match by position is used). For more details, check [Array diff documentation](docs/arrays.md)
+- multiple formatters (visual html, jsonpatch, console)
+- (optionally) uses [google-diff-match-patch](http://code.google.com/p/google-diff-match-patch/) for long text diffs (diff at character level)
+- reverse a delta, unpatch (eg. revert object to its original state using a delta)
+- simplistic, pure JSON, low footprint [delta format](docs/deltas.md)
+- multiple output formatters:
+  - html (check it at the [Live Demo](https://jsondiffpatch.com))
+  - annotated json (html), makes the JSON delta format self-explained
+  - console (colored), try running `./node_modules/.bin/jsondiffpatch left.json right.json`
+  - JSON Patch format RFC 6902 support
+  - write your own! check [Formatters documentation](docs/formatters.md)
+- BONUS: `jsondiffpatch.clone(obj)` (deep clone)
+
+## links
+
+- [github repo](https://github.com/benjamine/jsondiffpatch)
+- [npm package](https://www.npmjs.com/package/jsondiffpatch)
