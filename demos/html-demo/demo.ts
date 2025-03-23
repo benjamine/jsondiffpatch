@@ -898,8 +898,12 @@ const load: Load = {
         ).apply(load, match.slice(1));
       }
     }
+
+    // no matches, just load the default example
+    const exampleJson = getExampleJson();
     load.data({
-      error: 'unsupported source: ' + key,
+      left: exampleJson[0],
+      right: exampleJson[1],
     });
   },
 };
