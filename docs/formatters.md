@@ -36,8 +36,7 @@ Html can be generated sever-side the same way, just remember to include (or embe
 
 ## Console
 
-Node.js colored output (thanks to [chalk](https://github.com/sindresorhus/chalk)!).
-It's used by the CLI:
+colored text to console log, it's used by the CLI:
 
 ![console_demo!](../docs/demo/consoledemo.png)
 

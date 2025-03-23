@@ -46,7 +46,7 @@
 as a CLI:
 
 ```sh
-# diff two json files, colored output (using chalk lib)
+# diff two json files, colored output
 npx jsondiffpatch ./docs/demo/left.json ./docs/demo/right.json
 ```
 
