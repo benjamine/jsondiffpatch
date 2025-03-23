@@ -37,10 +37,35 @@
     <meta property="og:image:width" content="774" />
     <meta property="og:image:height" content="774" />
 
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self';
+    script-src 'report-sample' 'self' 'unsafe-inline' 'unsafe-eval' https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.65.7/codemirror.min.js https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.65.7/mode/javascript/javascript.min.js https://www.google-analytics.com/analytics.js https://www.googletagmanager.com/gtag/js http://www.google-analytics.com/analytics.js;
+    style-src 'report-sample' 'self' 'unsafe-inline' https://cdnjs.cloudflare.com;
+    object-src 'none';
+    base-uri 'self';
+    connect-src 'self' https://api.github.com https://www.google-analytics.com;
+    font-src 'self';
+    frame-src 'self';
+    img-src 'self' https://img.shields.io;
+    manifest-src 'self';
+    media-src 'self';
+    worker-src 'none';"
+    />
+
     <meta name="color-scheme" content="dark light" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta content="utf-8" http-equiv="encoding" />
     <meta content="text/html;charset=utf-8" http-equiv="Content-Type" />
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bulma/1.0.3/css/bulma.min.css"
+      integrity="sha512-4EnjWdm80dyWrJ7rh/tlhNt6fJL52dSDSHNEqfdVmBLpJLPrRYnFa+Kn4ZZL+FRkDL5/7lAXuHylzJkpzkSM2A=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+
     <link rel="stylesheet" href="style.css" type="text/css" media="screen" />
     <link
       rel="stylesheet"
@@ -48,25 +73,33 @@
       type="text/css"
       media="screen"
     />
+
+    <!-- codemirror with javascript support and monokai for darkmode -->
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.65.7/codemirror.min.js"
+      integrity="sha512-8RnEqURPUc5aqFEN04aQEiPlSAdE0jlFS/9iGgUyNtwFnSKCXhmB6ZTNl7LnDtDWKabJIASzXrzD0K+LYexU9g=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.65.7/codemirror.min.css"
-      type="text/css"
-      media="screen"
+      integrity="sha512-uf06llspW44/LZpHzHT6qBOIVODjWtv4MxCricRxkzvopAlSWnTf6hpZTFxuuZcuNE9CBQhqE0Seu1CoRk84nQ=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
     />
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.65.7/theme/monokai.min.css"
-      type="text/css"
-      media="screen"
+      integrity="sha512-R6PH4vSzF2Yxjdvb2p2FA06yWul+U0PDDav4b/od/oXf9Iw37zl10plvwOXelrjV2Ai7Eo3vyHeyFUjhXdBCVQ=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
     />
     <script
-      type="text/javascript"
-      src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.65.7/codemirror.js"
-    ></script>
-    <script
-      type="text/javascript"
       src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.65.7/mode/javascript/javascript.min.js"
+      integrity="sha512-I6CdJdruzGtvDyvdO4YsiAq+pkWf2efgd1ZUSK2FnM/u2VuRASPC7GowWQrWyjxCZn6CT89s3ddGI+be0Ak9Fg=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
     ></script>
   </head>
 
@@ -86,8 +119,8 @@
           darkModeOverride === 'dark' ||
           (darkModeOverride !== 'light' &&
             window.matchMedia('(prefers-color-scheme: dark)').matches);
-        document.body.setAttribute(
-          'data-color-scheme',
+        document.documentElement.setAttribute(
+          'data-theme',
           darkMode ? 'dark' : 'light',
         );
       })();
@@ -125,7 +158,7 @@
         color: white;
       }
 
-      body[data-color-scheme='dark'] .github-corner svg {
+      [data-theme='dark'] .github-corner svg {
         fill: #b9ffe3;
         color: black;
       }
@@ -169,6 +202,49 @@
         <a id="external-link" style="display: none" target="_blank">source</a>
       </div>
       <nav>
+        <div class="dropdown is-hoverable">
+          <div class="dropdown-trigger">
+            <button
+              class="button"
+              aria-haspopup="true"
+              aria-controls="dropdown-menu"
+            >
+              <span>Examples</span>
+              <span class="icon is-small">
+                <i class="fas fa-angle-down" aria-hidden="true"></i>
+              </span>
+            </button>
+          </div>
+          <div class="dropdown-menu" id="dropdown-menu" role="menu">
+            <div class="dropdown-content">
+              <a href="?example=default" class="dropdown-item">default</a>
+              <a href="?example=text" class="dropdown-item">text</a>
+              <a href="?example=moving" class="dropdown-item"
+                >moving items around</a
+              >
+              <a href="?benjamine/9188826" class="dropdown-item"
+                >from a
+                <svg
+                  width="1rem"
+                  height="1rem"
+                  style="margin: 0 0.2rem"
+                  viewBox="0 0 98 96"
+                  fill="currentColor"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    clip-rule="evenodd"
+                    d="M48.854 0C21.839 0 0 22 0 49.217c0 21.756 13.993 40.172 33.405 46.69 2.427.49 3.316-1.059 3.316-2.362 0-1.141-.08-5.052-.08-9.127-13.59 2.934-16.42-5.867-16.42-5.867-2.184-5.704-5.42-7.17-5.42-7.17-4.448-3.015.324-3.015.324-3.015 4.934.326 7.523 5.052 7.523 5.052 4.367 7.496 11.404 5.378 14.235 4.074.404-3.178 1.699-5.378 3.074-6.6-10.839-1.141-22.243-5.378-22.243-24.283 0-5.378 1.94-9.778 5.014-13.2-.485-1.222-2.184-6.275.486-13.038 0 0 4.125-1.304 13.426 5.052a46.97 46.97 0 0 1 12.214-1.63c4.125 0 8.33.571 12.213 1.63 9.302-6.356 13.427-5.052 13.427-5.052 2.67 6.763.97 11.816.485 13.038 3.155 3.422 5.015 7.822 5.015 13.2 0 18.905-11.404 23.06-22.324 24.283 1.78 1.548 3.316 4.481 3.316 9.126 0 6.6-.08 11.897-.08 13.526 0 1.304.89 2.853 3.316 2.364 19.412-6.52 33.405-24.935 33.405-46.691C97.707 22 75.788 0 48.854 0z"
+                  />
+                </svg>
+                gist
+              </a>
+              <a href="?example=query" class="dropdown-item">query params</a>
+            </div>
+          </div>
+        </div>
+
         <button id="color-scheme-toggle" title="Toggle theme">
           <svg
             class="go-dark-icon"
@@ -211,11 +287,14 @@
                   ? 'dark'
                   : 'light';
                 const newColorScheme =
-                  document.body.getAttribute('data-color-scheme') === 'dark'
+                  document.documentElement.getAttribute('data-theme') === 'dark'
                     ? 'light'
                     : 'dark';
                 const resetToSystem = newColorScheme === systemColorSchema;
-                document.body.setAttribute('data-color-scheme', newColorScheme);
+                document.documentElement.setAttribute(
+                  'data-theme',
+                  newColorScheme,
+                );
                 document
                   .querySelector('meta[name="color-scheme"]')
                   .setAttribute(
@@ -235,18 +314,10 @@
         </script>
       </nav>
     </header>
-    <div class="buttons">
+    <div class="editors-toolbar">
       <div>
-        <input id="swap" type="button" value="Swap" />
-        <input id="clear" type="button" value="Clear" />
-        <select id="examples">
-          <option value="" disabled selected>examples</option>
-          <option value="default">default</option>
-          <option value="text">text</option>
-          <option value="moving">moving around</option>
-          <option value="gist">from a gist</option>
-          <option value="query">query params</option>
-        </select>
+        <button id="swap" type="button" class="button">Swap</button>
+        <button id="clear" type="button" class="button">Clear</button>
       </div>
     </div>
     <div class="json-input">
@@ -254,7 +325,9 @@
         <label for="json-input-left">
           <h2>JSON Left</h2>
         </label>
-        <button class="prettyfy" type="button" title="Pretty print">{ }</button>
+        <button class="reformat button" type="button" title="Pretty print">
+          { }
+        </button>
         <textarea id="json-input-left">
         loading...
       </textarea
@@ -265,7 +338,9 @@
         <label for="json-input-right">
           <h2>JSON Right</h2>
         </label>
-        <button class="prettyfy" type="button" title="Pretty print">{ }</button>
+        <button class="reformat button" type="button" title="Pretty print">
+          { }
+        </button>
         <textarea id="json-input-right">
         loading...
       </textarea
@@ -273,37 +348,28 @@
         <span class="error-message"></span>
       </div>
     </div>
-    <section id="results">
-      <h2>Delta</h2>
-      <label>
-        <input
-          id="show-delta-type-visual"
-          type="radio"
-          name="delta-type"
-          checked
-        />Visual
-      </label>
-      <label>
-        <input id="show-delta-type-json" type="radio" name="delta-type" />JSON
-      </label>
-      <label>
-        <input
-          id="show-delta-type-annotated"
-          type="radio"
-          name="delta-type"
-        />JSON (Annotated)
-      </label>
-      <div id="delta-panel-visual">
+    <section id="results" data-delta-type="visual">
+      <div class="tabs is-boxed">
+        <ul class="delta-type-switch">
+          <li class="is-active"><a href="#delta-visual">Visual Diff</a></li>
+          <li><a href="#delta-json">JSON</a></li>
+          <li><a href="#delta-annotated">JSON (Annotated)</a></li>
+        </ul>
+      </div>
+
+      <div id="delta-panel-visual" class="delta-panel">
         <div class="header-options">
-          <input id="showunchanged" type="checkbox" />
-          <label for="showunchanged"> Show unchanged values </label>
+          <label class="checkbox">
+            <input type="checkbox" id="showunchanged" />
+            Show unchanged values
+          </label>
         </div>
         <p id="visualdiff"></p>
       </div>
-      <div id="delta-panel-annotated" style="display: none">
+      <div id="delta-panel-annotated" class="delta-panel">
         <p id="annotateddiff"></p>
       </div>
-      <div id="delta-panel-json" style="display: none">
+      <div id="delta-panel-json" class="delta-panel">
         <p>
           (<span id="jsondifflength"></span>
           KB)
@@ -312,11 +378,12 @@
         <span class="error-message"></span>
       </div>
     </section>
-    <section id="features">
+    <section id="features" class="content">
       <h2>Features</h2>
       <ul>
         <li>
-          compare 2 json. also supports json5, json with comments, or plain text
+          compare 2 json. this tool also supports json5, json with comments, or
+          plain text
         </li>
         <li>
           json diff as visual diff or json (see
@@ -328,21 +395,6 @@
           >)
         </li>
         <li>
-          compare json from a gist (<a href="/?benjamine/9188826">example</a
-          >)<br />
-          <ol>
-            <li>
-              <a href="https://gist.github.com/" rel="nofollow"
-                >create a gist</a
-              >
-            </li>
-            <li>add 2 json files on the gist</li>
-            <li>
-              paste the gist url here: <input id="gist-link" type="text" />
-            </li>
-          </ol>
-        </li>
-        <li>
           smart diff arrays/lists. if items are objects a "key", "id", or "name"
           is automatically used to match
         </li>
@@ -352,6 +404,44 @@
           <a href="https://github.com/google/diff-match-patch" target="_blank"
             >google/diff-match-patch</a
           >)
+        </li>
+        <li>
+          use on your terminal (local files or http urls):
+          <pre class="terminal">
+          <code>
+            npx jsondiffpatch https://jsondiffpatch.com/demo/left.json https://jsondiffpatch.com/demo/right.json
+          </code>
+        </pre>
+        </li>
+        <li>
+          compare json from a
+          <svg
+            width="1rem"
+            height="1rem"
+            style="margin: 0 0.2rem"
+            viewBox="0 0 98 96"
+            fill="currentColor"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              fill-rule="evenodd"
+              clip-rule="evenodd"
+              d="M48.854 0C21.839 0 0 22 0 49.217c0 21.756 13.993 40.172 33.405 46.69 2.427.49 3.316-1.059 3.316-2.362 0-1.141-.08-5.052-.08-9.127-13.59 2.934-16.42-5.867-16.42-5.867-2.184-5.704-5.42-7.17-5.42-7.17-4.448-3.015.324-3.015.324-3.015 4.934.326 7.523 5.052 7.523 5.052 4.367 7.496 11.404 5.378 14.235 4.074.404-3.178 1.699-5.378 3.074-6.6-10.839-1.141-22.243-5.378-22.243-24.283 0-5.378 1.94-9.778 5.014-13.2-.485-1.222-2.184-6.275.486-13.038 0 0 4.125-1.304 13.426 5.052a46.97 46.97 0 0 1 12.214-1.63c4.125 0 8.33.571 12.213 1.63 9.302-6.356 13.427-5.052 13.427-5.052 2.67 6.763.97 11.816.485 13.038 3.155 3.422 5.015 7.822 5.015 13.2 0 18.905-11.404 23.06-22.324 24.283 1.78 1.548 3.316 4.481 3.316 9.126 0 6.6-.08 11.897-.08 13.526 0 1.304.89 2.853 3.316 2.364 19.412-6.52 33.405-24.935 33.405-46.691C97.707 22 75.788 0 48.854 0z"
+            />
+          </svg>
+          gist (see <a href="/?benjamine/9188826">example</a>)<br />
+          <ol>
+            <li>
+              <a href="https://gist.github.com/" rel="nofollow"
+                >create a gist</a
+              >
+            </li>
+            <li>add 2 json files on the gist</li>
+            <li>
+              paste the gist url here:
+              <input id="gist_url" type="text" name="gist_url" />
+            </li>
+          </ol>
         </li>
       </ul>
     </section>

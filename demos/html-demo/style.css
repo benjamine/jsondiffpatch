@@ -1,5 +1,14 @@
 body {
-  font-family: Georgia, serif;
+  font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    segoe ui,
+    Roboto,
+    Ubuntu,
+    Arial,
+    sans-serif,
+    apple color emoji,
+    segoe ui emoji;
   min-width: 600px;
 }
 
@@ -10,10 +19,12 @@ header {
 
 header > div {
   position: relative;
-  padding: 1rem;
+  padding: 1rem 1rem 0 1rem;
 }
 
 h1 {
+  font-size: 2em;
+  font-weight: 700;
   margin: 4px;
 }
 
@@ -29,7 +40,7 @@ header > nav {
   display: flex;
   gap: 8px;
   align-items: center;
-  padding-right: 80px;
+  padding-right: 100px;
 }
 
 header > div > * {
@@ -48,12 +59,21 @@ header > div > * {
 }
 
 h2 {
+  font-size: 1.5em;
+  font-weight: 700;
   display: inline-block;
   margin: 0.3rem 0;
 }
 
 section h2 {
   margin: 15px 20px;
+}
+
+section .tabs {
+  font-size: 1em;
+  font-weight: 700;
+  display: inline-block;
+  margin: 0.3rem 0;
 }
 
 a#fork_me {
@@ -85,20 +105,31 @@ a#fork_me {
   height: 200px;
 }
 
-.prettyfy {
+.reformat {
   font-weight: bold;
   font-size: smaller;
   margin-left: 5px;
+  height: 1.5rem;
+  width: 1.5rem;
+  vertical-align: baseline;
 }
 
-.buttons {
+.editors-toolbar {
   width: 100%;
   text-align: center;
-  height: 20px;
+  height: 0.5rem;
+  transition: all 0.3s ease-in-out;
 }
 
-.buttons > div {
+.editors-toolbar > div {
   margin: 0 auto;
+}
+
+@media screen and (max-width: 956px) {
+  /* avoid the toolbar overlapping with left/right header */
+  .editors-toolbar {
+    margin-bottom: 2.4rem;
+  }
 }
 
 .json-error {
@@ -145,7 +176,7 @@ a#fork_me {
 }
 
 #features {
-  margin-bottom: 6rem;
+  margin: 6rem 0;
 }
 
 #features li {
@@ -156,6 +187,10 @@ footer {
   font-size: small;
   text-align: center;
   margin: 40px;
+}
+
+footer p {
+  margin: 0 0 1rem 0;
 }
 
 .library-link {
@@ -175,13 +210,24 @@ a:hover {
   text-decoration: underline;
 }
 
-.results {
-  margin-top: 20px;
+#results .tabs {
+  margin-bottom: 0.2rem;
 }
 
-.results > div {
-  vertical-align: top;
-  display: inline-block;
+.delta-panel {
+  display: none;
+}
+
+[data-delta-type='visual'] #delta-panel-visual {
+  display: block;
+}
+
+[data-delta-type='json'] #delta-panel-json {
+  display: block;
+}
+
+[data-delta-type='annotated'] #delta-panel-annotated {
+  display: block;
 }
 
 [data-diff='no-diff'] .header-options {
@@ -195,15 +241,9 @@ a:hover {
   font-family: monospace;
 }
 
-html {
-  color-scheme: only light;
-}
-
+html,
 body {
   color-scheme: only light;
-}
-
-body {
   background-color: #f8f8ff;
   color: black;
 }
@@ -231,7 +271,8 @@ body {
   transition: all 0.5s;
 }
 
-body[data-color-scheme='dark'] {
+html[data-theme='dark'],
+html[data-theme='dark'] body {
   background-color: #151515;
   color: #eee;
 
@@ -262,11 +303,11 @@ button#color-scheme-toggle:hover {
   box-shadow: black 0 0 15px;
 }
 
-body[data-color-scheme='dark'] button#color-scheme-toggle:hover {
+html[data-theme='dark'] button#color-scheme-toggle:hover {
   box-shadow: white 0 0 15px;
 }
 
-body[data-color-scheme='dark'] {
+html[data-theme='dark'] {
   .jsondiffpatch-added .jsondiffpatch-property-name,
   .jsondiffpatch-added .jsondiffpatch-value pre,
   .jsondiffpatch-modified .jsondiffpatch-right-value pre,
@@ -283,5 +324,30 @@ body[data-color-scheme='dark'] {
 
   .jsondiffpatch-moved .jsondiffpatch-moved-destination {
     background: #373900;
+  }
+
+  .jsondiffpatch-annotated-delta tr:hover {
+    background: rgba(255, 255, 155, 0.5);
+  }
+}
+
+pre {
+  background-color: transparent;
+  color: inherit;
+  font-family: monospace;
+  white-space: pre-wrap;
+  word-wrap: normal;
+  overflow: visible;
+}
+
+.content {
+  pre.terminal {
+    white-space: pre-line;
+    margin: 1rem;
+    padding: 0 1rem;
+    border-radius: 0.3rem;
+    background-color: #111;
+    max-width: 60rem;
+    color: white;
   }
 }
