@@ -1,5 +1,14 @@
 body {
-  font-family: -apple-system, BlinkMacSystemFont, segoe ui, Roboto, Ubuntu, Arial, sans-serif, apple color emoji, segoe ui emoji;
+  font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    segoe ui,
+    Roboto,
+    Ubuntu,
+    Arial,
+    sans-serif,
+    apple color emoji,
+    segoe ui emoji;
   min-width: 600px;
 }
 
@@ -8,7 +17,7 @@ header {
   justify-content: space-between;
 }
 
-header>div {
+header > div {
   position: relative;
   padding: 1rem 1rem 0 1rem;
 }
@@ -27,14 +36,14 @@ h1 {
   font-weight: bold;
 }
 
-header>nav {
+header > nav {
   display: flex;
   gap: 8px;
   align-items: center;
   padding-right: 100px;
 }
 
-header>div>* {
+header > div > * {
   display: inline-block;
 }
 
@@ -77,12 +86,12 @@ a#fork_me {
   font-family: monospace;
 }
 
-.json-input>div {
+.json-input > div {
   float: left;
   width: 50%;
 }
 
-.json-input>div {
+.json-input > div {
   text-align: center;
 }
 
@@ -91,7 +100,7 @@ a#fork_me {
   border: 1px solid #ccc;
 }
 
-.json-input>div>textarea {
+.json-input > div > textarea {
   width: 95%;
   height: 200px;
 }
@@ -112,12 +121,11 @@ a#fork_me {
   transition: all 0.3s ease-in-out;
 }
 
-.editors-toolbar>div {
+.editors-toolbar > div {
   margin: 0 auto;
 }
 
 @media screen and (max-width: 956px) {
-
   /* avoid the toolbar overlapping with left/right header */
   .editors-toolbar {
     margin-bottom: 2.4rem;
@@ -163,7 +171,7 @@ a#fork_me {
   height: 200px;
 }
 
-#delta-panel-json>p {
+#delta-panel-json > p {
   margin: 4px;
 }
 
@@ -300,7 +308,6 @@ html[data-theme='dark'] button#color-scheme-toggle:hover {
 }
 
 html[data-theme='dark'] {
-
   .jsondiffpatch-added .jsondiffpatch-property-name,
   .jsondiffpatch-added .jsondiffpatch-value pre,
   .jsondiffpatch-modified .jsondiffpatch-right-value pre,

@@ -46,8 +46,7 @@
 as a CLI:
 
 ```sh
-# diff two json files, colored output
-npx jsondiffpatch ./docs/demo/left.json ./docs/demo/right.json
+npx jsondiffpatch https://jsondiffpatch.com/demo/left.json https://jsondiffpatch.com/demo/right.json
 ```
 
 ![console_demo!](docs/demo/consoledemo.png)
@@ -297,3 +296,22 @@ For more details check [Formatters documentation](docs/formatters.md)
 `diff()`, `patch()` and `reverse()` functions are implemented using Pipes & Filters pattern, making it extremely customizable by adding or replacing filters on a pipe.
 
 Check [Plugins documentation](docs/plugins.md) for details.
+
+## Related Projects
+
+- [jsondiffpatch.net (C#)
+  ](https://github.com/wbish/jsondiffpatch.net)
+- [SystemTextJson.JsonDiffPatch
+  (C#)](https://github.com/weichch/system-text-json-jsondiffpatch)
+- [Go JSON Diff (and Patch)
+  ](https://github.com/yudai/gojsondiff)
+- [json-diff-patch (python)](https://github.com/apack1001/json-diff-patch)
+- [jsondiffpatch-react](https://github.com/bluepeter/jsondiffpatch-react)
+
+## All contributors ✨
+
+<a href="https://github.com/benjamine/jsondiffpatch/graphs/contributors">
+  <p align="center">
+    <img width="720" src="https://contrib.rocks/image?repo=benjamine/jsondiffpatch" alt="A table of avatars from the project's contributors" />
+  </p>
+</a>

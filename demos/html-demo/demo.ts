@@ -488,9 +488,6 @@ const compare = function () {
     return;
   }
 
-  
-
-
   const selectedType = getSelectedDeltaType();
   const resultsSections = document.getElementById('results')!;
   const visualdiff = document.getElementById('visualdiff')!;
@@ -563,7 +560,10 @@ areas.left.element.addEventListener('keyup', compare);
 areas.right.element.addEventListener('keyup', compare);
 
 const getSelectedDeltaType = function () {
-  return document.querySelector("#results")?.getAttribute("data-delta-type") || "visual";
+  return (
+    document.querySelector('#results')?.getAttribute('data-delta-type') ||
+    'visual'
+  );
 };
 
 const showDeltaType = function (type: string) {
@@ -571,11 +571,14 @@ const showDeltaType = function (type: string) {
     return false;
   }
 
-  document.querySelectorAll(".delta-type-switch li").forEach((el) => {
-    el.classList.remove("is-active");
+  document.querySelectorAll('.delta-type-switch li').forEach((el) => {
+    el.classList.remove('is-active');
   });
-  document.querySelector(`[href*="#delta-${type}"]`)?.closest("li")?.classList.add("is-active");
-  document.querySelector("#results")?.setAttribute("data-delta-type", type);
+  document
+    .querySelector(`[href*="#delta-${type}"]`)
+    ?.closest('li')
+    ?.classList.add('is-active');
+  document.querySelector('#results')?.setAttribute('data-delta-type', type);
 
   compare();
   if (type === 'json') {
@@ -584,7 +587,7 @@ const showDeltaType = function (type: string) {
   return true;
 };
 
-document.querySelectorAll(".delta-type-switch a").forEach((el) => {
+document.querySelectorAll('.delta-type-switch a').forEach((el) => {
   el.addEventListener('click', (e) => {
     const match = /#delta-(.+)$/.exec((e.target as HTMLAnchorElement)?.href);
     if (!match) return;
@@ -671,13 +674,9 @@ const loadExampleById = (id: string) => {
     case 'moving':
       document.location =
         '?desc=moving%20around&left=' +
-        encodeURIComponent(
-          JSON.stringify([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
-        ) +
+        encodeURIComponent(JSON.stringify([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10])) +
         '&right=' +
-        encodeURIComponent(
-          JSON.stringify([10, 0, 1, 7, 2, 4, 5, 6, 88, 9, 3]),
-        );
+        encodeURIComponent(JSON.stringify([10, 0, 1, 7, 2, 4, 5, 6, 88, 9, 3]));
       break;
     case 'query':
       document.location =
@@ -878,8 +877,8 @@ const load: Load = {
   },
 
   example: function (arg: string) {
-      const id = decodeURIComponent(arg || '');
-      loadExampleById(id);
+    const id = decodeURIComponent(arg || '');
+    loadExampleById(id);
   },
 
   key: function (key: string) {
@@ -915,7 +914,6 @@ if (urlQuery) {
     right: exampleJson[1],
   });
 }
-
 
 interface GistData {
   id: string;
