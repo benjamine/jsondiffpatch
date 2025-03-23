@@ -88,11 +88,11 @@ const onColorSchemeChange = (handler: (dark?: boolean) => void) => {
 };
 
 document.body.setAttribute(
-  'data-color-scheme',
+  'data-theme',
   colorSchemeIsDark() ? 'dark' : 'light',
 );
 onColorSchemeChange((dark) => {
-  document.body.setAttribute('data-color-scheme', dark ? 'dark' : 'light');
+  document.body.setAttribute('data-theme', dark ? 'dark' : 'light');
 });
 
 const parseJson = (text: string) => {
@@ -369,11 +369,11 @@ class JsonArea {
     this.container = element.parentNode as HTMLElement;
     const self = this;
     const prettifyButton = this.container.querySelector(
-      '.prettyfy',
+      '.reformat',
     ) as HTMLElement;
     if (prettifyButton) {
       prettifyButton.addEventListener('click', function () {
-        self.prettyfy();
+        self.reformat();
       });
     }
   }
@@ -423,7 +423,7 @@ class JsonArea {
     this.editor.setValue(value);
   };
 
-  prettyfy = () => {
+  reformat = () => {
     const value = this.parse();
     const prettyJson =
       typeof value === 'string' ? value : JSON.stringify(value, null, 2);
@@ -487,6 +487,10 @@ const compare = function () {
     areas.delta.setValue('');
     return;
   }
+
+  
+
+
   const selectedType = getSelectedDeltaType();
   const resultsSections = document.getElementById('results')!;
   const visualdiff = document.getElementById('visualdiff')!;
@@ -559,49 +563,37 @@ areas.left.element.addEventListener('keyup', compare);
 areas.right.element.addEventListener('keyup', compare);
 
 const getSelectedDeltaType = function () {
-  if (
-    (document.getElementById('show-delta-type-visual') as HTMLInputElement)
-      .checked
-  ) {
-    return 'visual';
-  }
-  if (
-    (document.getElementById('show-delta-type-annotated') as HTMLInputElement)
-      .checked
-  ) {
-    return 'annotated';
-  }
-  if (
-    (document.getElementById('show-delta-type-json') as HTMLInputElement)
-      .checked
-  ) {
-    return 'json';
-  }
+  return document.querySelector("#results")?.getAttribute("data-delta-type") || "visual";
 };
 
-const showSelectedDeltaType = function () {
-  const type = getSelectedDeltaType();
-  document.getElementById('delta-panel-visual')!.style.display =
-    type === 'visual' ? '' : 'none';
-  document.getElementById('delta-panel-annotated')!.style.display =
-    type === 'annotated' ? '' : 'none';
-  document.getElementById('delta-panel-json')!.style.display =
-    type === 'json' ? '' : 'none';
+const showDeltaType = function (type: string) {
+  if (type !== 'visual' && type !== 'annotated' && type !== 'json') {
+    return false;
+  }
+
+  document.querySelectorAll(".delta-type-switch li").forEach((el) => {
+    el.classList.remove("is-active");
+  });
+  document.querySelector(`[href*="#delta-${type}"]`)?.closest("li")?.classList.add("is-active");
+  document.querySelector("#results")?.setAttribute("data-delta-type", type);
+
   compare();
   if (type === 'json') {
     areas.delta.editor!.refresh();
   }
+  return true;
 };
 
-document
-  .getElementById('show-delta-type-visual')!
-  .addEventListener('click', showSelectedDeltaType);
-document
-  .getElementById('show-delta-type-annotated')!
-  .addEventListener('click', showSelectedDeltaType);
-document
-  .getElementById('show-delta-type-json')!
-  .addEventListener('click', showSelectedDeltaType);
+document.querySelectorAll(".delta-type-switch a").forEach((el) => {
+  el.addEventListener('click', (e) => {
+    const match = /#delta-(.+)$/.exec((e.target as HTMLAnchorElement)?.href);
+    if (!match) return;
+    const deltaType = match[1];
+    if (showDeltaType(deltaType)) {
+      e.preventDefault();
+    }
+  });
+});
 
 document.getElementById('swap')!.addEventListener('click', function () {
   const leftValue = areas.left.getValue();
@@ -653,8 +645,63 @@ interface Load {
     leftValueArg: string,
     rightValueArg: string,
   ) => void;
+  example: (id: string) => void;
   key: (key: string) => void;
 }
+
+const loadExampleById = (id: string) => {
+  switch (id) {
+    case 'text': {
+      const exampleJson = getExampleJson();
+      load.data({
+        left: {
+          name: 'left.txt',
+          content: JSON.parse(exampleJson[0]).summary,
+        },
+        right: {
+          name: 'right.txt',
+          content: JSON.parse(exampleJson[1]).summary,
+        },
+      });
+      break;
+    }
+    case 'gist':
+      document.location = '?benjamine/9188826';
+      break;
+    case 'moving':
+      document.location =
+        '?desc=moving%20around&left=' +
+        encodeURIComponent(
+          JSON.stringify([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+        ) +
+        '&right=' +
+        encodeURIComponent(
+          JSON.stringify([10, 0, 1, 7, 2, 4, 5, 6, 88, 9, 3]),
+        );
+      break;
+    case 'query':
+      document.location =
+        '?desc=encoded%20in%20url&left=' +
+        /* jshint quotmark: false */
+        encodeURIComponent(
+          JSON.stringify({
+            "don't": 'abuse',
+            with: ['large', 'urls'],
+          }),
+        ) +
+        '&right=' +
+        encodeURIComponent(
+          JSON.stringify({
+            "don't": 'use',
+            with: ['>', 2, 'KB urls'],
+          }),
+        );
+      break;
+    default:
+      document.location = '?';
+      break;
+  }
+};
 
 const load: Load = {
   data: function (dataArg) {
@@ -830,10 +877,16 @@ const load: Load = {
     }
   },
 
+  example: function (arg: string) {
+      const id = decodeURIComponent(arg || '');
+      loadExampleById(id);
+  },
+
   key: function (key: string) {
     const matchers = {
       gist: /^(?:https?:\/\/)?(?:gist\.github\.com\/)?(?:[\w0-9\-a-f]+\/)?([0-9a-f]+)$/i,
       leftright: /^(?:desc=(.*)?&)?left=(.*)&right=(.*)&?$/i,
+      example: /^example=([\w\d\-_/]+)$/i,
     };
     for (const loader in matchers) {
       const match = matchers[loader as keyof typeof matchers].exec(key);
@@ -863,63 +916,6 @@ if (urlQuery) {
   });
 }
 
-(document.getElementById('examples') as HTMLSelectElement).addEventListener(
-  'change',
-  function () {
-    const example = trim(this.value);
-    switch (example) {
-      case 'text': {
-        const exampleJson = getExampleJson();
-        load.data({
-          left: {
-            name: 'left.txt',
-            content: JSON.parse(exampleJson[0]).summary,
-          },
-          right: {
-            name: 'right.txt',
-            content: JSON.parse(exampleJson[1]).summary,
-          },
-        });
-        break;
-      }
-      case 'gist':
-        document.location = '?benjamine/9188826';
-        break;
-      case 'moving':
-        document.location =
-          '?desc=moving%20around&left=' +
-          encodeURIComponent(
-            JSON.stringify([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
-          ) +
-          '&right=' +
-          encodeURIComponent(
-            JSON.stringify([10, 0, 1, 7, 2, 4, 5, 6, 88, 9, 3]),
-          );
-        break;
-      case 'query':
-        document.location =
-          '?desc=encoded%20in%20url&left=' +
-          /* jshint quotmark: false */
-          encodeURIComponent(
-            JSON.stringify({
-              "don't": 'abuse',
-              with: ['large', 'urls'],
-            }),
-          ) +
-          '&right=' +
-          encodeURIComponent(
-            JSON.stringify({
-              "don't": 'use',
-              with: ['>', 2, 'KB urls'],
-            }),
-          );
-        break;
-      default:
-        document.location = '?';
-        break;
-    }
-  },
-);
 
 interface GistData {
   id: string;
@@ -932,7 +928,7 @@ interface GistData {
   owner: { login: string };
 }
 
-document.querySelector('#gist-link')?.addEventListener('input', (e) => {
+document.querySelector('#gist_url')?.addEventListener('input', (e) => {
   const match =
     /^(?:https?:\/\/)?gist\.github\.com\/([^/]+)\/([0-9a-f]+)/i.exec(
       (e.target as HTMLInputElement).value,
@@ -944,7 +940,7 @@ document.querySelector('#gist-link')?.addEventListener('input', (e) => {
       behavior: 'smooth',
       block: 'start',
     });
-    const input = document.querySelector('#gist-link') as HTMLInputElement;
+    const input = document.querySelector('#gist_url') as HTMLInputElement;
     if (input) {
       input.value = '';
       input.blur();
