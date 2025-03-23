@@ -43,6 +43,17 @@
 
 ## Usage
 
+as a CLI:
+
+```sh
+# diff two json files, colored output (using chalk lib)
+npx jsondiffpatch ./docs/demo/left.json ./docs/demo/right.json
+```
+
+![console_demo!](docs/demo/consoledemo.png)
+
+or as a library:
+
 ```javascript
 // sample data
 const country = {
@@ -280,20 +291,6 @@ const jsondiffpatchInstance = jsondiffpatch.create({
 To see formatters in action check the [Live Demo](https://jsondiffpatch.com).
 
 For more details check [Formatters documentation](docs/formatters.md)
-
-## Console
-
-```sh
-# diff two json files, colored output (using chalk lib)
-./node_modules/.bin/jsondiffpatch ./docs/demo/left.json ./docs/demo/right.json
-
-# or install globally
-npm install -g jsondiffpatch
-
-jsondiffpatch ./docs/demo/left.json ./docs/demo/right.json
-```
-
-![console_demo!](docs/demo/consoledemo.png)
 
 ## Plugins
 
