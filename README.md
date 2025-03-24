@@ -306,7 +306,7 @@ Check [Plugins documentation](docs/plugins.md) for details.
 - [Go JSON Diff (and Patch)
   ](https://github.com/yudai/gojsondiff)
 - [json-diff-patch (python)](https://github.com/apack1001/json-diff-patch)
-- [jsondiffpatch-react](https://github.com/bluepeter/jsondiffpatch-react)
+- [jsondiffpatch-react](https://github.com/bluepeter/jsondiffpatch-react), also check docs for [usage in react](/docs/react.md)
 
 ## All contributors ✨
 

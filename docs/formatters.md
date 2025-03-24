@@ -20,6 +20,8 @@ jsondiffpatch.formatters.html.hideUnchanged();
 
 Html can be generated sever-side the same way, just remember to include (or embed) `/src/formatters/html.css` when rendering.
 
+For help using this in react, check [usage in react](./react.md) doc.
+
 ## Annotated JSON
 
 This will render the original JSON delta in html, with annotations aside explaining the meaning of each part. This attempts to make the JSON delta format self-explained.
