@@ -882,6 +882,174 @@ const arrays: ExampleGroup = [
     exactReverse: false,
   },
   {
+    name: 'issue 295 • case 1 | https://github.com/benjamine/jsondiffpatch/issues/295',
+    exactReverse: false,
+    options: {
+      objectHash(obj: { id?: string }, index?: number) {
+        return obj.id || `$$index:${index}`;
+      },
+    },
+    left: [
+      { id: 1, style: { zIndex: 1 } },
+      { id: 2, style: { zIndex: 2 } },
+      { id: 3, style: { zIndex: 3 } },
+      { id: 4, style: { zIndex: 4 } },
+      { id: 5, style: { zIndex: 5 } },
+      { id: 6, style: { zIndex: 6 } },
+      { id: 7, style: { zIndex: 7 } },
+      { id: 8, style: { zIndex: 8 } },
+      { id: 9, style: { zIndex: 9 } },
+    ],
+    right: [
+      { id: 7, style: { zIndex: 1 } },
+      { id: 8, style: { zIndex: 2 } },
+      { id: 9, style: { zIndex: 3 } },
+      { id: 1, style: { zIndex: 4 } },
+      { id: 2, style: { zIndex: 5 } },
+      { id: 3, style: { zIndex: 6 } },
+      { id: 4, style: { zIndex: 7 } },
+      { id: 5, style: { zIndex: 8 } },
+      { id: 6, style: { zIndex: 9 } },
+    ],
+    delta: {
+      0: { style: { zIndex: [7, 1] } },
+      1: { style: { zIndex: [8, 2] } },
+      2: { style: { zIndex: [9, 3] } },
+      3: { style: { zIndex: [1, 4] } },
+      4: { style: { zIndex: [2, 5] } },
+      5: { style: { zIndex: [3, 6] } },
+      6: { style: { zIndex: [4, 7] } },
+      7: { style: { zIndex: [5, 8] } },
+      8: { style: { zIndex: [6, 9] } },
+      _t: 'a',
+      _6: ['', 0, 3],
+      _7: ['', 1, 3],
+      _8: ['', 2, 3],
+    },
+    reverse: {
+      0: { style: { zIndex: [4, 1] } },
+      1: { style: { zIndex: [5, 2] } },
+      2: { style: { zIndex: [6, 3] } },
+      3: { style: { zIndex: [7, 4] } },
+      4: { style: { zIndex: [8, 5] } },
+      5: { style: { zIndex: [9, 6] } },
+      6: { style: { zIndex: [1, 7] } },
+      7: { style: { zIndex: [2, 8] } },
+      8: { style: { zIndex: [3, 9] } },
+      _t: 'a',
+      _0: ['', 6, 3],
+      _1: ['', 7, 3],
+      _2: ['', 8, 3],
+    },
+  },
+  {
+    name: 'issue 295 • case 2 | https://github.com/benjamine/jsondiffpatch/issues/295',
+    exactReverse: false,
+    options: {
+      objectHash(obj: { uid?: string }, index?: number) {
+        return obj.uid || `$$index:${index}`;
+      },
+    },
+    left: [
+      { uid: 'scene', parent_uid: null },
+      { uid: 'txt_clztu14dm00042v6j71u1c9k3', parent_uid: 'scene' },
+      { uid: 'grp_cm0vzowcd00022v6izleecn6c', parent_uid: 'scene' },
+      {
+        uid: 'txt_cm01a5cpi00012v6inbaunav1',
+        parent_uid: 'grp_cm0vzowcd00022v6izleecn6c',
+      },
+      {
+        uid: 'txt_cm097vd9000012v6i9tsfrff2',
+        parent_uid: 'grp_cm0vzowcd00022v6izleecn6c',
+      },
+      {
+        uid: 'txt_cm097w3zp00022v6iek5pr7id',
+        parent_uid: 'grp_cm0vzowcd00022v6izleecn6c',
+      },
+      { uid: 'fdr_cm0ukrqom00002v6ixqokqydk', parent_uid: 'scene' },
+      {
+        uid: 'fdr_cm0umi0e000002v6ivbkyzpwf',
+        parent_uid: 'fdr_cm0ukrqom00002v6ixqokqydk',
+      },
+      {
+        uid: 'txt_cm0bc6t0900022v6ij7baxq2d',
+        parent_uid: 'fdr_cm0ukrqom00002v6ixqokqydk',
+      },
+      {
+        uid: 'txt_cm0bc70dh00032v6im4wawi5v',
+        parent_uid: 'fdr_cm0ukrqom00002v6ixqokqydk',
+      },
+      { uid: 'fdr_cm0vznwt800012v6ial614xz1', parent_uid: 'scene' },
+      { uid: 'txt_cm0bc5aid00002v6iu6e4a0m5', parent_uid: 'scene' },
+    ],
+    right: [
+      { uid: 'scene', parent_uid: null },
+      { uid: 'txt_clztu14dm00042v6j71u1c9k3', parent_uid: 'scene' },
+      { uid: 'txt_cm01a5cpi00012v6inbaunav1', parent_uid: 'scene' },
+      { uid: 'fdr_cm0ukrqom00002v6ixqokqydk', parent_uid: 'scene' },
+      {
+        uid: 'fdr_cm0umi0e000002v6ivbkyzpwf',
+        parent_uid: 'fdr_cm0ukrqom00002v6ixqokqydk',
+      },
+      {
+        uid: 'txt_cm097vd9000012v6i9tsfrff2',
+        parent_uid: 'fdr_cm0umi0e000002v6ivbkyzpwf',
+      },
+      {
+        uid: 'txt_cm097w3zp00022v6iek5pr7id',
+        parent_uid: 'fdr_cm0umi0e000002v6ivbkyzpwf',
+      },
+      {
+        uid: 'txt_cm0bc6t0900022v6ij7baxq2d',
+        parent_uid: 'fdr_cm0ukrqom00002v6ixqokqydk',
+      },
+      {
+        uid: 'txt_cm0bc70dh00032v6im4wawi5v',
+        parent_uid: 'fdr_cm0ukrqom00002v6ixqokqydk',
+      },
+      { uid: 'fdr_cm0vznwt800012v6ial614xz1', parent_uid: 'scene' },
+      { uid: 'txt_cm0bc5aid00002v6iu6e4a0m5', parent_uid: 'scene' },
+    ],
+    delta: {
+      2: { parent_uid: ['grp_cm0vzowcd00022v6izleecn6c', 'scene'] },
+      5: {
+        parent_uid: [
+          'grp_cm0vzowcd00022v6izleecn6c',
+          'fdr_cm0umi0e000002v6ivbkyzpwf',
+        ],
+      },
+      6: {
+        parent_uid: [
+          'grp_cm0vzowcd00022v6izleecn6c',
+          'fdr_cm0umi0e000002v6ivbkyzpwf',
+        ],
+      },
+      _t: 'a',
+      _2: [{ uid: 'grp_cm0vzowcd00022v6izleecn6c', parent_uid: 'scene' }, 0, 0],
+      _6: ['', 3, 3],
+      _7: ['', 4, 3],
+    },
+    reverse: {
+      2: [{ uid: 'grp_cm0vzowcd00022v6izleecn6c', parent_uid: 'scene' }],
+      3: { parent_uid: ['scene', 'grp_cm0vzowcd00022v6izleecn6c'] },
+      4: {
+        parent_uid: [
+          'fdr_cm0umi0e000002v6ivbkyzpwf',
+          'grp_cm0vzowcd00022v6izleecn6c',
+        ],
+      },
+      5: {
+        parent_uid: [
+          'fdr_cm0umi0e000002v6ivbkyzpwf',
+          'grp_cm0vzowcd00022v6izleecn6c',
+        ],
+      },
+      _t: 'a',
+      _5: ['', 4, 3],
+      _6: ['', 5, 3],
+    },
+  },
+  {
     name: 'nested',
     options: {
       objectHash(obj: { id?: string }) {
