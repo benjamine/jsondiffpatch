@@ -237,7 +237,11 @@ const jsondiffpatchInstance = jsondiffpatch.create({
   },
   cloneDiffValues: false /* default false. if true, values in the obtained delta will be cloned
       (using jsondiffpatch.clone by default), to ensure delta keeps no references to left or right objects. this becomes useful if you're diffing and patching the same objects multiple times without serializing deltas.
-      instead of true, a function can be specified here to provide a custom clone(value)
+      instead of true, a function can be specified here to provide a custom clone(value).
+      */
+  omitRemovedValues: false /* if you don't need to unpatch (reverse deltas),
+      "old"/"left" values (removed or replaced) are not included in the delta.
+      you can set this to true to get more compact deltas.
       */,
 });
 ```

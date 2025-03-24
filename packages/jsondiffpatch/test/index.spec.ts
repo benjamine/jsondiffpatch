@@ -1,8 +1,8 @@
 import DiffMatchPatch from 'diff-match-patch';
-import * as jsondiffpatch from '../src/index.js';
-import * as jsonpatchFormatter from '../src/formatters/jsonpatch.js';
-import * as htmlFormatter from '../src/formatters/html.js';
 import lcs from '../src/filters/lcs.js';
+import * as htmlFormatter from '../src/formatters/html.js';
+import * as jsonpatchFormatter from '../src/formatters/jsonpatch.js';
+import * as jsondiffpatch from '../src/index.js';
 
 import examples from './examples/diffpatch.js';
 
@@ -163,6 +163,67 @@ describe('DiffPatcher', () => {
       expect(delta).toEqual({
         oldProp: [{ value: 3 }, 0, 0],
         newProp: [{ value: 5 }],
+      });
+    });
+    it("ensures deltas don't reference original array items", function () {
+      const left = {
+        list: [
+          {
+            id: 1,
+          },
+        ],
+      };
+      const right = {
+        list: [],
+      };
+      const delta = instance.diff(left, right);
+      left.list[0].id = 11;
+      expect(delta).toEqual({
+        list: { _t: 'a', _0: [{ id: 1 }, 0, 0] },
+      });
+    });
+  });
+
+  describe('using omitRemovedValues', () => {
+    let instance: jsondiffpatch.DiffPatcher;
+    beforeAll(function () {
+      instance = new DiffPatcher({
+        objectHash: (item: unknown) =>
+          typeof item === 'object' &&
+          item &&
+          'id' in item &&
+          typeof item.id === 'string'
+            ? item.id
+            : undefined,
+        omitRemovedValues: true,
+      });
+    });
+    it("ensures deltas don't have the removed values", function () {
+      const left = {
+        oldProp: {
+          value: { name: 'this will be removed' },
+        },
+        newProp: {
+          value: { name: 'this will be removed too' },
+        },
+        list: [{ id: '1' }, { id: '2' }, { id: '3' }, { id: '4' }],
+      };
+      const right = {
+        newProp: {
+          value: [1, 2, 3],
+        },
+        list: [{ id: '1' }, { id: '2' }, { id: '4' }],
+      };
+      const delta = instance.diff(left, right);
+      expect(delta).toEqual({
+        oldProp: [0, 0, 0],
+        newProp: {
+          value: [0, [1, 2, 3]],
+        },
+        list: {
+          _t: 'a',
+          _2: [0, 0, 0],
+        },
       });
     });
   });
