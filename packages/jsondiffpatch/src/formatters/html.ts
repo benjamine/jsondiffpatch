@@ -17,8 +17,16 @@ interface HtmlFormatterContext extends BaseFormatterContext {
 
 class HtmlFormatter extends BaseFormatter<HtmlFormatterContext> {
   typeFormattterErrorFormatter(context: HtmlFormatterContext, err: unknown) {
-    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-    context.out(`<pre class="jsondiffpatch-error">${err}</pre>`);
+    const message =
+      typeof err === 'object' &&
+      err !== null &&
+      'message' in err &&
+      typeof err.message === 'string'
+        ? err.message
+        : String(err);
+    context.out(
+      `<pre class="jsondiffpatch-error">${htmlEscape(message)}</pre>`,
+    );
   }
 
   formatValue(context: HtmlFormatterContext, value: unknown) {
@@ -85,8 +93,8 @@ class HtmlFormatter extends BaseFormatter<HtmlFormatterContext> {
       nodeType ? ` jsondiffpatch-child-node-type-${nodeType}` : ''
     }`;
     context.out(
-      `<li class="${nodeClass}" data-key="${leftKey}">` +
-        `<div class="jsondiffpatch-property-name">${leftKey}</div>`,
+      `<li class="${nodeClass}" data-key="${htmlEscape(leftKey)}">` +
+        `<div class="jsondiffpatch-property-name">${htmlEscape(leftKey)}</div>`,
     );
   }
 
@@ -194,8 +202,9 @@ class HtmlFormatter extends BaseFormatter<HtmlFormatterContext> {
   }
 }
 
-function htmlEscape(text: string) {
-  let html = text;
+function htmlEscape(value: string | number) {
+  if (typeof value === 'number') return value;
+  let html = String(value);
   const replacements: [RegExp, string][] = [
     [/&/g, '&amp;'],
     [/</g, '&lt;'],
