@@ -92,9 +92,13 @@ class HtmlFormatter extends BaseFormatter<HtmlFormatterContext> {
     const nodeClass = `jsondiffpatch-${type}${
       nodeType ? ` jsondiffpatch-child-node-type-${nodeType}` : ''
     }`;
+    const label =
+      typeof leftKey === 'number' && key.substring(0, 1) === '_'
+        ? key.substring(1)
+        : key;
     context.out(
-      `<li class="${nodeClass}" data-key="${htmlEscape(leftKey)}">` +
-        `<div class="jsondiffpatch-property-name">${htmlEscape(leftKey)}</div>`,
+      `<li class="${nodeClass}" data-key="${htmlEscape(key)}">` +
+        `<div class="jsondiffpatch-property-name">${htmlEscape(label)}</div>`,
     );
   }
 

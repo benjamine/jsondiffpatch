@@ -1,5 +1,3 @@
-import BaseFormatter from './base.js';
-import type { BaseFormatterContext, DeltaType, NodeType } from './base.js';
 import type {
   AddedDelta,
   ArrayDelta,
@@ -10,6 +8,8 @@ import type {
   ObjectDelta,
   TextDiffDelta,
 } from '../types.js';
+import type { BaseFormatterContext, DeltaType, NodeType } from './base.js';
+import BaseFormatter from './base.js';
 
 interface AnnotatedFormatterContext extends BaseFormatterContext {
   indentLevel?: number;
