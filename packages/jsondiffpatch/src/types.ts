@@ -15,6 +15,7 @@ export interface Options {
   };
   propertyFilter?: (name: string, context: DiffContext) => boolean;
   cloneDiffValues?: boolean | ((value: unknown) => unknown);
+  omitRemovedValues?: boolean;
 }
 
 export type AddedDelta = [unknown];

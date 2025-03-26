@@ -168,6 +168,7 @@ export const diffFilter: Filter<DiffContext> = function arraysDiffFilter(
     };
     for (index = commonHead; index < len2 - commonTail; index++) {
       result[index] = [array2[index]];
+      context.prepareDeltaResult(result[index]);
     }
     context.setResult(result).exit();
     return;
@@ -178,7 +179,9 @@ export const diffFilter: Filter<DiffContext> = function arraysDiffFilter(
       _t: 'a',
     };
     for (index = commonHead; index < len1 - commonTail; index++) {
-      result[`_${index}`] = [array1[index], 0, 0];
+      const key = `_${index}` as const;
+      result[key] = [array1[index], 0, 0];
+      context.prepareDeltaResult(result[key]);
     }
     context.setResult(result).exit();
     return;
@@ -195,10 +198,13 @@ export const diffFilter: Filter<DiffContext> = function arraysDiffFilter(
   result = result || {
     _t: 'a',
   };
+
   for (index = commonHead; index < len1 - commonTail; index++) {
     if (seq.indices1.indexOf(index - commonHead) < 0) {
       // removed
-      result[`_${index}`] = [array1[index], 0, 0];
+      const key = `_${index}` as const;
+      result[key] = [array1[index], 0, 0];
+      context.prepareDeltaResult(result[key]);
       removedItems.push(index);
     }
   }
@@ -261,6 +267,7 @@ export const diffFilter: Filter<DiffContext> = function arraysDiffFilter(
       if (!isMove) {
         // added
         result[index] = [array2[index]];
+        context.prepareDeltaResult(result[index]);
       }
     } else {
       // match, do inner diff
