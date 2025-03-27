@@ -199,10 +199,11 @@ In a browser, you can load a bundle using a tool like [esm.sh](https://esm.sh) o
 
 ## Options
 
-```tsimport * as jsondiffpatch from 'jsondiffpatch';
+```ts
+import * as jsondiffpatch from 'jsondiffpatch';
 
 // Only import if you want text diffs using diff-match-patch
-import DiffMatchPatch from 'diff-match-patch';
+import { diff_match_patch } from '@dmsnell/diff-match-patch';
 
 const jsondiffpatchInstance = jsondiffpatch.create({
   // used to match objects when diffing arrays, by default only === operator is used
@@ -219,8 +220,8 @@ const jsondiffpatchInstance = jsondiffpatch.create({
   textDiff: {
     // If using text diffs, it's required to pass in the diff-match-patch library in through this proprty.
     // Alternatively, you can import jsondiffpatch using `jsondiffpatch/with-text-diffs` to avoid having to pass in diff-match-patch through the options.
-    diffMatchPatch: DiffMatchPatch,
-    // default 60, minimum string length (left and right sides) to use text diff algorythm: google-diff-match-patch
+    diffMatchPatch: diff_match_patch,
+    // default 60, minimum string length (left and right sides) to use text diff algorithm: google-diff-match-patch
     minLength: 60,
   },
   propertyFilter: function (name, context) {

@@ -43,8 +43,7 @@
     "patch"
   ],
   "dependencies": {
-    "@types/diff-match-patch": "^1.0.36",
-    "diff-match-patch": "^1.0.5"
+    "@dmsnell/diff-match-patch": "^1.1.0"
   },
   "devDependencies": {
     "@types/jest": "^29.5.10",
