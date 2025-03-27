@@ -36,11 +36,8 @@ export const applyJsonPatchRFC6902 = (
     result?: unknown;
   }[] = [];
 
-  console.debug('starting jsonpatch from', target);
-
   patch.forEach((op) => {
     try {
-      console.debug(`applying op`, op);
       switch (op.op) {
         case 'add':
           log.push({ result: add(target, op.path, op.value), op });
@@ -66,7 +63,6 @@ export const applyJsonPatchRFC6902 = (
             `operation not recognized: ${JSON.stringify(op as unknown)}`,
           );
       }
-      console.debug(`result`, target);
     } catch (error) {
       rollback(
         target,
