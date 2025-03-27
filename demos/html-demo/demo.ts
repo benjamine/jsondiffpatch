@@ -582,6 +582,30 @@ areas.right.element.addEventListener('change', compare);
 areas.left.element.addEventListener('keyup', compare);
 areas.right.element.addEventListener('keyup', compare);
 
+window.addEventListener('keydown', (e) => {
+  if (e.altKey && e.key === 'ArrowRight') {
+    areas.right.editor?.focus();
+    areas.right.editor?.execCommand('selectAll');
+  }
+  if (e.altKey && e.key === 'ArrowLeft') {
+    areas.left.editor?.focus();
+    areas.left.editor?.execCommand('selectAll');
+  }
+  if (e.metaKey && e.key === 's') {
+    const leftJson = areas.left.getValue();
+    const rightJson = areas.right.getValue();
+    window.history.pushState(
+      {},
+      '',
+      `?left=${encodeURIComponent(leftJson)}&right=${encodeURIComponent(
+        rightJson,
+      )}`,
+    );
+    e.preventDefault();
+    e.stopPropagation();
+  }
+});
+
 const getSelectedDeltaType = function () {
   return (
     document.querySelector('#results')?.getAttribute('data-delta-type') ||
