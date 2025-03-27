@@ -1,5 +1,10 @@
 import { moveOpsFromPositionDeltas } from '../moves/delta-to-sequence.js';
-import type { ArrayDelta, Delta, ModifiedDelta, ObjectDelta } from '../types.js';
+import type {
+  ArrayDelta,
+  Delta,
+  ModifiedDelta,
+  ObjectDelta,
+} from '../types.js';
 import { applyJsonPatchRFC6902 } from './jsonpatch-apply.js';
 
 const OPERATIONS = {
@@ -81,15 +86,18 @@ class JSONFormatter {
         const deletes: number[] = [];
         // array index moves
         const indexDelta: { from: number; to: number }[] = [];
-        const inserts: {to: number; value: unknown}[] = [];
-        const updates: {to: number; delta: ObjectDelta | ArrayDelta | ModifiedDelta}[] = [];
+        const inserts: { to: number; value: unknown }[] = [];
+        const updates: {
+          to: number;
+          delta: ObjectDelta | ArrayDelta | ModifiedDelta;
+        }[] = [];
         Object.keys(arrayDelta).forEach((key) => {
           if (key === '_t') return;
           if (key.substring(0, 1) === '_') {
             const index = Number.parseInt(key.substring(1));
             const itemDelta = arrayDelta[key as `_${number}`];
             if (!Array.isArray(itemDelta)) {
-              updates.push({to: index, delta: itemDelta});
+              updates.push({ to: index, delta: itemDelta });
             } else if (itemDelta.length === 3) {
               if (itemDelta[2] === 3) {
                 indexDelta.push({ from: index, to: itemDelta[1] });
@@ -102,11 +110,11 @@ class JSONFormatter {
             const index = Number.parseInt(key);
             if (itemDelta) {
               if (!Array.isArray(itemDelta)) {
-                updates.push({to: index, delta: itemDelta});
+                updates.push({ to: index, delta: itemDelta });
               } else if (itemDelta.length === 1) {
-                inserts.push({to: index, value: itemDelta[0]});
+                inserts.push({ to: index, value: itemDelta[0] });
               } else if (itemDelta.length === 2) {
-                updates.push({to: index, delta: itemDelta});
+                updates.push({ to: index, delta: itemDelta });
               } else if (itemDelta.length === 3) {
                 if (itemDelta[2] === 3) {
                   throw new Error(
@@ -141,7 +149,7 @@ class JSONFormatter {
           // adjust moves "to" to compensate for future inserts
           for (let i = 0; i < inserts.length; i++) {
             // reverse order (moves shift left in this loop, this avoids missing any insert)
-            const index = inserts[inserts.length - i -1].to;
+            const index = inserts[inserts.length - i - 1].to;
             if (indexDelta.length > 0) {
               for (let mi = 0; mi < indexDelta.length; mi++) {
                 const move = indexDelta[mi];
@@ -169,7 +177,7 @@ class JSONFormatter {
 
         // insert operations (top-bottom, so an insert doesn't affect the following)
         for (let i = 0; i < inserts.length; i++) {
-          const {to, value} = inserts[i];
+          const { to, value } = inserts[i];
           ops.push({
             op: OPERATIONS.add,
             path: `${current.path}/${to}`,
@@ -180,7 +188,7 @@ class JSONFormatter {
         // update operations
         const stackUpdates: typeof stack = [];
         for (let i = 0; i < updates.length; i++) {
-          const {to, delta } =updates[i];
+          const { to, delta } = updates[i];
           if (Array.isArray(delta)) {
             if (delta.length === 2) {
               ops.push({
