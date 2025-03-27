@@ -45,7 +45,7 @@
 
 as a CLI:
 
-```sh
+``` sh
 npx jsondiffpatch https://jsondiffpatch.com/demo/left.json https://jsondiffpatch.com/demo/right.json
 ```
 
