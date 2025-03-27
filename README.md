@@ -29,7 +29,8 @@
 - reverse a delta, unpatch (eg. revert object to its original state using a delta)
 - multiple output formats:
   - pure JSON, low footprint [delta format](docs/deltas.md)
-  - annotated JSON (html), to help explain the format with annotations
+  - <span style="background-color: #bbffbb; color: black;">visual</span> <span style="background-color: #ffbbbb; color:black; text-decoration: line-through">diff</span> (html), see [demo](https://jsondiffpatch.com)
+  - annotated JSON (html), to help explain the delta format with annotations
   - JSON Patch ([RFC 6902](https://datatracker.ietf.org/doc/html/rfc6902)), can generate patches, and also apply them
   - console (colored), try running `./node_modules/.bin/jsondiffpatch left.json right.json`
   - write your own! check [Formatters documentation](docs/formatters.md)
@@ -44,7 +45,7 @@
 
 as a CLI:
 
-```sh
+``` sh
 npx jsondiffpatch https://jsondiffpatch.com/demo/left.json https://jsondiffpatch.com/demo/right.json
 ```
 
@@ -52,12 +53,12 @@ npx jsondiffpatch https://jsondiffpatch.com/demo/left.json https://jsondiffpatch
 
 or as a library:
 
-```ts// sample data
+```ts
+// sample data
 const country = {
   name: 'Argentina',
   capital: 'Buenos Aires',
   independence: new Date(1816, 6, 9),
-  unasur: true,
 };
 
 // clone country, using dateReviver for Date objects
@@ -90,7 +91,8 @@ assert(delta2 === undefined);
 
 Array diffing:
 
-```ts// sample data
+```ts
+// sample data
 const country = {
   name: 'Argentina',
   cities: [

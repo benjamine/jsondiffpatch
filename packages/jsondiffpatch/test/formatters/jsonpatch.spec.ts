@@ -15,13 +15,11 @@ describe('jsonpatch', () => {
   const expectJSONPatch = (
     before: unknown,
     after: unknown,
-    expected: jsonpatchFormatter.Op[] | 'any',
+    expected: jsonpatchFormatter.Op[],
   ) => {
     const diff = instance.diff(before, after);
     const format = formatter.format(diff);
-    if (expected !== 'any') {
-      expect(format).toEqual(expected);
-    }
+    expect(format).toEqual(expected);
 
     // now also test applying the generated JSONPatch
     const patched = jsondiffpatch.clone(before);
@@ -220,10 +218,10 @@ describe('jsonpatch', () => {
         removeOp('/7'),
         removeOp('/4'),
         moveOp('/4', '/1'),
-        moveOp('/8', '/4'),
-        moveOp('/9', '/6'),
-        moveOp('/10', '/7'),
-        moveOp('/2', '/7'),
+        moveOp('/2', '/4'),
+        moveOp('/8', '/3'),
+        moveOp('/9', '/5'),
+        moveOp('/10', '/6'),
         addOp('/2', 102),
         addOp('/8', 101),
       ],
@@ -242,8 +240,8 @@ describe('jsonpatch', () => {
         moveOp('/5', '/1'),
         moveOp('/9', '/2'),
         moveOp('/9', '/4'),
-        moveOp('/7', '/9'),
         moveOp('/6', '/9'),
+        moveOp('/6', '/8'),
         addOp('/0', 103),
         addOp('/5', 104),
         addOp('/8', 105),
@@ -254,46 +252,45 @@ describe('jsonpatch', () => {
 
   it('should handle a mix of moves/insert/delete - case 4', () => {
     expectJSONPatch(
+      [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+      [9, 10, 106, 12, 104, 4, 7, 2, 8, 6, 3, 105, 0, 11, 5],
       [
-        0,
-        // 1,
-        2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12,
+        removeOp('/1'),
+        moveOp('/8', '/0'),
+        moveOp('/9', '/1'),
+        moveOp('/11', '/2'),
+        moveOp('/7', '/11'),
+        moveOp('/3', '/9'),
+        moveOp('/4', '/8'),
+        moveOp('/5', '/7'),
+        moveOp('/3', '/5'),
+        addOp('/2', 106),
+        addOp('/4', 104),
+        addOp('/11', 105),
       ],
-      [
-        9, 10,
-        //106,
-        12,
-        // 104,
-        4, 7, 2, 8, 6, 3,
-        //105,
-        0, 11, 5,
-      ],
-      'any',
-      // [
-      //   removeOp('/1'),
-      //   moveOp('/8', '/0'),
-      //   moveOp('/9', '/1'),
-      //   moveOp('/11', '/2'),
-      //   moveOp('/4', '/7'),
-      //   moveOp('/8', '/10'),
-      //   moveOp('/4', '/10'),
-      //   moveOp('/3', '/10'),
-      //   moveOp('/4', '/11'),
-      //   addOp('/2', 106),
-      //   addOp('/4', 104),
-      //   addOp('/11', 105),
-      // ],
     );
   });
 
-  it.only('should handle a crossed inwards moves', () => {
+  it('should handle crossed inwards moves', () => {
     expectJSONPatch(
       [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
       [0, 2, 3, 4, 5, 11, 6, 7, 1, 8, 9, 10, 12],
-      'any',
+      [moveOp('/1', '/7'), moveOp('/11', '/5')],
     );
   });
 
+  it('should handle double crossed inwards moves', () => {
+    expectJSONPatch(
+      [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+      [0, 2, 4, 5, 11, 6, 3, 10, 7, 1, 8, 9, 12],
+      [
+        moveOp('/1', '/7'),
+        moveOp('/2', '/5'),
+        moveOp('/11', '/4'),
+        moveOp('/11', '/7'),
+      ],
+    );
+  });
   it('should put the full path in move op and sort by HL - #230', () => {
     const before = {
       middleName: 'z',
