@@ -1,5 +1,5 @@
-import * as jsondiffpatch from 'jsondiffpatch/with-text-diffs';
 import * as consoleFormatter from 'jsondiffpatch/formatters/console';
+import * as jsondiffpatch from 'jsondiffpatch/with-text-diffs';
 
 const instance = jsondiffpatch.create({
   objectHash: function (obj) {
@@ -24,7 +24,6 @@ interface Data {
     name: string;
     capital?: string;
     independence?: Date;
-    unasur: boolean;
     population?: number;
   }[];
   spanishName?: string;
@@ -85,73 +84,61 @@ const data: Data = {
       name: 'Argentina',
       capital: 'Buenos Aires',
       independence: new Date(1816, 6, 9),
-      unasur: true,
     },
     {
       name: 'Bolivia',
       capital: 'La Paz',
       independence: new Date(1825, 7, 6),
-      unasur: true,
     },
     {
       name: 'Brazil',
       capital: 'Brasilia',
       independence: new Date(1822, 8, 7),
-      unasur: true,
     },
     {
       name: 'Chile',
       capital: 'Santiago',
       independence: new Date(1818, 1, 12),
-      unasur: true,
     },
     {
       name: 'Colombia',
       capital: 'Bogotá',
       independence: new Date(1810, 6, 20),
-      unasur: true,
     },
     {
       name: 'Ecuador',
       capital: 'Quito',
       independence: new Date(1809, 7, 10),
-      unasur: true,
     },
     {
       name: 'Guyana',
       capital: 'Georgetown',
       independence: new Date(1966, 4, 26),
-      unasur: true,
     },
     {
       name: 'Paraguay',
       capital: 'Asunción',
       independence: new Date(1811, 4, 14),
-      unasur: true,
     },
     {
       name: 'Peru',
       capital: 'Lima',
       independence: new Date(1821, 6, 28),
-      unasur: true,
     },
     {
       name: 'Suriname',
       capital: 'Paramaribo',
       independence: new Date(1975, 10, 25),
-      unasur: true,
     },
     {
       name: 'Uruguay',
       capital: 'Montevideo',
       independence: new Date(1825, 7, 25),
-      unasur: true,
     },
     {
       name: 'Venezuela',
       capital: 'Caracas',
       independence: new Date(1811, 6, 5),
-      unasur: true,
     },
   ],
 };
@@ -167,7 +154,6 @@ data.countries.pop();
 data.countries[0].capital = 'Rawson';
 data.countries.push({
   name: 'Antártida',
-  unasur: false,
 });
 
 // modify and move
