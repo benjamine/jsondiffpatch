@@ -36,6 +36,10 @@ a value was deleted, i.e. it had a value and is now `undefined`
 delta = [oldValue, 0, 0];
 ```
 
+NOTE: In both modified and deleted, when using the `omitRemovedValues: true` option, `oldValue` is omitted, replaced with a `0`.
+
+This makes the delta irreversible (can't be used for unpatch), but might be a good trade-off if you're sending them over the network and unpatch is never needed.
+
 ## Object with inner changes
 
 value is an object, and there are nested changes inside its properties
