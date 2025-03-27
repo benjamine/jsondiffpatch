@@ -354,6 +354,7 @@
           <li class="is-active"><a href="#delta-visual">Visual Diff</a></li>
           <li><a href="#delta-json">JSON</a></li>
           <li><a href="#delta-annotated">JSON (Annotated)</a></li>
+          <li><a href="#delta-jsonpatch">JSONPatch (RFC 6902)</a></li>
         </ul>
       </div>
 
@@ -375,6 +376,14 @@
           KB)
         </p>
         <textarea id="json-delta" readonly> </textarea>
+        <span class="error-message"></span>
+      </div>
+      <div id="delta-panel-jsonpatch" class="delta-panel">
+        <p>
+          (<span id="jsonpatchlength"></span>
+          KB)
+        </p>
+        <textarea id="jsonpatch" readonly> </textarea>
         <span class="error-message"></span>
       </div>
     </section>

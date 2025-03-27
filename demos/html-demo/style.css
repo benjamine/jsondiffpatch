@@ -161,7 +161,8 @@ a#fork_me {
   margin-top: 4px;
 }
 
-#json-delta {
+#json-delta,
+#jsonpatch {
   font-family: 'Bitstream Vera Sans Mono', 'DejaVu Sans Mono', Monaco, Courier,
     monospace;
   font-size: 12px;
@@ -171,7 +172,8 @@ a#fork_me {
   height: 200px;
 }
 
-#delta-panel-json > p {
+#delta-panel-json > p,
+#delta-panel-jsonpatch > p {
   margin: 4px;
 }
 
@@ -227,6 +229,10 @@ a:hover {
 }
 
 [data-delta-type='annotated'] #delta-panel-annotated {
+  display: block;
+}
+
+[data-delta-type='jsonpatch'] #delta-panel-jsonpatch {
   display: block;
 }
 
