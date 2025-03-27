@@ -1,4 +1,5 @@
-import type { ArrayDelta, Delta, ObjectDelta } from '../types.js';
+import { moveOpsFromPositionDeltas } from '../moves/delta-to-sequence.js';
+import type { ArrayDelta, Delta, ModifiedDelta, ObjectDelta } from '../types.js';
 import { applyJsonPatchRFC6902 } from './jsonpatch-apply.js';
 
 const OPERATIONS = {
@@ -74,191 +75,134 @@ class JSONFormatter {
           );
         }
       } else if (current.delta._t === 'a') {
-        // array
+        // array delta
         const arrayDelta = current.delta as ArrayDelta;
-        const keys: {
-          left: { key: `_${number}`; index: number }[];
-          right: { key: `${number}`; index: number }[];
-        } = { left: [], right: [] };
 
+        const deletes: number[] = [];
+        // array index moves
+        const indexDelta: { from: number; to: number }[] = [];
+        const inserts: {to: number; value: unknown}[] = [];
+        const updates: {to: number; delta: ObjectDelta | ArrayDelta | ModifiedDelta}[] = [];
         Object.keys(arrayDelta).forEach((key) => {
           if (key === '_t') return;
           if (key.substring(0, 1) === '_') {
-            keys.left.push({
-              key: key as `_${number}`,
-              index: parseInt(key.substring(1)),
-            });
+            const index = Number.parseInt(key.substring(1));
+            const itemDelta = arrayDelta[key as `_${number}`];
+            if (!Array.isArray(itemDelta)) {
+              updates.push({to: index, delta: itemDelta});
+            } else if (itemDelta.length === 3) {
+              if (itemDelta[2] === 3) {
+                indexDelta.push({ from: index, to: itemDelta[1] });
+              } else if (itemDelta[2] === 0) {
+                deletes.push(index);
+              }
+            }
           } else {
-            keys.right.push({
-              key: key as `${number}`,
-              index: parseInt(key),
-            });
-          }
-        });
-        // left keys sorted descending, so each remove doesn't affect the following
-        keys.left.sort((a, b) => b.index - a.index);
-        // right keys sorted ascending, so each insert doesn't affect the following
-        keys.right.sort((a, b) => a.index - b.index);
-
-        // prepare moves (positions get adjusted by inserts, deletes, and other moves)
-        const moves: { from: number; to: number }[] = [];
-        keys.left.forEach(({ key, index }) => {
-          const childDelta = arrayDelta[key];
-          if (childDelta[2] === 3) {
-            moves.push({ from: index, to: childDelta[1] });
-          }
-        });
-
-        if (moves.length > 0) {
-          moves.sort((a, b) => a.to - b.to);
-        }
-
-        // process every delete (in desc order, so a delete doen't affect the following)
-        keys.left.forEach(({ key, index }) => {
-          const childDelta = arrayDelta[key];
-          if (childDelta[2] === 0) {
-            ops.push({
-              op: OPERATIONS.remove,
-              path: `${current.path}/${index}`,
-            });
-            if (moves.length > 0) {
-              moves.forEach((move) => {
-                if (index < move.from) {
-                  move.from--;
+            const itemDelta = arrayDelta[key as `${number}`];
+            const index = Number.parseInt(key);
+            if (itemDelta) {
+              if (!Array.isArray(itemDelta)) {
+                updates.push({to: index, delta: itemDelta});
+              } else if (itemDelta.length === 1) {
+                inserts.push({to: index, value: itemDelta[0]});
+              } else if (itemDelta.length === 2) {
+                updates.push({to: index, delta: itemDelta});
+              } else if (itemDelta.length === 3) {
+                if (itemDelta[2] === 3) {
+                  throw new Error(
+                    "JSONPatch (RFC 6902) doesn't support text diffs, disable textDiff option",
+                  );
                 }
-              });
+              }
             }
           }
         });
+        inserts.sort((a, b) => a.to - b.to);
+        deletes.sort((a, b) => b - a);
 
-        if (moves.length > 0) {
-          /*
-           moves are tricky to translate:
-
-           - a move "from" is an index on the left array, so it's affected by:
-              - previous deletes
-              - previous moves (a move is a delete+insert).
-           - a move "to" is an index on the right array, so it's affected by:
-              - future adds
-              - future moves (a move is a delete+insert).
-          */
-
-          // keep track of positions of adds to adjust moves "to"
-          const adds: { index: number }[] = [];
-          keys.right.forEach(({ index, key }) => {
-            const childDelta = arrayDelta[key];
-            if (Array.isArray(childDelta) && childDelta.length === 1) {
-              adds.push({ index });
-            }
+        // delete operations (bottoms-up, so a delete doen't affect the following)
+        for (let i = 0; i < deletes.length; i++) {
+          const index = deletes[i];
+          ops.push({
+            op: OPERATIONS.remove,
+            path: `${current.path}/${index}`,
           });
-
-          const pendingMoves = [...moves];
-          while (pendingMoves.length > 0) {
-            pendingMoves.sort((a, b) => a.to - b.to);
-            const first = pendingMoves[0];
-            const last = pendingMoves[pendingMoves.length - 1];
-
-            const [nextMove, extraMove] =
-              pendingMoves.length < 2 ||
-              pendingMoves
-                .slice(1)
-                .every(
-                  (m) =>
-                    m.from > first.to ||
-                    (m.from === first.to && first.to < first.from),
-                )
-                ? // first can move to final location (nothing will move before)
-                  [pendingMoves.shift() as typeof first]
-                : pendingMoves.slice(0, -1).every((m) => m.from <= last.to)
-                  ? // last can move to final location (nothing will move after)
-                    [pendingMoves.pop() as typeof last]
-                  : (() => {
-                      // can't move anything to final location
-                      // use first move and make an additional move to adjust if needed
-                      const move = pendingMoves.shift() as typeof first;
-                      const originalTo = move.to;
-                      move.to += pendingMoves.reduce((acc, m) => {
-                        // shift to the left for every "from" that will be removed before
-                        return acc + (m.from <= originalTo ? 1 : 0);
-                      }, 0);
-                      // add an extra move to ensure the final location
-                      return [
-                        move,
-                        {
-                          from: move.to,
-                          to: originalTo,
-                        },
-                      ];
-                    })();
-
-            if (nextMove.from !== nextMove.to) {
-              ops.push({
-                op: OPERATIONS.move,
-                from: `${current.path}/${nextMove.from}`,
-                path: `${current.path}/${nextMove.to}`,
-              });
-
-              // adjust future moves "from" according to my "from" and "to"
-              pendingMoves.forEach((m) => {
-                if (nextMove.from === m.from) {
-                  throw new Error('trying to move the same item twice');
-                }
-                if (nextMove.from < m.from) {
-                  m.from--;
-                }
-                if (nextMove.to <= m.from) {
-                  m.from++;
-                }
-              });
-            }
-            if (extraMove) {
-              pendingMoves.push(extraMove);
+          if (indexDelta.length > 0) {
+            for (let mi = 0; mi < indexDelta.length; mi++) {
+              const move = indexDelta[mi];
+              if (index < move.from) {
+                move.from--;
+              }
             }
           }
         }
 
-        // process every add (in asc order, so an insert doesn't affect the following)
-        keys.right.forEach(({ key, index }) => {
-          const childDelta = arrayDelta[key];
-          if (Array.isArray(childDelta) && childDelta.length === 1) {
+        if (indexDelta.length > 0) {
+          // adjust moves "to" to compensate for future inserts
+          for (let i = 0; i < inserts.length; i++) {
+            // reverse order (moves shift left in this loop, this avoids missing any insert)
+            const index = inserts[inserts.length - i -1].to;
+            if (indexDelta.length > 0) {
+              for (let mi = 0; mi < indexDelta.length; mi++) {
+                const move = indexDelta[mi];
+                if (index < move.to) {
+                  move.to--;
+                }
+              }
+            }
+          }
+
+          /**
+           * translate array index deltas (pairs of from/to) into JSONPatch,
+           * into a sequence of move operations.
+           */
+          const moveOps = moveOpsFromPositionDeltas(indexDelta);
+          for (let i = 0; i < moveOps.length; i++) {
+            const moveOp = moveOps[i];
             ops.push({
-              op: OPERATIONS.add,
-              path: `${current.path}/${index}`,
-              value: childDelta[0],
+              op: OPERATIONS.move,
+              from: `${current.path}/${moveOp.from}`,
+              path: `${current.path}/${moveOp.to}`,
             });
           }
-        });
+        }
 
-        // process every update
+        // insert operations (top-bottom, so an insert doesn't affect the following)
+        for (let i = 0; i < inserts.length; i++) {
+          const {to, value} = inserts[i];
+          ops.push({
+            op: OPERATIONS.add,
+            path: `${current.path}/${to}`,
+            value,
+          });
+        }
+
+        // update operations
         const stackUpdates: typeof stack = [];
-        keys.right.forEach(({ key }) => {
-          const childDelta = arrayDelta[key];
-          if (!childDelta) return;
-          if (Array.isArray(childDelta)) {
-            if (childDelta.length === 2) {
+        for (let i = 0; i < updates.length; i++) {
+          const {to, delta } =updates[i];
+          if (Array.isArray(delta)) {
+            if (delta.length === 2) {
               ops.push({
                 op: OPERATIONS.replace,
-                path: `${current.path}/${key}`,
-                value: childDelta[1],
+                path: `${current.path}/${to}`,
+                value: delta[1],
               });
-            } else if (childDelta[2] === 2) {
-              throw new Error(
-                "JSONPatch (RFC 6902) doesn't support text diffs, disable textDiff option",
-              );
             }
           } else {
             // nested delta (object or array)
             stackUpdates.push({
-              path: `${current.path}/${key}`,
-              delta: childDelta,
+              path: `${current.path}/${to}`,
+              delta,
             });
           }
-        });
+        }
         if (stackUpdates.length > 0) {
           // push into the stack in reverse order to process them in original order
           stack.push(...stackUpdates.reverse());
         }
       } else {
+        // object delta
         // push into the stack in reverse order to process them in original order
         Object.keys(current.delta)
           .reverse()
