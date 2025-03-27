@@ -1,3 +1,4 @@
+import { beforeAll, describe, expect, it } from 'vitest';
 import lcs from '../src/filters/lcs.js';
 import * as jsondiffpatch from '../src/index.js';
 

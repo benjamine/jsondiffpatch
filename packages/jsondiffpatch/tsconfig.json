@@ -2,7 +2,9 @@
   "compilerOptions": {
     "target": "es6",
     "module": "node16",
-    "types": ["node", "@types/jest"],
+    "types": [
+      "node",
+    ],
     "declaration": true,
     "outDir": "lib",
     "isolatedModules": true,
@@ -11,5 +13,7 @@
     "strict": true,
     "skipLibCheck": false
   },
-  "include": ["src"]
+  "include": [
+    "src"
+  ],
 }

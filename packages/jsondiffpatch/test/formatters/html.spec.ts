@@ -1,4 +1,5 @@
 import { diff_match_patch } from '@dmsnell/diff-match-patch';
+import { beforeAll, describe, expect, it } from 'vitest';
 import * as htmlFormatter from '../../src/formatters/html.js';
 import * as jsondiffpatch from '../../src/index.js';
 
