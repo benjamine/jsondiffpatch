@@ -16,7 +16,7 @@ Here's a complete reference of this format.
 
 a value was added, i.e. it was `undefined` and now has a value.
 
-```javascript
+```ts
 delta = [newValue];
 ```
 
@@ -24,7 +24,7 @@ delta = [newValue];
 
 a value was replaced by another value
 
-```javascript
+```ts
 delta = [oldValue, newValue];
 ```
 
@@ -32,7 +32,7 @@ delta = [oldValue, newValue];
 
 a value was deleted, i.e. it had a value and is now `undefined`
 
-```javascript
+```ts
 delta = [oldValue, 0, 0];
 ```
 
@@ -44,7 +44,7 @@ This makes the delta irreversible (can't be used for unpatch), but might be a go
 
 value is an object, and there are nested changes inside its properties
 
-```javascript
+```ts
 delta = {
   property1: innerDelta1,
   property2: innerDelta2,
@@ -56,19 +56,19 @@ delta = {
 
 Here's an example combining what we have:
 
-```
+```ts
 delta = {
-  property1: [ newValue1 ], // obj[property1] = newValue1
-  property2: [ oldValue2, newValue2 ], // obj[property2] = newValue2 (and previous value was oldValue2)
-  property5: [ oldValue5, 0, 0 ] // delete obj[property5] (and previous value was oldValue5)
-}
+  property1: [newValue1], // obj[property1] = newValue1
+  property2: [oldValue2, newValue2], // obj[property2] = newValue2 (and previous value was oldValue2)
+  property5: [oldValue5, 0, 0], // delete obj[property5] (and previous value was oldValue5)
+};
 ```
 
 ## Array with inner changes
 
 value is an array, and there are nested changes inside its items
 
-```javascript
+```ts
 delta = {
   _t: 'a',
   index1: innerDelta1,
@@ -92,7 +92,7 @@ Indices on array deltas can be expressed in two ways:
 
 an item was moved to a different position in the same array
 
-```javascript
+```ts
 delta = ['', destinationIndex, 3];
 ```
 
@@ -104,7 +104,7 @@ delta = ['', destinationIndex, 3];
 
 If two strings are compared and they are different, you will see as you expect:
 
-```javascript
+```ts
 delta = ['some text', 'some text modified'];
 ```
 
@@ -112,8 +112,8 @@ But if both strings are long enough, [a text diffing algorithm](https://code.goo
 
 You can modify the minimum length with:
 
-```javascript
-var customDiffPatch = jsondiffpatch.create({
+```ts
+const customDiffPatch = jsondiffpatch.create({
   textDiff: {
     minLength: 60, // default value
   },
@@ -122,7 +122,7 @@ var customDiffPatch = jsondiffpatch.create({
 
 And the delta will look like this:
 
-```javascript
+```ts
 delta = [unidiff, 0, 2];
 ```
 

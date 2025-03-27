@@ -266,7 +266,7 @@ const getExampleJson = function () {
   return json;
 };
 
-const instance = jsondiffpatch.create({
+const diffOptions = {
   objectHash: function (obj, index) {
     const objRecord = obj as Record<string, string>;
     if (typeof objRecord._id !== 'undefined') {
@@ -282,6 +282,13 @@ const instance = jsondiffpatch.create({
       return objRecord.name;
     }
     return '$$index:' + index;
+  },
+} as jsondiffpatch.Options;
+const instance = jsondiffpatch.create(diffOptions);
+const instanceWithNoTextDiff = jsondiffpatch.create({
+  ...diffOptions,
+  textDiff: {
+    minLength: Number.MAX_VALUE,
   },
 });
 
@@ -504,7 +511,12 @@ const compare = function () {
   const jsondifflength = document.getElementById('jsondifflength')!;
   const jsonpatchlength = document.getElementById('jsonpatchlength')!;
   try {
-    const delta = instance.diff(left, right);
+    // jsonpatch format doesn't support textdiffs
+    const noTextDiff = selectedType === 'jsonpatch';
+    const delta = (noTextDiff ? instanceWithNoTextDiff : instance).diff(
+      left,
+      right,
+    );
     resultsSections.setAttribute(
       'data-diff',
       typeof delta === 'undefined' ? 'no-diff' : 'has-diff',

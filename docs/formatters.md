@@ -6,8 +6,8 @@ Some formatters are included that let you convert a JSON delta into other format
 
 add `build/formatters.js` and `src/formatters/html.css` to your page, and:
 
-```javascript
-var delta = jsondiffpatch.diff(left, right);
+```ts
+const delta = jsondiffpatch.diff(left, right);
 // left is optional, if specified unchanged values will be visible too
 document.getElementBy('the-diff').innerHTML =
   jsondiffpatch.formatters.html.format(delta, left);
@@ -28,8 +28,8 @@ This will render the original JSON delta in html, with annotations aside explain
 
 add `build/formatters.js` and `src/formatters/annotated.css` to your page, and:
 
-```javascript
-var delta = jsondiffpatch.diff(left, right);
+```ts
+const delta = jsondiffpatch.diff(left, right);
 document.getElementBy('the-diff').innerHTML =
   jsondiffpatch.formatters.annotated.format(delta);
 ```
@@ -44,9 +44,9 @@ colored text to console log, it's used by the CLI:
 
 but you can use it programmatically too:
 
-```javascript
-var delta = jsondiffpatch.diff(left, right);
-var output = jsondiffpatch.formatters.console.format(delta);
+```ts
+const delta = jsondiffpatch.diff(left, right);
+const output = jsondiffpatch.formatters.console.format(delta);
 console.log(output);
 
 // or simply
@@ -55,13 +55,25 @@ jsondiffpatch.console.log(delta);
 
 ## JSON PATCH (RFC 6902)
 
-```javascript
-var delta = jsondiffpatch.diff(left, right);
-var output = jsondiffpatch.formatters.jsonpatch.format(delta);
-console.log(output);
+```ts
+const delta = jsondiffpatch.diff(left, right);
+const patch = jsondiffpatch.formatters.jsonpatch.format(delta);
+console.log(patch);
 ```
 
 _Don't use with `textDiff` as it isn't suppported_
+
+an implementation of patch method is also provided:
+
+```ts
+const target = jsondiffpatch.clone(left);
+const patched = jsondiffpatch.formatters.jsonpatch.patch(target, patch);
+
+// target is now equals to right
+assert(JSON.stringify(patched), JSON.stringify(right));
+```
+
+Note: this patch method is atomic as specified by [RFC 6902](https://datatracker.ietf.org/doc/html/rfc6902#section-5). If any error occurs during patching, the `target` object is rolled back to its original state.
 
 ## Create one
 

@@ -24,15 +24,14 @@
 - min+gzipped ~ 16KB
 - browser and server (ESM-only)
 - deep diff, use delta to patch
-- (optionally) uses [google-diff-match-patch](http://code.google.com/p/google-diff-match-patch/) for long text diffs (diff at character level)
 - smart array diffing using [LCS](http://en.wikipedia.org/wiki/Longest_common_subsequence_problem), **_IMPORTANT NOTE:_** to match objects inside an array you must provide an `objectHash` function (this is how objects are matched, otherwise a dumb match by position is used). For more details, check [Array diff documentation](docs/arrays.md)
+- (optionally) text diffing of long strings powered by [google-diff-match-patch](http://code.google.com/p/google-diff-match-patch/) (diff at character level)
 - reverse a delta, unpatch (eg. revert object to its original state using a delta)
-- simplistic, pure JSON, low footprint [delta format](docs/deltas.md)
-- multiple output formatters:
-  - html (check it at the [Live Demo](https://jsondiffpatch.com))
-  - annotated json (html), makes the JSON delta format self-explained
+- multiple output formats:
+  - pure JSON, low footprint [delta format](docs/deltas.md)
+  - annotated JSON (html), to help explain the format with annotations
+  - JSON Patch ([RFC 6902](https://datatracker.ietf.org/doc/html/rfc6902)), can generate patches, and also apply them
   - console (colored), try running `./node_modules/.bin/jsondiffpatch left.json right.json`
-  - JSON Patch format RFC 6902 support
   - write your own! check [Formatters documentation](docs/formatters.md)
 - BONUS: `jsondiffpatch.clone(obj)` (deep clone)
 
@@ -53,8 +52,7 @@ npx jsondiffpatch https://jsondiffpatch.com/demo/left.json https://jsondiffpatch
 
 or as a library:
 
-```javascript
-// sample data
+```ts// sample data
 const country = {
   name: 'Argentina',
   capital: 'Buenos Aires',
@@ -92,8 +90,7 @@ assert(delta2 === undefined);
 
 Array diffing:
 
-```javascript
-// sample data
+```ts// sample data
 const country = {
   name: 'Argentina',
   cities: [
@@ -202,8 +199,7 @@ In a browser, you can load a bundle using a tool like [esm.sh](https://esm.sh) o
 
 ## Options
 
-```javascript
-import * as jsondiffpatch from 'jsondiffpatch';
+```tsimport * as jsondiffpatch from 'jsondiffpatch';
 
 // Only import if you want text diffs using diff-match-patch
 import DiffMatchPatch from 'diff-match-patch';

@@ -22,8 +22,8 @@ To improve the results leveraging the power of LCS (and position move detection)
 
 ### An example using objectHash
 
-```javascript
-var delta = jsondiffpatch
+```ts
+const delta = jsondiffpatch
   .create({
     objectHash: function (obj, index) {
       // try to find an id property, otherwise just use the index in the array
@@ -47,8 +47,8 @@ This introduces a few benefits:
 
 moves are detected by default, you can turn move detection off with:
 
-```javascript
-var customDiffPatch = jsondiffpatch.create({
+```ts
+const customDiffPatch = jsondiffpatch.create({
   arrays: {
     detectMove: false,
   },

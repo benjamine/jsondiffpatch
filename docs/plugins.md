@@ -17,7 +17,7 @@ Check the `/src/filters` folder for filter examples.
 Here is an example to provide number differences in deltas (when left and right values are both numbers)
 This, way when diffing 2 numbers instead of obtaining `[ oldValue, newValue ] `, the difference between both values will be saved, this could be useful for counters simultaneously incremented in multiple client applications (patches that both increment a value would be combined, instead of failing with a conflict).
 
-```javascript
+```ts
 /*
 Plugin a new diff filter
 */
