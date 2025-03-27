@@ -285,7 +285,7 @@ describe('jsonpatch', () => {
     );
   });
 
-  it.only('should handle a crossed inwards moves', () => {
+  it('should handle a crossed inwards moves', () => {
     expectJSONPatch(
       [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
       [0, 2, 3, 4, 5, 11, 6, 7, 1, 8, 9, 10, 12],
