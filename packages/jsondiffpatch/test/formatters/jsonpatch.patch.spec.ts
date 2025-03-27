@@ -52,24 +52,23 @@ describe('jsonpatch', () => {
     value,
   });
 
-  it(".patch() is atomic", () => {
+  it('.patch() is atomic', () => {
     // see https://datatracker.ietf.org/doc/html/rfc6902#section-5
     const before = { a: 1, b: { list: [1, 2, 3] } };
     const after = { a: 2, b: { list: [2, 3] } };
     const diff = instance.diff(before, after);
     const format = formatter.format(diff);
-    expectJSONPatch(before, after, [
-      replaceOp('/a', 2),
-      removeOp('/b/list/0'),
-    ]);
+    expectJSONPatch(before, after, [replaceOp('/a', 2), removeOp('/b/list/0')]);
 
     // no /b, will cause an error when trying to apply this patch
     const modifiedBefore = { a: 1 };
 
-    expect(() => formatter.patch(modifiedBefore, format)).toThrow(`cannot find /b/list in {"a":2}`);
+    expect(() => formatter.patch(modifiedBefore, format)).toThrow(
+      `cannot find /b/list in {"a":2}`,
+    );
     // modifiedBefore should not have been modified (patch is atomic)
     expect(modifiedBefore).toEqual({ a: 1 });
-  })
+  });
 
   it('should return empty format for empty diff', () => {
     expectJSONPatch([], [], []);
