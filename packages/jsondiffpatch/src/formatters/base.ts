@@ -9,28 +9,6 @@ import type {
   TextDiffDelta,
 } from '../types.js';
 
-const trimUnderscore = (str: string) => {
-  if (str.substring(0, 1) === '_') {
-    return str.slice(1);
-  }
-  return str;
-};
-
-const arrayKeyToSortNumber = (key: string) => {
-  if (key === '_t') {
-    return -1;
-  } else {
-    if (key.substring(0, 1) === '_') {
-      return parseInt(key.slice(1), 10);
-    } else {
-      return parseInt(key, 10) + 0.1;
-    }
-  }
-};
-
-const arrayKeyComparer = (key1: string, key2: string) =>
-  arrayKeyToSortNumber(key1) - arrayKeyToSortNumber(key2);
-
 export interface BaseFormatterContext {
   buffer: string[];
   out: (...args: string[]) => void;
@@ -238,60 +216,184 @@ abstract class BaseFormatter<
       isLast: boolean,
     ) => void,
   ) {
-    const keys = Object.keys(delta);
+    const keys = [];
     const arrayKeys = delta._t === 'a';
-    const moveDestinations: {
-      [index: string | number]: MoveDestination | undefined;
-    } = {};
-    let name;
-    if (typeof left !== 'undefined') {
-      for (name in left) {
-        if (Object.prototype.hasOwnProperty.call(left, name)) {
-          if (
-            typeof (delta as Record<string, Delta>)[name] === 'undefined' &&
-            (!arrayKeys ||
-              typeof (delta as ArrayDelta)[`_${name}` as `_${number}`] ===
-                'undefined')
-          ) {
-            keys.push(name);
-          }
-        }
+    if (!arrayKeys) {
+      // it's an object delta
+
+      const deltaKeys = Object.keys(delta);
+
+      // if left is provided, push all keys from it first, in the original order
+      if (typeof left === 'object' && left !== null) {
+        keys.push(...Object.keys(left));
       }
+
+      // then add new keys from delta, to the bottom
+      for (const key of deltaKeys) {
+        if (keys.indexOf(key) >= 0) continue;
+        keys.push(key);
+      }
+
+      for (let index = 0, length = keys.length; index < length; index++) {
+        const key = keys[index];
+        const isLast = index === length - 1;
+        fn(
+          // for object diff, the delta key and left key are the same
+          key,
+          key,
+          // there's no "move" in object diff
+          undefined,
+          isLast,
+        );
+      }
+      return;
     }
-    // look for move destinations
-    for (name in delta) {
-      if (Object.prototype.hasOwnProperty.call(delta, name)) {
-        const value = (delta as Record<string, Delta>)[name];
+
+    // it's an array delta, this is a bit trickier because of position changes
+
+    const movedFrom: {
+      [to: number]: number;
+    } = {};
+    for (const key in delta) {
+      if (Object.prototype.hasOwnProperty.call(delta, key)) {
+        const value = (delta as Record<string, Delta>)[key];
         if (Array.isArray(value) && value[2] === 3) {
           const movedDelta = value as MovedDelta;
-          moveDestinations[`${movedDelta[1]}`] = {
-            key: name as `_${number}`,
-            value: left && (left as unknown[])[parseInt(name.substring(1), 10)],
-          };
-          if (this.includeMoveDestinations !== false) {
-            if (
-              typeof left === 'undefined' &&
-              typeof (delta as ArrayDelta)[movedDelta[1]] === 'undefined'
-            ) {
-              keys.push(movedDelta[1].toString());
-            }
-          }
+          movedFrom[movedDelta[1]] = Number.parseInt(key.substring(1));
         }
       }
     }
-    if (arrayKeys) {
-      keys.sort(arrayKeyComparer);
-    } else {
-      keys.sort();
-    }
-    for (let index = 0, length = keys.length; index < length; index++) {
-      const key = keys[index];
-      if (arrayKeys && key === '_t') {
-        continue;
+
+    // go thru the array positions, finding delta keys on the way
+
+    const arrayDelta = delta as ArrayDelta;
+    let leftIndex = 0;
+    let rightIndex = 0;
+    const leftArray = Array.isArray(left) ? left : undefined;
+    const leftLength = leftArray
+      ? leftArray.length
+      : // if we don't have the original array,
+        // use a length that ensures we'll go thru all delta keys
+        Object.keys(arrayDelta).reduce((max, key) => {
+          if (key === '_t') return max;
+          const isLeftKey = key.substring(0, 1) === '_';
+          if (isLeftKey) {
+            const itemDelta = arrayDelta[key as `_${number}`];
+            const leftIndex = Number.parseInt(key.substring(1));
+            const rightIndex = itemDelta[2] === 3 ? itemDelta[1] : undefined;
+            const maxIndex = Math.max(leftIndex, rightIndex ?? 0);
+            return maxIndex > max ? maxIndex : max;
+          }
+
+          const rightIndex = Number.parseInt(key);
+          const leftIndex = movedFrom[rightIndex];
+          const maxIndex = Math.max(leftIndex ?? 0, rightIndex ?? 0);
+          return maxIndex > max ? maxIndex : max;
+        }, 0) + 1;
+    let rightLength = leftLength;
+
+    while (
+      leftIndex < leftLength ||
+      rightIndex < rightLength ||
+      `${rightIndex}` in arrayDelta
+    ) {
+      const isLast =
+        leftIndex === leftLength - 1 || rightIndex === rightLength - 1;
+      let hasDelta = false;
+
+      const leftIndexKey = `_${leftIndex}` as const;
+      const rightIndexKey = `${rightIndex}` as const;
+
+      const movedFromIndex =
+        rightIndex in movedFrom ? movedFrom[rightIndex] : undefined;
+
+      if (leftIndexKey in arrayDelta) {
+        // something happened to the left item at this position
+        hasDelta = true;
+        const itemDelta = arrayDelta[leftIndexKey];
+        fn(
+          leftIndexKey,
+          movedFromIndex ?? leftIndex,
+          movedFromIndex
+            ? {
+                key: `_${movedFromIndex}` as const,
+                value: leftArray ? leftArray[movedFromIndex] : undefined,
+              }
+            : undefined,
+          isLast && !(rightIndexKey in arrayDelta),
+        );
+
+        if (itemDelta[2] === 0) {
+          // deleted
+          rightLength--;
+          leftIndex++;
+        } else if (itemDelta[2] === 3) {
+          // left item moved somewhere else
+          leftIndex++;
+        } else {
+          // unrecognized change to left item
+          leftIndex++;
+        }
       }
-      const leftKey = arrayKeys ? parseInt(trimUnderscore(key), 10) : key;
-      const isLast = index === length - 1;
-      fn(key, leftKey, moveDestinations[leftKey], isLast);
+      if (rightIndexKey in arrayDelta) {
+        // something happened to the right item at this position
+        hasDelta = true;
+        const itemDelta = arrayDelta[rightIndexKey];
+        fn(
+          rightIndexKey,
+          movedFromIndex ?? leftIndex,
+          movedFromIndex
+            ? {
+                key: `_${movedFromIndex}` as const,
+                value: leftArray ? leftArray[movedFromIndex] : undefined,
+              }
+            : undefined,
+          isLast,
+        );
+
+        if (Array.isArray(itemDelta) && itemDelta.length === 1) {
+          // added
+          rightLength++;
+          rightIndex++;
+        } else {
+          // modified (replace/object/array/textdiff)
+          if (movedFromIndex === undefined) {
+            leftIndex++;
+            rightIndex++;
+          } else {
+            rightIndex++;
+          }
+        }
+      }
+      if (!hasDelta) {
+        // left and right items are the same (unchanged)
+        if (
+          (leftArray && movedFromIndex === undefined) ||
+          this.includeMoveDestinations !== false
+        ) {
+          // show unchanged items only if we have the left array
+          fn(
+            rightIndexKey,
+            movedFromIndex ?? leftIndex,
+            movedFromIndex
+              ? {
+                  key: `_${movedFromIndex}` as const,
+                  value: leftArray ? leftArray[movedFromIndex] : undefined,
+                }
+              : undefined,
+            isLast,
+          );
+        }
+
+        if (movedFromIndex !== undefined) {
+          // item at the right came from another position
+          rightIndex++;
+          // don't skip left item yet
+        } else {
+          leftIndex++;
+          rightIndex++;
+        }
+      }
     }
   }
 

@@ -131,6 +131,10 @@ li:last-child > .jsondiffpatch-value pre:after,
 .jsondiffpatch-modified .jsondiffpatch-right-value {
   margin-left: 5px;
 }
+.jsondiffpatch-moved .jsondiffpatch-property-name {
+  text-decoration: line-through;
+  text-decoration-color: gray;
+}
 .jsondiffpatch-moved .jsondiffpatch-value {
   display: none;
 }

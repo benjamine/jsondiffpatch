@@ -882,6 +882,27 @@ const arrays: ExampleGroup = [
     exactReverse: false,
   },
   {
+    name: 'reverse array',
+    left: [1, 2, 3, 4, 5],
+    right: [5, 4, 3, 2, 1],
+    delta: {
+      _t: 'a',
+      _1: ['', 3, 3],
+      _2: ['', 2, 3],
+      _3: ['', 1, 3],
+      _4: ['', 0, 3],
+    },
+    reverse: {
+      // ✨ the same reversing patch works in reverse ✨
+      _t: 'a',
+      _1: ['', 3, 3],
+      _2: ['', 2, 3],
+      _3: ['', 1, 3],
+      _4: ['', 0, 3],
+    },
+    exactReverse: false,
+  },
+  {
     name: 'nested',
     options: {
       objectHash(obj: { id?: string }) {

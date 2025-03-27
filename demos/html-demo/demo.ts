@@ -1,8 +1,10 @@
 import { parse as json5Parse } from 'json5';
 
+import * as jsondiffpatch from 'jsondiffpatch/with-text-diffs';
+
 import * as annotatedFormatter from 'jsondiffpatch/formatters/annotated';
 import * as htmlFormatter from 'jsondiffpatch/formatters/html';
-import * as jsondiffpatch from 'jsondiffpatch/with-text-diffs';
+import * as jsonpatchFormatter from 'jsondiffpatch/formatters/jsonpatch';
 
 import 'jsondiffpatch/formatters/styles/annotated.css';
 import 'jsondiffpatch/formatters/styles/html.css';
@@ -26,6 +28,8 @@ declare namespace CodeMirror {
     on(eventName: 'change', handler: () => void): void;
     refresh(): void;
     setOption(option: 'theme', value: string): void;
+    focus(): void;
+    execCommand(command: string): void;
   }
 }
 
@@ -467,6 +471,9 @@ const areas = {
   delta: new JsonArea(
     document.getElementById('json-delta') as HTMLTextAreaElement,
   ),
+  jsonpatch: new JsonArea(
+    document.getElementById('jsonpatch') as HTMLTextAreaElement,
+  ),
 };
 
 const compare = function () {
@@ -483,8 +490,10 @@ const compare = function () {
     error = err;
   }
   areas.delta.error(false);
+  areas.jsonpatch.error(false);
   if (error) {
     areas.delta.setValue('');
+    areas.jsonpatch.setValue('');
     return;
   }
 
@@ -493,6 +502,7 @@ const compare = function () {
   const visualdiff = document.getElementById('visualdiff')!;
   const annotateddiff = document.getElementById('annotateddiff')!;
   const jsondifflength = document.getElementById('jsondifflength')!;
+  const jsonpatchlength = document.getElementById('jsonpatchlength')!;
   try {
     const delta = instance.diff(left, right);
     resultsSections.setAttribute(
@@ -511,6 +521,10 @@ const compare = function () {
         case 'json':
           areas.delta.setValue('no diff');
           jsondifflength.innerHTML = '0';
+          break;
+        case 'jsonpatch':
+          areas.jsonpatch.setValue('[]');
+          jsonpatchlength.innerHTML = '0';
           break;
       }
     } else {
@@ -533,6 +547,12 @@ const compare = function () {
           jsondifflength.innerHTML =
             Math.round(JSON.stringify(delta).length / 102.4) / 10.0 + '';
           break;
+        case 'jsonpatch':
+          const jsonpatch = jsonpatchFormatter.format(delta)!;
+          areas.jsonpatch.setValue(prettyJsonPatch(jsonpatch));
+          jsonpatchlength.innerHTML =
+            Math.round(JSON.stringify(jsonpatch).length / 102.4) / 10.0 + '';
+          break;
       }
     }
   } catch (err) {
@@ -541,6 +561,8 @@ const compare = function () {
     annotateddiff.innerHTML = '';
     areas.delta.setValue('');
     areas.delta.error(err);
+    areas.jsonpatch.setValue('');
+    areas.jsonpatch.error(err);
     if (typeof console !== 'undefined' && console.error) {
       console.error(err);
       console.error((err as Error).stack);
@@ -553,11 +575,36 @@ const compare = function () {
 areas.left.makeEditor();
 areas.right.makeEditor();
 areas.delta.makeEditor(true);
+areas.jsonpatch.makeEditor(true);
 
 areas.left.element.addEventListener('change', compare);
 areas.right.element.addEventListener('change', compare);
 areas.left.element.addEventListener('keyup', compare);
 areas.right.element.addEventListener('keyup', compare);
+
+window.addEventListener('keydown', (e) => {
+  if (e.altKey && e.key === 'ArrowRight') {
+    areas.right.editor?.focus();
+    areas.right.editor?.execCommand('selectAll');
+  }
+  if (e.altKey && e.key === 'ArrowLeft') {
+    areas.left.editor?.focus();
+    areas.left.editor?.execCommand('selectAll');
+  }
+  if (e.metaKey && e.key === 's') {
+    const leftJson = areas.left.getValue();
+    const rightJson = areas.right.getValue();
+    window.history.pushState(
+      {},
+      '',
+      `?left=${encodeURIComponent(leftJson)}&right=${encodeURIComponent(
+        rightJson,
+      )}`,
+    );
+    e.preventDefault();
+    e.stopPropagation();
+  }
+});
 
 const getSelectedDeltaType = function () {
   return (
@@ -567,7 +614,12 @@ const getSelectedDeltaType = function () {
 };
 
 const showDeltaType = function (type: string) {
-  if (type !== 'visual' && type !== 'annotated' && type !== 'json') {
+  if (
+    type !== 'visual' &&
+    type !== 'annotated' &&
+    type !== 'json' &&
+    type !== 'jsonpatch'
+  ) {
     return false;
   }
 
@@ -583,6 +635,9 @@ const showDeltaType = function (type: string) {
   compare();
   if (type === 'json') {
     areas.delta.editor!.refresh();
+  }
+  if (type === 'jsonpatch') {
+    areas.jsonpatch.editor!.refresh();
   }
   return true;
 };
@@ -949,3 +1004,25 @@ document.querySelector('#gist_url')?.addEventListener('input', (e) => {
     }
   });
 });
+
+const prettyJsonPatch = (patch: jsonpatchFormatter.Op[]) => {
+  if (patch.length === 0) {
+    return '[]';
+  }
+  const lines = patch.map((op, index) => {
+    const opPad = ''.padStart(Math.max(0, 7 - op.op.length), ' ');
+    const extraProps = Object.keys(op)
+      .filter((key) => !['op', 'path'].includes(key))
+      .map((key) => {
+        const value =
+          key in op ? op[key as keyof jsonpatchFormatter.Op] : undefined;
+        if (value === undefined) return '';
+        return `, ${JSON.stringify(key)}: ${JSON.stringify(value)}`;
+      })
+      .join('');
+    return `  { "op": "${op.op}",${opPad} "path": "${op.path}"${extraProps} }${
+      index < patch.length - 1 ? ',' : ''
+    }\n`;
+  });
+  return `[\n${lines.join('')}]`;
+};
