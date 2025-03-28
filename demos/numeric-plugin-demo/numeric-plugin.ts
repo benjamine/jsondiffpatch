@@ -58,7 +58,7 @@ const delta = diffpatcher.diff(
 		population: 403,
 	},
 );
-assertSame(delta, [0, 3, NUMERIC_DIFFERENCE]);
+assertSame(delta, { population: [0, 3, NUMERIC_DIFFERENCE] });
 
 /*
 Let's make the corresponding patch filter that will handle the new delta type
@@ -138,7 +138,7 @@ diffpatcher.processor.pipes.reverse.debug = true;
 
 // try it
 const reverseDelta = diffpatcher.reverse(delta);
-assertSame(reverseDelta, [0, -3, NUMERIC_DIFFERENCE]);
+assertSame(reverseDelta, { population: [0, -3, NUMERIC_DIFFERENCE] });
 
 // unpatch twice!
 diffpatcher.unpatch(right, delta);
