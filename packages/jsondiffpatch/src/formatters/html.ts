@@ -30,7 +30,11 @@ class HtmlFormatter extends BaseFormatter<HtmlFormatterContext> {
   }
 
   formatValue(context: HtmlFormatterContext, value: unknown) {
-    context.out(`<pre>${htmlEscape(JSON.stringify(value, null, 2))}</pre>`);
+    const valueAsHtml =
+      typeof value === 'undefined'
+        ? 'undefined'
+        : htmlEscape(JSON.stringify(value, null, 2));
+    context.out(`<pre>${valueAsHtml}</pre>`);
   }
 
   formatTextDiffString(context: HtmlFormatterContext, value: string) {
