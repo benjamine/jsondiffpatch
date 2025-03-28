@@ -1,0 +1,42 @@
+{
+	"name": "diff-mcp",
+	"version": "0.0.2",
+	"author": "Benjamin Eidelman <beneidel@gmail.com>",
+	"description": "MCP server to compare text or data and get a readable diff (supports text, json, jsonc, yaml, toml, etc.)",
+	"contributors": ["Benjamin Eidelman <beneidel@gmail.com>"],
+	"type": "module",
+	"files": ["build"],
+	"bin": {
+		"diff-mcp": "./build/index.js && chmod 755 build/index.js"
+	},
+	"scripts": {
+		"build": "tsc",
+		"type-check": "tsc --noEmit",
+		"lint": "biome check --error-on-warnings .",
+		"test": "vitest --coverage",
+		"prepack": "npm run build && cp ../../MIT-LICENSE.txt .",
+		"prepublishOnly": "npm run test && npm run lint"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/benjamine/jsondiffpatch.git"
+	},
+	"keywords": ["mcp", "compare", "diff", "json", "jsondiffpatch"],
+	"dependencies": {
+		"jsondiffpatch": "^0.7.3",
+		"@dmsnell/diff-match-patch": "^1.1.0",
+		"@modelcontextprotocol/sdk": "^1.8.0",
+		"zod": "^3.24.2"
+	},
+	"devDependencies": {
+		"@vitest/coverage-v8": "^3.0.9",
+		"tslib": "^2.6.2",
+		"typescript": "^5.8.2",
+		"vitest": "^3.0.9"
+	},
+	"license": "MIT",
+	"engines": {
+		"node": "^18.0.0 || >=20.0.0"
+	},
+	"homepage": "https://github.com/benjamine/jsondiffpatch"
+}
