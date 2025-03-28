@@ -23,5 +23,6 @@ npm-debug.log
 
 packages/jsondiffpatch/README.md
 packages/jsondiffpatch/MIT-LICENSE.txt
+packages/diff-mcp/MIT-LICENSE.txt
 
 *.local.*
