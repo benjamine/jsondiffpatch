@@ -1,4 +1,4 @@
-import type dmp from 'diff-match-patch';
+import type { diff_match_patch } from '@dmsnell/diff-match-patch';
 import type DiffContext from '../contexts/diff.js';
 import type PatchContext from '../contexts/patch.js';
 import type ReverseContext from '../contexts/reverse.js';
@@ -31,7 +31,7 @@ function getDiffMatchPatch(
 ): DiffPatch | null;
 function getDiffMatchPatch(options: Options | undefined, required?: boolean) {
   if (!cachedDiffPatch) {
-    let instance: dmp;
+    let instance: diff_match_patch;
     if (options?.textDiff?.diffMatchPatch) {
       instance = new options.textDiff.diffMatchPatch();
     } else {

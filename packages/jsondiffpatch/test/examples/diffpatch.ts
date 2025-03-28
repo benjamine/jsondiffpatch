@@ -1,4 +1,4 @@
-import DiffMatchPatch from 'diff-match-patch';
+import { diff_match_patch } from '@dmsnell/diff-match-patch';
 import type { Delta, Options } from '../../src/index.js';
 
 interface Example {
@@ -580,7 +580,7 @@ const text: ExampleGroup = [
     right: largeText,
     delta: [shortText, largeText],
     reverse: [largeText, shortText],
-    options: { textDiff: { diffMatchPatch: DiffMatchPatch } },
+    options: { textDiff: { diffMatchPatch: diff_match_patch } },
   },
   {
     left: largeText,
@@ -600,13 +600,13 @@ const text: ExampleGroup = [
       2,
     ],
     exactReverse: false,
-    options: { textDiff: { diffMatchPatch: DiffMatchPatch } },
+    options: { textDiff: { diffMatchPatch: diff_match_patch } },
   },
   {
     name: 'larger than min length',
     options: {
       textDiff: {
-        diffMatchPatch: DiffMatchPatch,
+        diffMatchPatch: diff_match_patch,
         minLength: 10,
       },
     },
@@ -620,7 +620,7 @@ const text: ExampleGroup = [
     name: 'shorter than min length',
     options: {
       textDiff: {
-        diffMatchPatch: DiffMatchPatch,
+        diffMatchPatch: diff_match_patch,
         minLength: 10,
       },
     },

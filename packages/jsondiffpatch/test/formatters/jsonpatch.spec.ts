@@ -1,3 +1,4 @@
+import { beforeAll, describe, expect, it } from 'vitest';
 import * as jsonpatchFormatter from '../../src/formatters/jsonpatch.js';
 import * as jsondiffpatch from '../../src/index.js';
 
