@@ -30,9 +30,10 @@ class HtmlFormatter extends BaseFormatter<HtmlFormatterContext> {
   }
 
   formatValue(context: HtmlFormatterContext, value: unknown) {
-    const valueAsHtml = typeof value === "undefined"
-      ? "undefined"
-      : htmlEscape(JSON.stringify(value, null, 2));
+    const valueAsHtml =
+      typeof value === 'undefined'
+        ? 'undefined'
+        : htmlEscape(JSON.stringify(value, null, 2));
     context.out(`<pre>${valueAsHtml}</pre>`);
   }
 
