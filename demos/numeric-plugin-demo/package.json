@@ -7,7 +7,7 @@
     "build": "tsc"
   },
   "dependencies": {
-    "jsondiffpatch": "^0.6.2"
+    "jsondiffpatch": "^0.7.2"
   },
   "devDependencies": {
     "typescript": "~5.3.2"
