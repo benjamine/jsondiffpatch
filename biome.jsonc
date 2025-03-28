@@ -1,0 +1,28 @@
+{
+	"$schema": "https://biomejs.dev/schemas/1.6.4/schema.json",
+	"organizeImports": {
+		"enabled": true
+	},
+	"linter": {
+		"enabled": true,
+		"rules": {
+			"recommended": true,
+			"correctness": {
+				"noUnusedImports": "error",
+				"noUnusedVariables": "error",
+				"useHookAtTopLevel": "error"
+			},
+			"style": {
+				"useCollapsedElseIf": "error",
+				"useShorthandArrayType": "error",
+				"useForOf": "error"
+			},
+			"suspicious": {
+				"noEmptyBlockStatements": "error"
+			}
+		}
+	},
+	"files": {
+		"ignore": ["node_modules", "dist", "build", "lib", "coverage"]
+	}
+}

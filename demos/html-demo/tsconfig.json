@@ -1,11 +1,15 @@
 {
-  "compilerOptions": {
-    "target": "es6",
-    "module": "node16",
-    "outDir": "build",
-    "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
-    "strict": true,
-    "skipLibCheck": false
-  }
+	"compilerOptions": {
+		"target": "es6",
+		"module": "node16",
+		"outDir": "build",
+		"esModuleInterop": true,
+		"forceConsistentCasingInFileNames": true,
+		"strict": true,
+		"skipLibCheck": false,
+		"noFallthroughCasesInSwitch": true,
+		"noImplicitReturns": true,
+		"noUncheckedIndexedAccess": true,
+		"noImplicitAny": true
+	}
 }

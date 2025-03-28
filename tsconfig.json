@@ -15,5 +15,6 @@
 		"noUncheckedIndexedAccess": true,
 		"noImplicitAny": true
 	},
-	"include": ["src", "test"]
+	"include": ["."],
+	"exclude": ["node_modules", "lib", "build"]
 }

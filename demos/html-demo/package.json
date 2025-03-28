@@ -1,16 +1,16 @@
 {
-  "name": "html-demo",
-  "type": "module",
-  "version": "1.0.0",
-  "scripts": {
-    "build": "tsc && esbuild demo.ts --bundle --outdir=build"
-  },
-  "dependencies": {
-    "json5": "^2.2.3",
-    "jsondiffpatch": "^0.7.2"
-  },
-  "devDependencies": {
-    "esbuild": "^0.19.8",
-    "typescript": "~5.3.2"
-  }
+	"name": "html-demo",
+	"type": "module",
+	"version": "1.0.0",
+	"scripts": {
+		"build": "tsc && esbuild demo.ts --bundle --outdir=build"
+	},
+	"dependencies": {
+		"json5": "^2.2.3",
+		"jsondiffpatch": "^0.7.2"
+	},
+	"devDependencies": {
+		"esbuild": "^0.19.8",
+		"typescript": "^5.8.2"
+	}
 }
