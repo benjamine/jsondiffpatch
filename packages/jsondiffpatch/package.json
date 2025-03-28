@@ -1,8 +1,8 @@
 {
 	"name": "jsondiffpatch",
-	"version": "0.7.2",
+	"version": "0.7.3",
 	"author": "Benjamin Eidelman <beneidel@gmail.com>",
-	"description": "Diff & Patch for Javascript objects",
+	"description": "JSON diff & patch (object and array diff, text diff, multiple output formats)",
 	"contributors": ["Benjamin Eidelman <beneidel@gmail.com>"],
 	"type": "module",
 	"sideEffects": ["*.css"],
