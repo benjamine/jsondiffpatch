@@ -268,18 +268,20 @@ const getExampleJson = function () {
 
 const diffOptions = {
   objectHash: function (obj, index) {
-    const objRecord = obj as Record<string, string>;
-    if (typeof objRecord._id !== 'undefined') {
-      return objRecord._id;
-    }
-    if (typeof objRecord.id !== 'undefined') {
-      return objRecord.id;
-    }
-    if (typeof objRecord.key !== 'undefined') {
-      return objRecord.key;
-    }
-    if (typeof objRecord.name !== 'undefined') {
-      return objRecord.name;
+    if (typeof obj === 'object' && obj !== null) {
+      const objRecord = obj as Record<string, string>;
+      if (typeof objRecord._id !== 'undefined') {
+        return objRecord._id;
+      }
+      if (typeof objRecord.id !== 'undefined') {
+        return objRecord.id;
+      }
+      if (typeof objRecord.key !== 'undefined') {
+        return objRecord.key;
+      }
+      if (typeof objRecord.name !== 'undefined') {
+        return objRecord.name;
+      }
     }
     return '$$index:' + index;
   },
