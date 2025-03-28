@@ -4,6 +4,7 @@ import type {
   Delta,
   ModifiedDelta,
   ObjectDelta,
+  TextDiffDelta,
 } from '../types.js';
 import { applyJsonPatchRFC6902 } from './jsonpatch-apply.js';
 
@@ -40,6 +41,13 @@ export interface MoveOp {
 export type Op = AddOp | RemoveOp | ReplaceOp | MoveOp;
 
 class JSONFormatter {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  protected processTextDiff(ops: Op[], path: string, diff: string) {
+    throw new Error(
+      "JSONPatch (RFC 6902) doesn't support text diffs, disable textDiff option",
+    );
+  }
+
   format(delta: Delta): Op[] {
     const ops: Op[] = [];
 
@@ -75,9 +83,7 @@ class JSONFormatter {
         }
         // text diff
         if (current.delta[2] === 2) {
-          throw new Error(
-            "JSONPatch (RFC 6902) doesn't support text diffs, disable textDiff option",
-          );
+          this.processTextDiff(ops, current.path, current.delta[0] as string);
         }
       } else if (current.delta._t === 'a') {
         // array delta
@@ -89,7 +95,7 @@ class JSONFormatter {
         const inserts: { to: number; value: unknown }[] = [];
         const updates: {
           to: number;
-          delta: ObjectDelta | ArrayDelta | ModifiedDelta;
+          delta: ObjectDelta | ArrayDelta | ModifiedDelta | TextDiffDelta;
         }[] = [];
         Object.keys(arrayDelta).forEach((key) => {
           if (key === '_t') return;
@@ -116,10 +122,8 @@ class JSONFormatter {
               } else if (itemDelta.length === 2) {
                 updates.push({ to: index, delta: itemDelta });
               } else if (itemDelta.length === 3) {
-                if (itemDelta[2] === 3) {
-                  throw new Error(
-                    "JSONPatch (RFC 6902) doesn't support text diffs, disable textDiff option",
-                  );
+                if (itemDelta[2] === 2) {
+                  updates.push({ to: index, delta: itemDelta })
                 }
               }
             }
@@ -196,6 +200,8 @@ class JSONFormatter {
                 path: `${current.path}/${to}`,
                 value: delta[1],
               });
+            } else {
+              this.processTextDiff(ops, `${current.path}/${to}`, delta[0]);
             }
           } else {
             // nested delta (object or array)
