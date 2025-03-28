@@ -1,16 +1,17 @@
 {
-  "name": "jsondiffpatch",
-  "scripts": {
-    "format": "prettier . --write",
-    "format-check": "prettier . --check"
-  },
-  "dependencies": {
-    "prettier": "^3.1.0"
-  },
-  "workspaces": [
-    "demos/console-demo",
-    "demos/html-demo",
-    "demos/numeric-plugin-demo",
-    "packages/jsondiffpatch"
-  ]
+	"name": "jsondiffpatch",
+	"scripts": {
+		"lint": "biome check --error-on-warnings .",
+		"type-check": "tsc --noEmit"
+	},
+	"workspaces": [
+		"demos/console-demo",
+		"demos/html-demo",
+		"demos/numeric-plugin-demo",
+		"packages/jsondiffpatch"
+	],
+	"devDependencies": {
+		"@biomejs/biome": "^1.9.4",
+		"typescript": "^5.8.2"
+	}
 }

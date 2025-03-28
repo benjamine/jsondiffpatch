@@ -17,11 +17,10 @@ jobs:
           node-version: 'lts/*'
           cache: 'npm'
       - run: npm ci
-      - run: npm run format-check
-      - run: npm run lint
-        working-directory: ./packages/jsondiffpatch
       - run: npm run build
         working-directory: ./packages/jsondiffpatch
+      - run: npm run lint
+      - run: npm run type-check
       - run: npm run test
         working-directory: ./packages/jsondiffpatch
       - run: npm run start

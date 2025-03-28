@@ -1,9 +1,11 @@
 {
 	"compilerOptions": {
 		"target": "es6",
-		"lib": ["es6"],
 		"module": "node16",
-		"outDir": "build",
+		"types": ["node"],
+		"declaration": true,
+		"noEmit": true,
+		"isolatedModules": true,
 		"esModuleInterop": true,
 		"forceConsistentCasingInFileNames": true,
 		"strict": true,
@@ -12,5 +14,7 @@
 		"noImplicitReturns": true,
 		"noUncheckedIndexedAccess": true,
 		"noImplicitAny": true
-	}
+	},
+	"include": ["."],
+	"exclude": ["node_modules", "lib", "build"]
 }
