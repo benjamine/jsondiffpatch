@@ -27,6 +27,48 @@ export type DeltaType =
 
 export type NodeType = 'array' | 'object' | '';
 
+export function parseTextDiff(value: string) {
+  const output = [];
+  const lines = value.split('\n@@ ');
+  for (let i = 0, l = lines.length; i < l; i++) {
+    const line = lines[i];
+    const lineOutput: {
+      pieces: LineOutputPiece[];
+      location?: LineOutputLocation;
+    } = {
+      pieces: [],
+    };
+    const location = /^(?:@@ )?[-+]?(\d+),(\d+)/.exec(line)!.slice(1);
+    lineOutput.location = {
+      line: location[0],
+      chr: location[1],
+    };
+    const pieces = line.split('\n').slice(1);
+    for (
+      let pieceIndex = 0, piecesLength = pieces.length;
+      pieceIndex < piecesLength;
+      pieceIndex++
+    ) {
+      const piece = pieces[pieceIndex];
+      if (!piece.length) {
+        continue;
+      }
+      const pieceOutput: Partial<LineOutputPiece> = {
+        type: 'context',
+      };
+      if (piece.substring(0, 1) === '+') {
+        pieceOutput.type = 'added';
+      } else if (piece.substring(0, 1) === '-') {
+        pieceOutput.type = 'deleted';
+      }
+      pieceOutput.text = piece.slice(1);
+      lineOutput.pieces.push(pieceOutput as LineOutputPiece);
+    }
+    output.push(lineOutput as LineOutput);
+  }
+  return output;
+}
+
 interface DeltaTypeMap {
   movedestination: undefined;
   unchanged: undefined;
@@ -426,48 +468,8 @@ abstract class BaseFormatter<
     return 'unknown';
   }
 
-  parseTextDiff(value: string) {
-    const output = [];
-    const lines = value.split('\n@@ ');
-    for (let i = 0, l = lines.length; i < l; i++) {
-      const line = lines[i];
-      const lineOutput: {
-        pieces: LineOutputPiece[];
-        location?: LineOutputLocation;
-      } = {
-        pieces: [],
-      };
-      const location = /^(?:@@ )?[-+]?(\d+),(\d+)/.exec(line)!.slice(1);
-      lineOutput.location = {
-        line: location[0],
-        chr: location[1],
-      };
-      const pieces = line.split('\n').slice(1);
-      for (
-        let pieceIndex = 0, piecesLength = pieces.length;
-        pieceIndex < piecesLength;
-        pieceIndex++
-      ) {
-        const piece = pieces[pieceIndex];
-        if (!piece.length) {
-          continue;
-        }
-        const pieceOutput: Partial<LineOutputPiece> = {
-          type: 'context',
-        };
-        if (piece.substring(0, 1) === '+') {
-          pieceOutput.type = 'added';
-        } else if (piece.substring(0, 1) === '-') {
-          pieceOutput.type = 'deleted';
-        }
-        pieceOutput.text = piece.slice(1);
-        lineOutput.pieces.push(pieceOutput as LineOutputPiece);
-      }
-      output.push(lineOutput as LineOutput);
-    }
-    return output;
-  }
-
+  parseTextDiff = parseTextDiff;
+  
   abstract rootBegin(
     context: TContext,
     type: DeltaType,
