@@ -43,10 +43,10 @@
 
 ## Usage
 
-as a CLI:
+on your terminal:
 
 ```sh
-npx jsondiffpatch https://jsondiffpatch.com/demo/left.json https://jsondiffpatch.com/demo/right.json
+npx jsondiffpatch --help
 ```
 
 ![console_demo!](docs/demo/consoledemo.png)
@@ -191,7 +191,7 @@ npm install jsondiffpatch
 ```
 
 ```js
-import * as jsondiffpatch from 'jsondiffpatch';
+import {* as jsondiffpatch} from 'jsondiffpatch';
 const jsondiffpatchInstance = jsondiffpatch.create(options);
 ```
 
