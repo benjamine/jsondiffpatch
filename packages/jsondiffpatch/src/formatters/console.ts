@@ -93,7 +93,7 @@ class ConsoleFormatter extends BaseFormatter<ConsoleFormatterContext> {
 			const pieces = line.pieces;
 			for (const piece of pieces) {
 				context.pushColor(this.brushes[piece.type]);
-				context.out(piece.text);
+				context.out(decodeURI(piece.text));
 				context.popColor();
 			}
 			if (i < lines.length - 1) {

@@ -244,7 +244,7 @@ abstract class BaseFormatter<
 			for (let index = 0; index < keys.length; index++) {
 				const key = keys[index];
 				if (key === undefined) continue;
-				const isLast = index === length - 1;
+				const isLast = index === keys.length - 1;
 				fn(
 					// for object diff, the delta key and left key are the same
 					key,
@@ -310,8 +310,6 @@ abstract class BaseFormatter<
 			rightIndex < rightLength ||
 			`${rightIndex}` in arrayDelta
 		) {
-			const isLast =
-				leftIndex === leftLength - 1 || rightIndex === rightLength - 1;
 			let hasDelta = false;
 
 			const leftIndexKey = `_${leftIndex}` as const;
@@ -333,7 +331,12 @@ abstract class BaseFormatter<
 								value: leftArray ? leftArray[movedFromIndex] : undefined,
 							}
 						: undefined,
-					isLast && !(rightIndexKey in arrayDelta),
+
+					// is this the last key in this delta?
+					leftIndex === leftLength - 1 &&
+						rightIndex === rightLength - 1 &&
+						!(`${rightIndex + 1}` in arrayDelta) &&
+						!(rightIndexKey in arrayDelta),
 				);
 
 				if (Array.isArray(itemDelta)) {
@@ -357,6 +360,7 @@ abstract class BaseFormatter<
 				// something happened to the right item at this position
 				hasDelta = true;
 				const itemDelta = arrayDelta[rightIndexKey];
+				const isItemAdded = Array.isArray(itemDelta) && itemDelta.length === 1;
 				fn(
 					rightIndexKey,
 					movedFromIndex ?? leftIndex,
@@ -366,10 +370,14 @@ abstract class BaseFormatter<
 								value: leftArray ? leftArray[movedFromIndex] : undefined,
 							}
 						: undefined,
-					isLast,
+					// is this the last key in this delta?
+					leftIndex === leftLength - 1 &&
+						rightIndex === rightLength - 1 + (isItemAdded ? 1 : 0) &&
+						!(`_${leftIndex + 1}` in arrayDelta) &&
+						!(`${rightIndex + 1}` in arrayDelta),
 				);
 
-				if (Array.isArray(itemDelta) && itemDelta.length === 1) {
+				if (isItemAdded) {
 					// added
 					rightLength++;
 					rightIndex++;
@@ -398,7 +406,10 @@ abstract class BaseFormatter<
 									value: leftArray ? leftArray[movedFromIndex] : undefined,
 								}
 							: undefined,
-						isLast,
+						// is this the last key in this delta?
+						leftIndex === leftLength - 1 &&
+							rightIndex === rightLength - 1 &&
+							!(`${rightIndex + 1}` in arrayDelta),
 					);
 				}
 
@@ -446,9 +457,7 @@ abstract class BaseFormatter<
 	parseTextDiff(value: string) {
 		const output = [];
 		const lines = value.split("\n@@ ");
-		// for (let i = 0, l = lines.length; i < l; i++) {
 		for (const line of lines) {
-			//const line = lines[i];
 			const lineOutput: {
 				pieces: LineOutputPiece[];
 				location?: LineOutputLocation;
