@@ -454,50 +454,7 @@ abstract class BaseFormatter<
 		return "unknown";
 	}
 
-	parseTextDiff(value: string) {
-		const output = [];
-		const lines = value.split("\n@@ ");
-		for (const line of lines) {
-			const lineOutput: {
-				pieces: LineOutputPiece[];
-				location?: LineOutputLocation;
-			} = {
-				pieces: [],
-			};
-			const location = /^(?:@@ )?[-+]?(\d+),(\d+)/.exec(line)?.slice(1);
-			if (!location) {
-				throw new Error("invalid text diff format");
-			}
-			assertArrayHasAtLeast2(location);
-			lineOutput.location = {
-				line: location[0],
-				chr: location[1],
-			};
-			const pieces = line.split("\n").slice(1);
-			for (
-				let pieceIndex = 0, piecesLength = pieces.length;
-				pieceIndex < piecesLength;
-				pieceIndex++
-			) {
-				const piece = pieces[pieceIndex];
-				if (piece === undefined || !piece.length) {
-					continue;
-				}
-				const pieceOutput: Partial<LineOutputPiece> = {
-					type: "context",
-				};
-				if (piece.substring(0, 1) === "+") {
-					pieceOutput.type = "added";
-				} else if (piece.substring(0, 1) === "-") {
-					pieceOutput.type = "deleted";
-				}
-				pieceOutput.text = piece.slice(1);
-				lineOutput.pieces.push(pieceOutput as LineOutputPiece);
-			}
-			output.push(lineOutput as LineOutput);
-		}
-		return output;
-	}
+	parseTextDiff = parseTextDiff;
 
 	abstract rootBegin(
 		context: TContext,
@@ -601,5 +558,51 @@ abstract class BaseFormatter<
 		movedFrom: MoveDestination | undefined,
 	): void;
 }
+
+export function parseTextDiff(value: string) {
+	const output = [];
+	const lines = value.split("\n@@ ");
+	for (const line of lines) {
+		const lineOutput: {
+			pieces: LineOutputPiece[];
+			location?: LineOutputLocation;
+		} = {
+			pieces: [],
+		};
+		const location = /^(?:@@ )?[-+]?(\d+),(\d+)/.exec(line)?.slice(1);
+		if (!location) {
+			throw new Error("invalid text diff format");
+		}
+		assertArrayHasAtLeast2(location);
+		lineOutput.location = {
+			line: location[0],
+			chr: location[1],
+		};
+		const pieces = line.split("\n").slice(1);
+		for (
+			let pieceIndex = 0, piecesLength = pieces.length;
+			pieceIndex < piecesLength;
+			pieceIndex++
+		) {
+			const piece = pieces[pieceIndex];
+			if (piece === undefined || !piece.length) {
+				continue;
+			}
+			const pieceOutput: Partial<LineOutputPiece> = {
+				type: "context",
+			};
+			if (piece.substring(0, 1) === "+") {
+				pieceOutput.type = "added";
+			} else if (piece.substring(0, 1) === "-") {
+				pieceOutput.type = "deleted";
+			}
+			pieceOutput.text = piece.slice(1);
+			lineOutput.pieces.push(pieceOutput as LineOutputPiece);
+		}
+		output.push(lineOutput as LineOutput);
+	}
+	return output;
+}
+
 
 export default BaseFormatter;
