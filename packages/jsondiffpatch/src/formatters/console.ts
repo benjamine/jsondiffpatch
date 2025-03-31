@@ -14,11 +14,15 @@ import BaseFormatter from "./base.js";
 interface ConsoleFormatterContext extends BaseFormatterContext {
 	indentLevel?: number;
 	indentPad?: string;
-	outLine: () => void;
 	indent: (levels?: number) => void;
 	color?: (((value: unknown) => string) | undefined)[];
+	linePrefix?: string[];
 	pushColor: (color: ((value: unknown) => string) | undefined) => void;
 	popColor: () => void;
+	pushLinePrefix: (prefix: string) => void;
+	popLinePrefix: () => void;
+	atNewLine: boolean;
+	newLine: () => void;
 }
 
 class ConsoleFormatter extends BaseFormatter<ConsoleFormatterContext> {
@@ -36,23 +40,31 @@ class ConsoleFormatter extends BaseFormatter<ConsoleFormatterContext> {
 			this.indentLevel =
 				(this.indentLevel || 0) + (typeof levels === "undefined" ? 1 : levels);
 			this.indentPad = new Array(this.indentLevel + 1).join("  ");
-			if (!this.outLine) {
-				throw new Error("console context outLine is not defined");
-			}
-			this.outLine();
 		};
-		context.outLine = function () {
-			if (!this.buffer) {
-				throw new Error("console context buffer is not defined");
-			}
-			this.buffer.push(`\n${this.indentPad || ""}`);
+		context.newLine = function () {
+			this.buffer = this.buffer || [];
+			this.buffer.push("\n");
+			this.atNewLine = true;
 		};
 		context.out = function (...args) {
+			const color = this.color?.[0];
+			if (this.atNewLine) {
+				this.atNewLine = false;
+				this.buffer = this.buffer || [];
+				const linePrefix = this.linePrefix?.[0]
+					? color
+						? color(this.linePrefix[0])
+						: this.linePrefix[0]
+					: " ";
+				this.buffer.push(`${linePrefix}${this.indentPad || ""}`);
+			}
 			for (const arg of args) {
 				const lines = arg.split("\n");
-				let text = lines.join(`\n${this.indentPad || ""}`);
-				if (this.color?.[0]) {
-					text = this.color[0](text);
+				let text = lines.join(
+					`\n${this.linePrefix?.[0] ?? " "}${this.indentPad || ""}`,
+				);
+				if (color) {
+					text = color(text);
 				}
 				if (!this.buffer) {
 					throw new Error("console context buffer is not defined");
@@ -68,11 +80,18 @@ class ConsoleFormatter extends BaseFormatter<ConsoleFormatterContext> {
 			this.color = this.color || [];
 			this.color.shift();
 		};
+		context.pushLinePrefix = function (prefix: string) {
+			this.linePrefix = this.linePrefix || [];
+			this.linePrefix.unshift(prefix);
+		};
+		context.popLinePrefix = function () {
+			this.linePrefix = this.linePrefix || [];
+			this.linePrefix.shift();
+		};
 	}
 
 	typeFormattterErrorFormatter(context: ConsoleFormatterContext, err: unknown) {
 		context.pushColor(this.brushes.error);
-		// eslint-disable-next-line @typescript-eslint/restrict-template-expressions
 		context.out(`[ERROR]${err}`);
 		context.popColor();
 	}
@@ -84,20 +103,37 @@ class ConsoleFormatter extends BaseFormatter<ConsoleFormatterContext> {
 	formatTextDiffString(context: ConsoleFormatterContext, value: string) {
 		const lines = this.parseTextDiff(value);
 		context.indent();
+		context.newLine();
 		for (let i = 0; i < lines.length; i++) {
 			const line = lines[i];
+			const underline = [];
 			if (line === undefined) continue;
 			context.pushColor(this.brushes.textDiffLine);
-			context.out(`${line.location.line},${line.location.chr} `);
+			const header = `${line.location.line},${line.location.chr} `;
+			context.out(header);
+			underline.push(new Array(header.length + 1).join(" "));
 			context.popColor();
 			const pieces = line.pieces;
 			for (const piece of pieces) {
-				context.pushColor(this.brushes[piece.type]);
-				context.out(decodeURI(piece.text));
+				const brush = this.brushes[piece.type];
+				context.pushColor(brush);
+				const decodedText = decodeURI(piece.text);
+				context.out(decodedText);
+				underline.push(
+					new Array(decodedText.length + 1).join(
+						piece.type === "added" ? "+" : piece.type === "deleted" ? "-" : " ",
+					),
+				);
 				context.popColor();
 			}
+
+			context.newLine();
+			context.pushColor(this.brushes.textDiffLine);
+			context.out(underline.join(""));
+			context.popColor();
+
 			if (i < lines.length - 1) {
-				context.outLine();
+				context.newLine();
 			}
 		}
 		context.indent(-1);
@@ -112,6 +148,7 @@ class ConsoleFormatter extends BaseFormatter<ConsoleFormatterContext> {
 		if (type === "node") {
 			context.out(nodeType === "array" ? "[" : "{");
 			context.indent();
+			context.newLine();
 		}
 	}
 
@@ -122,6 +159,7 @@ class ConsoleFormatter extends BaseFormatter<ConsoleFormatterContext> {
 	) {
 		if (type === "node") {
 			context.indent(-1);
+			context.newLine();
 			context.out(nodeType === "array" ? "]" : "}");
 		}
 		context.popColor();
@@ -139,11 +177,17 @@ class ConsoleFormatter extends BaseFormatter<ConsoleFormatterContext> {
 				? key.substring(1)
 				: key;
 
+		if (type === "deleted") {
+			context.pushLinePrefix("-");
+		} else if (type === "added") {
+			context.pushLinePrefix("+");
+		}
 		context.pushColor(this.brushes[type]);
 		context.out(`${label}: `);
 		if (type === "node") {
 			context.out(nodeType === "array" ? "[" : "{");
 			context.indent();
+			context.newLine();
 		}
 	}
 
@@ -157,12 +201,16 @@ class ConsoleFormatter extends BaseFormatter<ConsoleFormatterContext> {
 	) {
 		if (type === "node") {
 			context.indent(-1);
+			context.newLine();
 			context.out(nodeType === "array" ? "]" : `}${isLast ? "" : ","}`);
 		}
 		if (!isLast) {
-			context.outLine();
+			context.newLine();
 		}
 		context.popColor();
+		if (type === "deleted" || type === "added") {
+			context.popLinePrefix();
+		}
 	}
 
 	format_unchanged(
@@ -215,7 +263,7 @@ class ConsoleFormatter extends BaseFormatter<ConsoleFormatterContext> {
 	}
 
 	format_moved(context: ConsoleFormatterContext, delta: MovedDelta) {
-		context.out(`==> ${delta[1]}`);
+		context.out(`~> ${delta[1]}`);
 	}
 
 	format_textdiff(context: ConsoleFormatterContext, delta: TextDiffDelta) {

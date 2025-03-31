@@ -104,7 +104,7 @@ function getJson(path) {
 
 const jsondiffpatch = createInstance();
 
-if (files.length !== 2 || flags.includes("--help")) {
+if (files.length !== 2 || flags["--help"]) {
 	console.log(usage());
 	const delta = jsondiffpatch.diff(
 		{

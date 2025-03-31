@@ -305,6 +305,21 @@ abstract class BaseFormatter<
 				}, 0) + 1;
 		let rightLength = leftLength;
 
+		// call fn with previous args, to catch last call and set isLast=true
+		let previousFnArgs: Parameters<typeof fn> | undefined;
+		const addKey: typeof fn = (...args) => {
+			if (previousFnArgs) {
+				fn(...previousFnArgs);
+			}
+			previousFnArgs = args;
+		};
+		const flushLastKey = () => {
+			if (!previousFnArgs) {
+				return;
+			}
+			fn(previousFnArgs[0], previousFnArgs[1], previousFnArgs[2], true);
+		};
+
 		while (
 			leftIndex < leftLength ||
 			rightIndex < rightLength ||
@@ -322,7 +337,7 @@ abstract class BaseFormatter<
 				// something happened to the left item at this position
 				hasDelta = true;
 				const itemDelta = arrayDelta[leftIndexKey];
-				fn(
+				addKey(
 					leftIndexKey,
 					movedFromIndex ?? leftIndex,
 					movedFromIndex
@@ -331,12 +346,7 @@ abstract class BaseFormatter<
 								value: leftArray ? leftArray[movedFromIndex] : undefined,
 							}
 						: undefined,
-
-					// is this the last key in this delta?
-					leftIndex === leftLength - 1 &&
-						rightIndex === rightLength - 1 &&
-						!(`${rightIndex + 1}` in arrayDelta) &&
-						!(rightIndexKey in arrayDelta),
+					false,
 				);
 
 				if (Array.isArray(itemDelta)) {
@@ -361,7 +371,7 @@ abstract class BaseFormatter<
 				hasDelta = true;
 				const itemDelta = arrayDelta[rightIndexKey];
 				const isItemAdded = Array.isArray(itemDelta) && itemDelta.length === 1;
-				fn(
+				addKey(
 					rightIndexKey,
 					movedFromIndex ?? leftIndex,
 					movedFromIndex
@@ -370,11 +380,7 @@ abstract class BaseFormatter<
 								value: leftArray ? leftArray[movedFromIndex] : undefined,
 							}
 						: undefined,
-					// is this the last key in this delta?
-					leftIndex === leftLength - 1 &&
-						rightIndex === rightLength - 1 + (isItemAdded ? 1 : 0) &&
-						!(`_${leftIndex + 1}` in arrayDelta) &&
-						!(`${rightIndex + 1}` in arrayDelta),
+					false,
 				);
 
 				if (isItemAdded) {
@@ -397,7 +403,7 @@ abstract class BaseFormatter<
 					this.includeMoveDestinations !== false
 				) {
 					// show unchanged items only if we have the left array
-					fn(
+					addKey(
 						rightIndexKey,
 						movedFromIndex ?? leftIndex,
 						movedFromIndex
@@ -406,10 +412,7 @@ abstract class BaseFormatter<
 									value: leftArray ? leftArray[movedFromIndex] : undefined,
 								}
 							: undefined,
-						// is this the last key in this delta?
-						leftIndex === leftLength - 1 &&
-							rightIndex === rightLength - 1 &&
-							!(`${rightIndex + 1}` in arrayDelta),
+						false,
 					);
 				}
 
@@ -423,6 +426,7 @@ abstract class BaseFormatter<
 				}
 			}
 		}
+		flushLastKey();
 	}
 
 	getDeltaType(delta: Delta, movedFrom?: MoveDestination | undefined) {

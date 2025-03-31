@@ -1,10 +1,11 @@
 {
 	"compilerOptions": {
-		"target": "es6",
+		"target": "ES2022",
 		"module": "node16",
+		"moduleResolution": "node16",
 		"types": ["node"],
-		"declaration": true,
-		"noEmit": true,
+		"outDir": "./build",
+		"rootDir": "./src",
 		"isolatedModules": true,
 		"esModuleInterop": true,
 		"forceConsistentCasingInFileNames": true,
@@ -15,6 +16,5 @@
 		"noUncheckedIndexedAccess": true,
 		"noImplicitAny": true
 	},
-	"include": ["."],
-	"exclude": ["node_modules", "lib", "build"]
+	"include": ["src"]
 }
