@@ -19,6 +19,8 @@ jobs:
       - run: npm ci
       - run: npm run build
         working-directory: ./packages/jsondiffpatch
+      - run: npm run build
+        working-directory: ./packages/diff-mcp
       - run: npm run lint
       - run: npm run type-check
       - run: npm run test
