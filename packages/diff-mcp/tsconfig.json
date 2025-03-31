@@ -10,7 +10,7 @@
 		"esModuleInterop": true,
 		"forceConsistentCasingInFileNames": true,
 		"strict": true,
-		"skipLibCheck": false,
+		"skipLibCheck": true,
 		"noFallthroughCasesInSwitch": true,
 		"noImplicitReturns": true,
 		"noUncheckedIndexedAccess": true,
