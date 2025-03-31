@@ -1,6 +1,6 @@
 {
 	"name": "diff-mcp",
-	"version": "0.0.3",
+	"version": "0.0.4",
 	"author": "Benjamin Eidelman <beneidel@gmail.com>",
 	"description": "MCP server to compare text or data and get a readable diff (supports text, json, jsonc, yaml, toml, etc.)",
 	"contributors": ["Benjamin Eidelman <beneidel@gmail.com>"],
