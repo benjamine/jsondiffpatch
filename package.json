@@ -8,7 +8,8 @@
 		"demos/console-demo",
 		"demos/html-demo",
 		"demos/numeric-plugin-demo",
-		"packages/jsondiffpatch"
+		"packages/jsondiffpatch",
+		"packages/diff-mcp"
 	],
 	"devDependencies": {
 		"@biomejs/biome": "^1.9.4",
