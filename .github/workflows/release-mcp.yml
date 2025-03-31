@@ -1,4 +1,4 @@
-name: Release
+name: Release MCP
 
 on:
   workflow_dispatch: ~
@@ -16,6 +16,8 @@ jobs:
           cache: 'npm'
           registry-url: 'https://registry.npmjs.org'
       - run: npm ci
+      - run: npm run build
+        working-directory: ./packages/jsondiffpatch
       - run: npm publish
         working-directory: ./packages/diff-mcp
         env:
