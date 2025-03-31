@@ -7,7 +7,7 @@
 	"type": "module",
 	"files": ["build"],
 	"bin": {
-		"diff-mcp": "./build/index.js && chmod 755 build/index.js"
+		"diff-mcp": "./build/index.js"
 	},
 	"scripts": {
 		"build": "tsc",
@@ -15,7 +15,7 @@
 		"type-check": "tsc --noEmit",
 		"lint": "biome check --error-on-warnings .",
 		"test": "vitest --coverage",
-		"prepack": "npm run build && cp ../../MIT-LICENSE.txt .",
+		"prepack": "npm run build && chmod 755 build/index.js && cp ../../MIT-LICENSE.txt .",
 		"prepublishOnly": "npm run test && npm run lint"
 	},
 	"repository": {
