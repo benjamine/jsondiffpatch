@@ -10,7 +10,25 @@ import type { Delta, Options } from "./types.js";
 
 export { dateReviver, DiffPatcher };
 
-export type * from "./types.js";
+export type {
+	Options,
+	AddedDelta,
+	ModifiedDelta,
+	DeletedDelta,
+	ObjectDelta,
+	ArrayDelta,
+	MovedDelta,
+	TextDiffDelta,
+	Delta,
+	Filter,
+	isAddedDelta,
+	isModifiedDelta,
+	isDeletedDelta,
+	isObjectDelta,
+	isArrayDelta,
+	isMovedDelta,
+	isTextDiffDelta,
+} from "./types.js";
 export type { Context, DiffContext, PatchContext, ReverseContext };
 
 export function create(
