@@ -306,10 +306,12 @@ Check [Plugins documentation](docs/plugins.md) for details.
   ](https://github.com/wbish/jsondiffpatch.net)
 - [SystemTextJson.JsonDiffPatch
   (C#)](https://github.com/weichch/system-text-json-jsondiffpatch)
+- [json-diff-patch (c++)](https://github.com/apack1001/json-diff-patch)
 - [Go JSON Diff (and Patch)
   ](https://github.com/yudai/gojsondiff)
 - [json-diff-patch (python)](https://github.com/apack1001/json-diff-patch)
 - [jsondiffpatch-react](https://github.com/bluepeter/jsondiffpatch-react), also check docs for [usage in react](/docs/react.md)
+
 
 ## All contributors ✨
 
