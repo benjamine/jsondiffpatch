@@ -306,7 +306,7 @@ Check [Plugins documentation](docs/plugins.md) for details.
   ](https://github.com/wbish/jsondiffpatch.net)
 - [SystemTextJson.JsonDiffPatch
   (C#)](https://github.com/weichch/system-text-json-jsondiffpatch)
-- [json-diff-patch (c++)](https://github.com/apack1001/json-diff-patch)
+- [jsondiffpatch-cpp (c++)]([https://github.com/apack1001/json-diff-patch](https://github.com/swompythesecond/jsondiffpatch-cpp))
 - [Go JSON Diff (and Patch)
   ](https://github.com/yudai/gojsondiff)
 - [json-diff-patch (python)](https://github.com/apack1001/json-diff-patch)
