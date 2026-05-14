@@ -187,9 +187,7 @@ const add = (obj: unknown, path: string, value: unknown) => {
 		return;
 	}
 	if (last === "-") {
-		throw new Error(
-			"JSONPatch 'add' with '-' requires array target",
-		);
+		throw new Error("JSONPatch 'add' with '-' requires array target");
 	}
 	if (typeof parent !== "object" || parent === null) {
 		throw new Error(

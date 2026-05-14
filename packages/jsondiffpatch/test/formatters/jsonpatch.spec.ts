@@ -380,9 +380,7 @@ describe("jsonpatch", () => {
 
 		it("should throw when using '-' in remove", () => {
 			const before = { list: [1, 2, 3] };
-			const ops: jsonpatchFormatter.Op[] = [
-				{ op: "remove", path: "/list/-" },
-			];
+			const ops: jsonpatchFormatter.Op[] = [{ op: "remove", path: "/list/-" }];
 			expect(() => formatter.patch(jsondiffpatch.clone(before), ops)).toThrow(
 				/JSONPatch 'remove' path cannot end with '-'/,
 			);
