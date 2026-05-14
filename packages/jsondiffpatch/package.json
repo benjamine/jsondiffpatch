@@ -1,6 +1,6 @@
 {
 	"name": "jsondiffpatch",
-	"version": "0.7.5",
+	"version": "0.7.6",
 	"author": "Benjamin Eidelman <beneidel@gmail.com>",
 	"description": "JSON diff & patch (object and array diff, text diff, multiple output formats)",
 	"contributors": ["Benjamin Eidelman <beneidel@gmail.com>"],
