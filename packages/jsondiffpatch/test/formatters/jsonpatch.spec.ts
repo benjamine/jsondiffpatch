@@ -365,4 +365,27 @@ describe("jsonpatch", () => {
 			replaceOp("/tree~1item", 2),
 		]);
 	});
+
+	// RFC 6902 '-' index support (only for add)
+	describe("RFC6902 '-' index support", () => {
+		it("should append to end of array when using add with '-'", () => {
+			const before = { list: [1, 2, 3] };
+			const ops: jsonpatchFormatter.Op[] = [
+				{ op: "add", path: "/list/-", value: 4 },
+			];
+			const target = jsondiffpatch.clone(before);
+			formatter.patch(target, ops);
+			expect(target).toEqual({ list: [1, 2, 3, 4] });
+		});
+
+		it("should throw when using '-' in remove", () => {
+			const before = { list: [1, 2, 3] };
+			const ops: jsonpatchFormatter.Op[] = [
+				{ op: "remove", path: "/list/-" },
+			];
+			expect(() => formatter.patch(jsondiffpatch.clone(before), ops)).toThrow(
+				/JSONPatch 'remove' path cannot end with '-'/,
+			);
+		});
+	});
 });
