@@ -174,8 +174,8 @@ const add = (obj: unknown, path: string, value: unknown) => {
 	const last = parts.pop() as string;
 	const parent = get(obj, parts);
 	if (Array.isArray(parent)) {
-		const index = Number.parseInt(last, 10);
-		if (index < 0 || index > parent.length) {
+		const index = last === "-" ? parent.length : Number.parseInt(last, 10);
+		if (Number.isNaN(index) || index < 0 || index > parent.length) {
 			throw new Error(
 				`cannot set /${parts.concat([last]).join("/")} in ${JSON.stringify(
 					obj,
@@ -185,6 +185,11 @@ const add = (obj: unknown, path: string, value: unknown) => {
 		// insert at index
 		parent.splice(index, 0, clone(value));
 		return;
+	}
+	if (last === "-") {
+		throw new Error(
+			"JSONPatch 'add' with '-' requires array target",
+		);
 	}
 	if (typeof parent !== "object" || parent === null) {
 		throw new Error(
@@ -202,6 +207,9 @@ const remove = (obj: unknown, path: string) => {
 	// see https://datatracker.ietf.org/doc/html/rfc6902#section-4.2
 	const parts = parsePathFromRFC6902(path);
 	const last = parts.pop() as string;
+	if (last === "-") {
+		throw new Error("JSONPatch 'remove' path cannot end with '-'");
+	}
 	const parent = get(obj, parts);
 	if (Array.isArray(parent)) {
 		const index = Number.parseInt(last, 10);
@@ -236,8 +244,8 @@ const unadd = (obj: unknown, path: string, previousValue: unknown) => {
 	const last = parts.pop() as string;
 	const parent = get(obj, parts);
 	if (Array.isArray(parent)) {
-		const index = Number.parseInt(last, 10);
-		if (index < 0 || index > parent.length - 1) {
+		const index = last === "-" ? parent.length - 1 : Number.parseInt(last, 10);
+		if (Number.isNaN(index) || index < 0 || index > parent.length - 1) {
 			throw new Error(
 				`cannot un-add (rollback) /${parts
 					.concat([last])
@@ -265,6 +273,9 @@ const replace = (obj: unknown, path: string, value: unknown) => {
 	// see https://datatracker.ietf.org/doc/html/rfc6902#section-4.3
 	const parts = parsePathFromRFC6902(path);
 	const last = parts.pop() as string;
+	if (last === "-") {
+		throw new Error("JSONPatch 'replace' path cannot end with '-'");
+	}
 	const parent = get(obj, parts);
 	if (Array.isArray(parent)) {
 		const index = Number.parseInt(last, 10);
@@ -296,6 +307,11 @@ const replace = (obj: unknown, path: string, value: unknown) => {
 
 const move = (obj: unknown, path: string, from: string) => {
 	// see https://datatracker.ietf.org/doc/html/rfc6902#section-4.4
+	// '-' is only valid for add
+	const pathLast = parsePathFromRFC6902(path).slice(-1)[0];
+	if (pathLast === "-") {
+		throw new Error("JSONPatch 'move' path cannot end with '-'");
+	}
 	const value = remove(obj, from);
 	try {
 		add(obj, path, value);
@@ -308,12 +324,21 @@ const move = (obj: unknown, path: string, from: string) => {
 
 const copy = (obj: unknown, path: string, from: string) => {
 	// see https://datatracker.ietf.org/doc/html/rfc6902#section-4.5
+	// '-' is only valid for add
+	const pathLast = parsePathFromRFC6902(path).slice(-1)[0];
+	if (pathLast === "-") {
+		throw new Error("JSONPatch 'copy' path cannot end with '-'");
+	}
 	const value = get(obj, from);
 	return add(obj, path, clone(value));
 };
 
 const test = (obj: unknown, path: string, value: unknown): void => {
 	// see https://datatracker.ietf.org/doc/html/rfc6902#section-4.5
+	const last = parsePathFromRFC6902(path).slice(-1)[0];
+	if (last === "-") {
+		throw new Error("JSONPatch 'test' path cannot end with '-'");
+	}
 	const actualValue = get(obj, path);
 	if (JSON.stringify(value) !== JSON.stringify(actualValue)) {
 		throw new Error(
