@@ -11,7 +11,10 @@ import type {
 import type { BaseFormatterContext, DeltaType, NodeType } from "./base.js";
 import BaseFormatter from "./base.js";
 
-function htmlEscape(value: string | number) {
+function htmlEscape(value: number): number;
+function htmlEscape(value: string): string;
+function htmlEscape(value: string | number): string | number;
+function htmlEscape(value: string | number): string | number {
 	if (typeof value === "number") return value;
 	let html = String(value);
 	const replacements: [RegExp, string][] = [

@@ -1,11 +1,15 @@
 {
 	"name": "jsondiffpatch",
-	"version": "0.7.3",
+	"version": "0.7.4",
 	"author": "Benjamin Eidelman <beneidel@gmail.com>",
 	"description": "JSON diff & patch (object and array diff, text diff, multiple output formats)",
-	"contributors": ["Benjamin Eidelman <beneidel@gmail.com>"],
+	"contributors": [
+		"Benjamin Eidelman <beneidel@gmail.com>"
+	],
 	"type": "module",
-	"sideEffects": ["*.css"],
+	"sideEffects": [
+		"*.css"
+	],
 	"main": "./lib/index.js",
 	"types": "./lib/index.d.ts",
 	"exports": {
@@ -14,7 +18,10 @@
 		"./formatters/*": "./lib/formatters/*.js",
 		"./formatters/styles/*.css": "./lib/formatters/styles/*.css"
 	},
-	"files": ["bin", "lib"],
+	"files": [
+		"bin",
+		"lib"
+	],
 	"bin": {
 		"jsondiffpatch": "./bin/jsondiffpatch.js"
 	},
@@ -30,11 +37,16 @@
 		"type": "git",
 		"url": "https://github.com/benjamine/jsondiffpatch.git"
 	},
-	"keywords": ["json", "diff", "patch"],
+	"keywords": [
+		"json",
+		"diff",
+		"patch"
+	],
 	"dependencies": {
 		"@dmsnell/diff-match-patch": "^1.1.0"
 	},
 	"devDependencies": {
+		"@types/node": "^25.6.1",
 		"@vitest/coverage-v8": "^3.0.9",
 		"ncp": "^2.0.0",
 		"tslib": "^2.6.2",
