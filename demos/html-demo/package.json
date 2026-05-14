@@ -7,7 +7,7 @@
 	},
 	"dependencies": {
 		"json5": "^2.2.3",
-		"jsondiffpatch": "^0.7.4"
+		"jsondiffpatch": "^0.7.5"
 	},
 	"devDependencies": {
 		"esbuild": "^0.28.0",
