@@ -10,7 +10,7 @@
 		"jsondiffpatch": "^0.7.3"
 	},
 	"devDependencies": {
-		"esbuild": "^0.19.8",
+		"esbuild": "^0.28.0",
 		"typescript": "^5.8.2"
 	}
 }
