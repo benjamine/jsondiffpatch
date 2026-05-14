@@ -11,6 +11,22 @@ import type {
 import type { BaseFormatterContext, DeltaType, NodeType } from "./base.js";
 import BaseFormatter from "./base.js";
 
+function htmlEscape(value: string | number) {
+	if (typeof value === "number") return value;
+	let html = String(value);
+	const replacements: [RegExp, string][] = [
+		[/&/g, "&amp;"],
+		[/</g, "&lt;"],
+		[/>/g, "&gt;"],
+		[/'/g, "&apos;"],
+		[/"/g, "&quot;"],
+	];
+	for (const replacement of replacements) {
+		html = html.replace(replacement[0], replacement[1]);
+	}
+	return html;
+}
+
 interface AnnotatedFormatterContext extends BaseFormatterContext {
 	indentLevel?: number;
 	indentPad?: string;
@@ -69,7 +85,7 @@ class AnnotatedFormatter extends BaseFormatter<AnnotatedFormatterContext> {
 			const pieces = line.pieces;
 			for (const piece of pieces) {
 				context.out(
-					`<span class="jsondiffpatch-textdiff-${piece.type}">${piece.text}</span>`,
+					`<span class="jsondiffpatch-textdiff-${piece.type}">${htmlEscape(piece.text)}</span>`,
 				);
 			}
 			context.out("</div></li>");
@@ -110,7 +126,7 @@ class AnnotatedFormatter extends BaseFormatter<AnnotatedFormatterContext> {
 		type: DeltaType,
 		nodeType: NodeType,
 	) {
-		context.row(`&quot;${key}&quot;: {`);
+		context.row(`&quot;${htmlEscape(key)}&quot;: {`);
 		if (type === "node") {
 			context.indent();
 		}
@@ -205,7 +221,7 @@ class AnnotatedFormatter extends BaseFormatter<AnnotatedFormatterContext> {
 }
 
 const wrapPropertyName = (name: string | number | undefined) =>
-	`<pre style="display:inline-block">&quot;${name}&quot;</pre>`;
+	`<pre style="display:inline-block">&quot;${htmlEscape(name ?? "")}&quot;</pre>`;
 
 interface DeltaTypeAnnotationsMap {
 	added: AddedDelta;
@@ -286,7 +302,7 @@ const formatAnyChange = function <
 	const deltaType = this.getDeltaType(delta) as TDeltaType;
 	const annotator = deltaAnnotations[deltaType];
 	const htmlNote = annotator?.(delta, left, key, leftKey);
-	let json = JSON.stringify(delta, null, 2);
+	let json = htmlEscape(JSON.stringify(delta, null, 2));
 	if (deltaType === "textdiff") {
 		// split text diffs lines
 		json = json.split("\\n").join('\\n"+\n   "');
