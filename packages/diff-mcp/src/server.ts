@@ -14,40 +14,34 @@ export const createMcpServer = () => {
 	const server = new McpServer({
 		name: "diff-mcp",
 		version: "0.0.1",
-		capabilities: {
-			resources: {},
-			tools: {},
-		},
 	});
 
 	server.tool(
 		"diff",
 		"compare text or data and get a readable diff",
 		{
-			state: z.object({
-				left: inputDataSchema.describe("The left side of the diff."),
-				leftFormat: formatSchema
-					.optional()
-					.describe("format of left side of the diff"),
-				right: inputDataSchema.describe(
-					"The right side of the diff (to compare with the left side).",
-				),
-				rightFormat: formatSchema
-					.optional()
-					.describe("format of right side of the diff"),
-				outputFormat: z
-					.enum(["text", "json", "jsonpatch"])
-					.default("text")
-					.describe(
-						"The output format. " +
-							"text: (default) human readable text diff, " +
-							"json: a compact json diff (jsondiffpatch delta format), " +
-							"jsonpatch: json patch diff (RFC 6902)",
-					)
-					.optional(),
-			}),
+			left: inputDataSchema.describe("The left side of the diff."),
+			leftFormat: formatSchema
+				.optional()
+				.describe("format of left side of the diff"),
+			right: inputDataSchema.describe(
+				"The right side of the diff (to compare with the left side).",
+			),
+			rightFormat: formatSchema
+				.optional()
+				.describe("format of right side of the diff"),
+			outputFormat: z
+				.enum(["text", "json", "jsonpatch"])
+				.default("text")
+				.describe(
+					"The output format. " +
+						"text: (default) human readable text diff, " +
+						"json: a compact json diff (jsondiffpatch delta format), " +
+						"jsonpatch: json patch diff (RFC 6902)",
+				)
+				.optional(),
 		},
-		({ state }) => {
+		(state) => {
 			try {
 				const jsondiffpatch = create({
 					textDiff: {
