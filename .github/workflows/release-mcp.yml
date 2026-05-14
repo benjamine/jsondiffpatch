@@ -8,9 +8,12 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v3
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: 'lts/*'
           cache: 'npm'
@@ -18,7 +21,5 @@ jobs:
       - run: npm ci
       - run: npm run build
         working-directory: ./packages/jsondiffpatch
-      - run: npm publish
+      - run: npm publish --provenance --access public
         working-directory: ./packages/diff-mcp
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
