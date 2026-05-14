@@ -3,6 +3,13 @@ import PatchContext from "../contexts/patch.js";
 import ReverseContext from "../contexts/reverse.js";
 import type { ArrayDelta, Delta, Filter, ObjectDelta } from "../types.js";
 
+// '__proto__' must never be used as a property key — it bypasses normal
+// property assignment and directly modifies the object's prototype chain.
+// 'constructor' and 'prototype' are handled by the hasOwnProperty guard below
+// (we only traverse own properties of left, so inherited 'constructor' is
+// never followed into Object.prototype).
+const UNSAFE_KEYS = new Set(["__proto__"]);
+
 export const collectChildrenDiffFilter: Filter<DiffContext> = (context) => {
 	if (!context || !context.children) {
 		return;
@@ -79,12 +86,27 @@ export const patchFilter: Filter<PatchContext> = function nestedPatchFilter(
 		return;
 	}
 	const objectDelta = nestedDelta as ObjectDelta;
+	let childrenPushed = false;
 	for (const name in objectDelta) {
-		const child = new PatchContext(
-			(context.left as Record<string, unknown>)[name],
-			objectDelta[name],
-		);
+		if (UNSAFE_KEYS.has(name)) continue;
+		if (!Object.prototype.hasOwnProperty.call(objectDelta, name)) continue;
+		const left = context.left;
+		// Only read own properties from left to avoid traversing inherited
+		// properties (e.g. constructor.prototype → Object.prototype)
+		const leftValue =
+			left !== null &&
+			typeof left === "object" &&
+			Object.prototype.hasOwnProperty.call(left, name)
+				? (left as Record<string, unknown>)[name]
+				: undefined;
+		const child = new PatchContext(leftValue, objectDelta[name]);
 		context.push(child, name);
+		childrenPushed = true;
+	}
+	if (!childrenPushed) {
+		// All delta keys were unsafe or filtered out — return left unchanged.
+		context.setResult(context.left).exit();
+		return;
 	}
 	context.exit();
 };
@@ -99,12 +121,18 @@ export const collectChildrenPatchFilter: Filter<PatchContext> =
 		if (deltaWithChildren._t) {
 			return;
 		}
+		// If left is not a real object we cannot patch it — return left as-is.
+		if (context.left === null || typeof context.left !== "object") {
+			context.setResult(context.left).exit();
+			return;
+		}
 		const object = context.left as Record<string, unknown>;
 		const length = context.children.length;
 		for (let index = 0; index < length; index++) {
 			const child = context.children[index];
 			if (child === undefined) continue;
 			const property = child.childName as string;
+			if (UNSAFE_KEYS.has(property)) continue;
 			if (
 				Object.prototype.hasOwnProperty.call(context.left, property) &&
 				child.result === undefined
@@ -128,9 +156,18 @@ export const reverseFilter: Filter<ReverseContext> =
 			return;
 		}
 		const objectDelta = context.delta as ObjectDelta;
+		let childrenPushed = false;
 		for (const name in objectDelta) {
+			if (UNSAFE_KEYS.has(name)) continue;
+			if (!Object.prototype.hasOwnProperty.call(objectDelta, name)) continue;
 			const child = new ReverseContext(objectDelta[name]);
 			context.push(child, name);
+			childrenPushed = true;
+		}
+		if (!childrenPushed) {
+			// All delta keys were unsafe — return an empty reversed delta.
+			context.setResult({}).exit();
+			return;
 		}
 		context.exit();
 	};
@@ -152,6 +189,7 @@ export const collectChildrenReverseFilter: Filter<ReverseContext> = (
 		const child = context.children[index];
 		if (child === undefined) continue;
 		const property = child.childName as string;
+		if (UNSAFE_KEYS.has(property)) continue;
 		if (delta[property] !== child.result) {
 			delta[property] = child.result;
 		}

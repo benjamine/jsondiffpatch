@@ -127,13 +127,23 @@ const rollback = (
 	}
 };
 
-const parsePathFromRFC6902 = (path: string) => {
-	// see https://datatracker.ietf.org/doc/html/rfc6902#appendix-A.14
+const UNSAFE_KEYS = new Set(["__proto__", "constructor", "prototype"]);
+
+// see https://datatracker.ietf.org/doc/html/rfc6902#appendix-A.14
+function parsePathFromRFC6902(
+	path: string,
+	opts: { safe: false },
+): string[] | null;
+function parsePathFromRFC6902(path: string, opts?: { safe?: true }): string[];
+function parsePathFromRFC6902(
+	path: string,
+	{ safe = true }: { safe?: boolean } = {},
+): string[] | null {
 	if (typeof path !== "string") return path;
 	if (path.substring(0, 1) !== "/") {
 		throw new Error("JSONPatch paths must start with '/'");
 	}
-	return path
+	const parts = path
 		.slice(1)
 		.split("/")
 		.map((part) =>
@@ -141,7 +151,16 @@ const parsePathFromRFC6902 = (path: string) => {
 				? part
 				: part.replace(/~1/g, "/").replace(/~0/g, "~"),
 		);
-};
+	for (const part of parts) {
+		if (UNSAFE_KEYS.has(part)) {
+			if (!safe) return null;
+			throw new Error(
+				`JSONPatch path segment "${part}" is not allowed (prototype pollution)`,
+			);
+		}
+	}
+	return parts;
+}
 
 const get = (obj: unknown, path: string | string[]): unknown => {
 	const parts = Array.isArray(path) ? path : parsePathFromRFC6902(path);
@@ -170,7 +189,9 @@ const get = (obj: unknown, path: string | string[]): unknown => {
 
 const add = (obj: unknown, path: string, value: unknown) => {
 	// see https://datatracker.ietf.org/doc/html/rfc6902#section-4.1
-	const parts = parsePathFromRFC6902(path);
+	// Silently skip operations on unsafe paths (prototype pollution prevention).
+	const parts = parsePathFromRFC6902(path, { safe: false });
+	if (parts === null) return;
 	const last = parts.pop() as string;
 	const parent = get(obj, parts);
 	if (Array.isArray(parent)) {
