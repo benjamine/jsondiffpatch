@@ -302,14 +302,13 @@ Check [Plugins documentation](docs/plugins.md) for details.
 
 ## Related Projects
 
-- [jsondiffpatch.net (C#)
-  ](https://github.com/wbish/jsondiffpatch.net)
-- [SystemTextJson.JsonDiffPatch
-  (C#)](https://github.com/weichch/system-text-json-jsondiffpatch)
-- [Go JSON Diff (and Patch)
-  ](https://github.com/yudai/gojsondiff)
+- [jsondiffpatch.net (C#)](https://github.com/wbish/jsondiffpatch.net)
+- [SystemTextJson.JsonDiffPatch (C#)](https://github.com/weichch/system-text-json-jsondiffpatch)
+- [jsondiffpatch-cpp (C++)](https://github.com/swompythesecond/jsondiffpatch-cpp)
+- [Go JSON Diff (and Patch)](https://github.com/yudai/gojsondiff)
 - [json-diff-patch (python)](https://github.com/apack1001/json-diff-patch)
 - [jsondiffpatch-react](https://github.com/bluepeter/jsondiffpatch-react), also check docs for [usage in react](/docs/react.md)
+
 
 ## All contributors ✨
 
