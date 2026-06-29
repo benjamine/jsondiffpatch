@@ -137,6 +137,16 @@ describe("DiffPatcher", () => {
 				pattern: /expr/gim,
 			});
 		});
+		it("clones RegExp with flags added after es2017 (s, d, v)", () => {
+			// `s` (es2018), `d` (es2022) and `v` (es2024) all postdate the repo's
+			// es6 target, so build via the constructor with a non-literal flag
+			// (a `/…/s` literal would not compile).
+			for (const flag of ["s", "d", "v"]) {
+				const pattern = new RegExp("expr", flag);
+				const cloned = jsondiffpatch.clone({ pattern });
+				expect(cloned).toEqual({ pattern });
+			}
+		});
 	});
 
 	describe("using cloneDiffValues", () => {

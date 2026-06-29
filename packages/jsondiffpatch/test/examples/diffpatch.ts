@@ -17,6 +17,11 @@ type ExampleGroup = Example[];
 
 const exampleDate = () => new Date(2020, 10, 30, 15, 10, 3);
 
+// Built via the constructor rather than a `/…/s` literal so these compile under
+// the repo's es6 target (the `s` flag postdates es6 and a literal would error).
+const regExpWithFlags = (source: string, flags: string) =>
+	new RegExp(source, flags);
+
 const atomicValues: ExampleGroup = [
 	// undefined
 	{
@@ -463,6 +468,13 @@ const atomicValues: ExampleGroup = [
 		right: /another regex/gi,
 		delta: ["/regex/g", "/another regex/gi"],
 		reverse: ["/another regex/gi", "/regex/g"],
+	},
+	{
+		name: "RegExp -> RegExp (dotAll flag)",
+		left: regExpWithFlags("regex", "s"),
+		right: regExpWithFlags("another regex", "s"),
+		delta: ["/regex/s", "/another regex/s"],
+		reverse: ["/another regex/s", "/regex/s"],
 	},
 
 	// object

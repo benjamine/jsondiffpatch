@@ -88,7 +88,7 @@ export const patchFilter: Filter<PatchContext> =
 		}
 		if (nonNestedDelta.length === 2) {
 			if (context.left instanceof RegExp) {
-				const regexArgs = /^\/(.*)\/([gimyu]+)$/.exec(
+				const regexArgs = /^\/(.*)\/([dgimsuvy]+)$/.exec(
 					nonNestedDelta[1] as string,
 				);
 				if (regexArgs?.[1]) {

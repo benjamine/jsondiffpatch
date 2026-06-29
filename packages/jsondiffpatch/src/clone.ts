@@ -1,5 +1,5 @@
 function cloneRegExp(re: RegExp) {
-	const regexMatch = /^\/(.*)\/([gimyu]*)$/.exec(re.toString());
+	const regexMatch = /^\/(.*)\/([dgimsuvy]*)$/.exec(re.toString());
 	if (!regexMatch) {
 		throw new Error("Invalid RegExp");
 	}
