@@ -176,7 +176,7 @@ class HtmlFormatter extends BaseFormatter<HtmlFormatterContext> {
 		context.out('<div class="jsondiffpatch-value">');
 		this.formatValue(context, delta[0]);
 		context.out(
-			`</div><div class="jsondiffpatch-moved-destination">${delta[1]}</div>`,
+			`</div><div class="jsondiffpatch-moved-destination">${htmlEscape(delta[1])}</div>`,
 		);
 
 		// draw an SVG arrow from here to move destination

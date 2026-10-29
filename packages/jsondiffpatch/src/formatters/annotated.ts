@@ -275,9 +275,7 @@ const deltaAnnotations: {
 	moved(delta, _left, _key, leftKey) {
 		return `move from <span title="(position to remove at original state)">index ${
 			leftKey
-		}</span> to <span title="(position to insert at final state)">index ${
-			delta[1]
-		}</span>`;
+		}</span> to <span title="(position to insert at final state)">index ${htmlEscape(delta[1])}</span>`;
 	},
 	textdiff(_delta, _left, _key, leftKey) {
 		const location =

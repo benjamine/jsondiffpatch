@@ -138,3 +138,14 @@ describe("formatters.html", () => {
 		expectFormat(before, after, expectedHtml(expectedDiff));
 	});
 });
+
+describe("XSS regression", () => {
+	it("should not inject unescaped move destination in HTML", () => {
+		const d = {
+			_t: "a",
+			_0: ["x", "<img src=x onerror=alert(1)>", 3],
+		} as unknown as jsondiffpatch.Delta;
+		const out = htmlFormatter.format(d, ["x"]);
+		expect(out).not.toContain("<img src=x onerror=alert(1)>");
+	});
+});
