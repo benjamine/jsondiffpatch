@@ -25,9 +25,17 @@ export default function clone(arg: unknown): unknown {
 	const cloned = {};
 	for (const name in arg) {
 		if (Object.prototype.hasOwnProperty.call(arg, name)) {
-			(cloned as Record<string, unknown>)[name] = clone(
-				(arg as Record<string, unknown>)[name],
-			);
+			const value = clone((arg as Record<string, unknown>)[name]);
+			if (name === "__proto__") {
+				Object.defineProperty(cloned, name, {
+					value,
+					enumerable: true,
+					configurable: true,
+					writable: true,
+				});
+			} else {
+				(cloned as Record<string, unknown>)[name] = value;
+			}
 		}
 	}
 	return cloned;

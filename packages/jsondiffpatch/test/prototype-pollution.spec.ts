@@ -32,6 +32,22 @@ afterEach(() => {
 });
 
 describe("Prototype Pollution", () => {
+	describe("jsondiffpatch.clone()", () => {
+		it("should preserve __proto__ as an own property without changing the clone's prototype", () => {
+			const input = JSON.parse('{"__proto__":{"polluted":"yes"}}');
+			const result = jsondiffpatch.clone(input) as Record<string, unknown>;
+
+			expect(Object.getPrototypeOf(result)).toBe(Object.prototype);
+			expect(Object.prototype.hasOwnProperty.call(result, "__proto__")).toBe(
+				true,
+			);
+			expect(result.polluted).toBeUndefined();
+			expect((result.__proto__ as Record<string, unknown>).polluted).toBe(
+				"yes",
+			);
+		});
+	});
+
 	describe("jsondiffpatch.patch()", () => {
 		it("should not pollute Object.prototype via constructor.prototype keys in delta", () => {
 			// Case 1a from Snyk report: delta walks left.constructor.prototype
