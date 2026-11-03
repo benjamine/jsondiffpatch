@@ -1364,6 +1364,26 @@ const arrays: ExampleGroup = [
 		},
 	},
 	{
+		name: "identical array with a nested object and repeated primitives",
+		left: [{ x: 1 }, "a", "a"],
+		right: [{ x: 1 }, "a", "a"],
+		delta: undefined,
+		reverse: undefined,
+	},
+	{
+		name: "nested change next to repeated primitives",
+		left: [{ x: 1 }, "a", 2, "a"],
+		right: [{ x: 2 }, "a", 2, "a"],
+		delta: {
+			_t: "a",
+			0: { x: [1, 2] },
+		},
+		reverse: {
+			_t: "a",
+			0: { x: [2, 1] },
+		},
+	},
+	{
 		name: "using property filter",
 		options: {
 			propertyFilter(name /*, context */) {
