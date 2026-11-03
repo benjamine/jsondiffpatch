@@ -28,7 +28,12 @@ function arraysHaveMatchByRef(
 		const val1 = array1[index1];
 		for (let index2 = 0; index2 < len2; index2++) {
 			const val2 = array2[index2];
-			if (index1 !== index2 && val1 === val2) {
+			if (
+				index1 !== index2 &&
+				val1 === val2 &&
+				typeof val1 === "object" &&
+				val1 !== null
+			) {
 				return true;
 			}
 		}
