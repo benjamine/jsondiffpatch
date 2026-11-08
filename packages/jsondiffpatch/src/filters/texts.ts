@@ -19,7 +19,7 @@ interface DiffPatch {
 
 const TEXT_DIFF = 2;
 const DEFAULT_MIN_LENGTH = 60;
-let cachedDiffPatch: DiffPatch | null = null;
+const cachedDiffPatches = new WeakMap<typeof diff_match_patch, DiffPatch>();
 
 function getDiffMatchPatch(
 	options: Options | undefined,
@@ -30,21 +30,21 @@ function getDiffMatchPatch(
 	required?: boolean,
 ): DiffPatch | null;
 function getDiffMatchPatch(options: Options | undefined, required?: boolean) {
-	if (!cachedDiffPatch) {
-		let instance: diff_match_patch;
-		if (options?.textDiff?.diffMatchPatch) {
-			instance = new options.textDiff.diffMatchPatch();
-		} else {
-			if (!required) {
-				return null;
-			}
-			const error: Error & { diff_match_patch_not_found?: boolean } = new Error(
-				"The diff-match-patch library was not provided. Pass the library in through the options or use the `jsondiffpatch/with-text-diffs` entry-point.",
-			);
-			// eslint-disable-next-line camelcase
-			error.diff_match_patch_not_found = true;
-			throw error;
+	const DiffMatchPatch = options?.textDiff?.diffMatchPatch;
+	if (!DiffMatchPatch) {
+		if (!required) {
+			return null;
 		}
+		const error: Error & { diff_match_patch_not_found?: boolean } = new Error(
+			"The diff-match-patch library was not provided. Pass the library in through the options or use the `jsondiffpatch/with-text-diffs` entry-point.",
+		);
+		// eslint-disable-next-line camelcase
+		error.diff_match_patch_not_found = true;
+		throw error;
+	}
+	let cachedDiffPatch = cachedDiffPatches.get(DiffMatchPatch);
+	if (!cachedDiffPatch) {
+		const instance = new DiffMatchPatch();
 		cachedDiffPatch = {
 			diff: (txt1, txt2) =>
 				instance.patch_toText(instance.patch_make(txt1, txt2)),
@@ -65,6 +65,7 @@ function getDiffMatchPatch(options: Options | undefined, required?: boolean) {
 				return results[0];
 			},
 		};
+		cachedDiffPatches.set(DiffMatchPatch, cachedDiffPatch);
 	}
 	return cachedDiffPatch;
 }
